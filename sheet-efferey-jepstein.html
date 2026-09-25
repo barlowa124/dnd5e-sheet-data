@@ -66,6 +66,9 @@
   <select id="charSel" onchange="switchChar(this.value)"></select>
   <button onclick="el('newChar').style.display='block'">+ New</button>
   <button onclick="delChar()">Delete</button>
+  <button onclick="exportChar()">Export</button>
+  <button onclick="el('impFile').click()">Import</button>
+  <input type="file" id="impFile" accept=".json" style="display:none" onchange="importChar(this)">
   <button onclick="const p=el('syncPanel');p.style.display=p.style.display==='none'?'inline':'none'">⚙ Sync</button>
   <span id="syncPanel" style="display:none">
     <input type="password" id="ghPat" class="txt-in" style="width:230px;display:inline" placeholder="GitHub PAT (repo scope)">
@@ -114,14 +117,27 @@
     <h2>Combat</h2>
     <table>
       <tr><td>AC</td><td><input class="num-in" id="ac" type="number" value="13"></td></tr>
+      <tr><td>Armor</td><td><select id="armorSel" onchange="autoAC();saveState()">
+        <option value="none">Unarmored (10+Dex)</option><option value="leather">Leather</option>
+        <option value="studded" selected>Studded Leather</option><option value="chain shirt">Chain Shirt</option>
+        <option value="scale mail">Scale Mail</option><option value="breastplate">Breastplate</option>
+        <option value="half plate">Half Plate</option><option value="ring mail">Ring Mail</option>
+        <option value="chain mail">Chain Mail</option><option value="splint">Splint</option><option value="plate">Plate</option>
+      </select> <label class="sub">Shield <input type="checkbox" id="shieldChk" onchange="autoAC();saveState()"></label>
+      <button onclick="autoAC();log('AC recalculated.')">Auto AC</button></td></tr>
       <tr><td>Initiative</td><td><span class="bonus" id="init">+2</span> <button onclick="roll('Initiative', mod('dex'))">Roll</button></td></tr>
       <tr><td>Speed</td><td>30 ft</td></tr>
-      <tr><td>Hit Dice</td><td><span id="hitdice">1d10</span> <button onclick="rollDie('Hit die',HD(), mod('con'))">Roll</button></td></tr>
+      <tr><td>Hit Dice</td><td><span id="hitdice">1d10</span> <span class="sub" id="hdLeft"></span> <button onclick="spendHD()">Spend</button></td></tr>
     </table>
+    <input type="hidden" id="hdUsed" value="0">
     <h2>Roll Mode</h2>
     <button id="advBtn" onclick="cycleAdv()">Normal</button>
     <h2>Conditions</h2>
     <div id="conds"></div>
+    <div class="sub" style="margin-top:4px">Exhaustion level <input class="num-in" id="exhaust" type="number" min="0" max="6" value="0" style="width:50px"></div>
+    <h2>Resources</h2>
+    <div id="resBody"></div>
+    <button onclick="addRes()">+ Add tracker</button>
   </div>
 
   <div class="panel">
@@ -129,6 +145,7 @@
     <div><input class="num-in hp-cur" id="hp" type="number" value="11"> / <input class="num-in" id="hpmax" type="number" value="11"></div>
     <div style="margin-top:6px">Temp: <input class="num-in" id="temphp" type="number" value="0" style="width:55px"></div>
     <div style="margin-top:8px"><button onclick="healPrompt()">Heal</button> <button onclick="dmgPrompt()">Damage</button> <button onclick="shortRest()">Short Rest</button> <button onclick="longRest()">Long Rest</button></div>
+    <div class="sub" style="margin-top:6px">Concentrating: <input class="txt-in" id="concSpell" style="width:130px;display:inline" placeholder="—"> <button onclick="el('concSpell').value='';saveState();log('Concentration dropped.')">Drop</button></div>
     <h2>Death Saves</h2>
     <div>
       Pass: <span class="ds-pip" data-ds="s1"></span><span class="ds-pip" data-ds="s2"></span><span class="ds-pip" data-ds="s3"></span><br>
@@ -140,7 +157,7 @@
   <div class="panel">
     <h2>Saving Throws</h2>
     <table id="saves"></table>
-    <div class="sub">Passive Perception <span class="bonus" id="passPerc">14</span> · Darkvision 60 ft</div>
+    <div class="sub">Passive Perception <span class="bonus" id="passPerc">14</span> · Insight <span class="bonus" id="passIns">—</span> · Investigation <span class="bonus" id="passInv">—</span> · Darkvision 60 ft</div>
     <h2>Currency</h2>
     <table>
       <tr><td>pp</td><td><input class="num-in coin" data-coin="pp" type="number" value="0"></td>
@@ -156,7 +173,7 @@
     <h2>Attacks</h2>
     <table id="attacks"></table>
     <div class="sub" id="styleNote">Fighting Style unlocks at level 2.</div>
-    <div>Fighting Style: <select id="fightStyle" onchange="recalc()" disabled>
+    <div>Fighting Style: <select id="fightStyle" onchange="recalc();autoAC();saveState()" disabled>
       <option value="none">—</option>
       <option value="twf">Two-Weapon Fighting</option>
       <option value="archery">Archery</option>
@@ -164,6 +181,9 @@
       <option value="dueling">Dueling (+2 dmg)</option>
     </select></div>
     <div class="sub">Tip: rename/add weapon rows in Inventory; attack math uses your best stat.</div>
+    <h2>Custom Attacks</h2>
+    <div id="custAtk"></div>
+    <button onclick="addAtk()">+ Add attack</button>
   </div>
 </div>
 
@@ -171,6 +191,7 @@
   <div class="panel">
     <h2>Skills</h2>
     <table id="skills"></table>
+    <div class="sub" style="margin-top:6px">Expertise (double prof): <input class="txt-in" id="expertise" style="width:180px;display:inline" placeholder="e.g. Stealth, Deception" onchange="recalc();saveState()"></div>
   </div>
   <div class="panel" id="spellPanel">
     <h2>Spellcasting</h2>
@@ -224,7 +245,7 @@
         <tr><td id="compA2">Constrict</td><td><span class="bonus" id="compHit2">+4</span></td><td><span id="compDmg2">1d8+4</span> + grapple (escape <span class="bonus" id="compDC">DC 14</span>)</td>
             <td><button onclick="compAttack(1)">Attack</button></td></tr>
       </table>
-      <div class="sub">Obeys commands · moves on your initiative.</div>
+      <div class="sub">Obeys commands · moves on your initiative. <span id="compSrc"></span></div>
     </div>
     <h2>Build Planner</h2>
     <div id="nextLevel" class="sub"></div>
@@ -353,6 +374,8 @@ let inv=[["Leather armor",1,10],["Scimitar",2,3],["Longbow",1,2],["Arrows",20,0.
 let curChar='Efferey Jepstein';
 let SRD_SPELLS=[], EQUIPMENT=[], MONSTERS=[], ALLSPELLS=[];
 let compAtk=[{name:'Bite',hit:4,die:6,dv:4,n:1},{name:'Constrict',hit:4,die:8,dv:4,n:1}];
+let customAtk=[];   // [{n:name,h:hitOverrideOrEmpty,d:'2d6+3'}]
+let resources=[];   // [{name,max,used,reset:'S'|'L'|''}]
 
 function mod(s){return Math.floor((Number(document.querySelector(`[data-stat="${s}"]`).value)-10)/2);}
 function lvl(){return Math.min(20,Math.max(1,Number(el('level').value)||1));}
@@ -387,7 +410,8 @@ function castSpell(name){
  if(cat==='third'&&lvl()<3){log(`${name}: spellcasting unlocks at level 3.`);return;}
  if(sp.rit&&confirm('Cast '+name+' as ritual (10 extra min, no slot)?')){log(`Ritual cast ${name} — ${sp.desc||''}`);saveState();return;}
  if(!spendSlot(sp.l)){log(`${name}: no level-${sp.l} slots left.`);return;}
- log(`Cast ${name} (lvl ${sp.l}) — ${sp.desc||''}`);
+ if(sp.conc)el('concSpell').value=name;
+ log(`Cast ${name} (lvl ${sp.l})${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
  if(sp.atk)roll(name+' attack',prof()+mod(SPELLSTAT[cls()]||'wis'));
  if(sp.dx){const[sides,mo]=sp.dx;const n=typeof mo==='string'?mod(mo):0;const cnt=typeof mo==='number'&&mo>0?mo:1;
   let t=0,rs=[];for(let i=0;i<cnt;i++){const r=Math.ceil(Math.random()*sides);rs.push(r);t+=r;}
@@ -462,6 +486,7 @@ function pickCompanion(idx){
  el('compHit2').textContent=fmt(compAtk[1].hit);
  el('compDmg2').textContent=compAtk[1].n+'d'+compAtk[1].die+'+'+compAtk[1].dv;
  el('compDC').textContent='DC '+(8+p+2);
+ el('compSrc').textContent=baseCls()==='Ranger'&&String(el('variantSel').value).includes('Revised')?'(Beast Conclave — UA rules)':'(Beast Master — PHB)';
 }
 
 // ================= FEATURES =================
@@ -474,6 +499,8 @@ function rebuild(){
  ['str','dex','con','int','wis','cha'].forEach(s=>el('mod-'+s).textContent=fmt(mod(s)));
  el('init').textContent=fmt(mod('dex'));
  el('hitdice').textContent=l+'d'+HD();
+ const hdUsed=Number(el('hdUsed').value)||0;
+ el('hdLeft').textContent='('+(l-hdUsed)+' left)';
  const ss=SPELLSTAT[cls()]||'wis';
  el('spellDC').textContent=8+p+mod(ss);
  el('spellAtk').textContent=fmt(p+mod(ss));
@@ -504,10 +531,15 @@ function recalc(){
  document.querySelectorAll('.saveProf').forEach(cb=>{
   const b=mod(cb.dataset.stat)+(cb.checked?p:0);
   const e=document.querySelector(`.sv[data-stat="${cb.dataset.stat}"]`);e.textContent=fmt(b);e.dataset.v=b;});
+ const exp=(el('expertise')?el('expertise').value:'').toLowerCase().split(',').map(s=>s.trim()).filter(Boolean);
  document.querySelectorAll('#skills tr').forEach(tr=>{
-  const cb=tr.querySelector('.skillProf');const b=mod(cb.dataset.stat)+(cb.checked?p:0);
-  const e=tr.querySelector('.sk');e.textContent=fmt(b);e.dataset.v=b;
-  if(tr.children[1].textContent==='Perception')el('passPerc').textContent=10+b;});
+  const cb=tr.querySelector('.skillProf');const nm=tr.children[1].textContent;
+  const ex=exp.includes(nm.toLowerCase());
+  const b=mod(cb.dataset.stat)+(cb.checked?p*(ex?2:1):0);
+  const e=tr.querySelector('.sk');e.textContent=fmt(b)+(ex?' ⯈':'');e.dataset.v=b;
+  if(nm==='Perception')el('passPerc').textContent=10+b;
+  if(nm==='Insight')el('passIns').textContent=10+b;
+  if(nm==='Investigation')el('passInv').textContent=10+b;});
  const style=el('fightStyle').value,dexHit=p+mod('dex'),strHit=p+mod('str');
  const best=Math.max(dexHit,strHit);
  const arch=style==='archery'?2:0,twf=style==='twf',duel=style==='dueling'?2:0;
@@ -526,9 +558,59 @@ function recalc(){
   style==='dueling'?'Dueling: one-hand damage +2.':'Pick a fighting style.';
 }
 function attackRow(btn){
- roll(btn.closest('tr').children[0].textContent+' hit',Number(btn.dataset.h));
+ const name=btn.closest('tr').children[0].textContent;
+ roll(name+' hit',Number(btn.dataset.h));
  const die=btn.closest('tr').children[2].textContent.includes('d8')?8:6;
  rollDie('Damage',die,Number(btn.dataset.dv));
+ if(name.includes('Longbow')){const a=inv.find(i=>i[0]==='Arrows');
+  if(a){a[1]=Math.max(0,a[1]-1);renderInv();if(a[1]===0)log('OUT OF ARROWS.');}}
+}
+// ---- custom attacks ----
+function renderAtkCustom(){
+ el('custAtk').innerHTML=customAtk.map((a,i)=>`<div style="margin-top:4px">
+  <input class="txt-in" style="width:110px" value="${a.n}" onchange="customAtk[${i}].n=this.value;saveState()">
+  +<input class="num-in" style="width:40px" value="${a.h}" placeholder="auto" onchange="customAtk[${i}].h=this.value;saveState()">
+  <input class="txt-in" style="width:70px" value="${a.d}" placeholder="1d6+3" onchange="customAtk[${i}].d=this.value;saveState()">
+  <button onclick="atkGo(${i})">Atk</button><button onclick="customAtk.splice(${i},1);renderAtkCustom();saveState()">×</button></div>`).join('');
+}
+function addAtk(){customAtk.push({n:'New weapon',h:'',d:'1d6+3'});renderAtkCustom();saveState();}
+function atkGo(i){
+ const a=customAtk[i];
+ const h=a.h===''?Math.max(prof()+mod('dex'),prof()+mod('str')):Number(a.h);
+ roll(a.n+' hit',h);
+ const m=/(\d+)d(\d+)\s*([+-]\s*\d+)?/.exec(a.d);
+ if(m){const n=+m[1],s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let t=0,rs=[];
+  for(let k=0;k<n;k++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
+  log(`${a.n} dmg: [${rs.join(',')}] ${fmt(b)} = ${t+b}`);}
+ saveState();
+}
+// ---- resources ----
+function renderRes(){
+ el('resBody').innerHTML=resources.map((r,i)=>`<div style="margin-top:3px">
+  <input class="txt-in" style="width:110px" value="${r.name}" onchange="resources[${i}].name=this.value;saveState()">
+  <input class="num-in" style="width:45px" type="number" value="${r.used}" onchange="resources[${i}].used=Number(this.value);saveState()">/
+  <input class="num-in" style="width:45px" type="number" value="${r.max}" onchange="resources[${i}].max=Number(this.value);saveState()">
+  <select onchange="resources[${i}].reset=this.value;saveState()">
+   <option value="" ${r.reset===''?'selected':''}>manual</option><option value="S" ${r.reset==='S'?'selected':''}>short</option><option value="L" ${r.reset==='L'?'selected':''}>long</option>
+  </select>
+  <button onclick="resources[${i}].used=Math.min(resources[${i}].max,resources[${i}].used+1);renderRes();saveState()">use</button>
+  <button onclick="resources.splice(${i},1);renderRes();saveState()">×</button></div>`).join('');
+}
+function addRes(){resources.push({name:'Resource',max:1,used:0,reset:'L'});renderRes();saveState();}
+const ARMOR={none:[10,99],leather:[11,99],studded:[12,99],'chain shirt':[13,2],'scale mail':[14,2],breastplate:[14,2],'half plate':[15,2],'ring mail':[14,0],'chain mail':[16,0],splint:[17,0],plate:[18,0]};
+function autoAC(){
+ const a=el('armorSel').value||'none',b=ARMOR[a]||ARMOR.none;
+ const dex=Math.min(mod('dex'),b[1]);
+ const def=el('fightStyle').value==='defense'&&a!=='none'?1:0;
+ el('ac').value=b[0]+dex+(el('shieldChk').checked?2:0)+def;
+}
+function spendHD(){
+ const l=lvl(),u=Number(el('hdUsed').value)||0;
+ if(u>=l){log('No hit dice left.');return;}
+ el('hdUsed').value=u+1;
+ const d=HD(),r=Math.ceil(Math.random()*d),heal=r+mod('con');
+ el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+Math.max(1,heal));
+ rebuild();log(`HD spent: [${r}] ${fmt(mod('con'))} = healed ${Math.max(1,heal)} (${l-u-1} dice left)`);saveState();
 }
 
 // ================= LEVEL / REST =================
@@ -542,13 +624,37 @@ function levelUp(){
  saveState();
 }
 function healPrompt(){const n=Number(prompt('Heal how much?','0'))||0;el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+n);saveState();}
-function dmgPrompt(){const n=Number(prompt('Damage taken?','0'))||0;el('hp').value=Math.max(0,Number(el('hp').value)-n);saveState();}
-function shortRest(){log('Short rest — roll hit dice to heal.');}
+function dmgPrompt(){
+ const n=Number(prompt('Damage taken?','0'))||0;
+ el('hp').value=Math.max(0,Number(el('hp').value)-n);
+ const conc=el('concSpell').value;
+ if(n>0&&conc){
+  const dc=Math.max(10,Math.floor(n/2));
+  const bonus=Number(document.querySelector('.sv[data-stat="con"]').dataset.v)||mod('con');
+  const{r,txt}=d20(advMode);
+  if(r+bonus>=dc)log(`Concentration on ${conc} HELD: [${txt}] ${fmt(bonus)} = ${r+bonus} vs DC ${dc}`);
+  else{el('concSpell').value='';log(`Concentration on ${conc} DROPPED: [${txt}] ${fmt(bonus)} = ${r+bonus} vs DC ${dc}`);}
+ }
+ saveState();
+}
+function shortRest(){
+ resources.forEach(r=>{if(r.reset==='S'||r.reset==='L')r.used=0;});renderRes();
+ const u=Number(el('hdUsed').value)||0,left=lvl()-u;
+ if(left<=0){log('Short rest — no hit dice left to spend.');saveState();return;}
+ const n=Math.min(left,Number(prompt(`Spend how many hit dice? (${left} left)`,'1'))||0);
+ for(let i=0;i<n;i++)spendHD();
+ log(`Short rest — spent ${n} HD.`);saveState();
+}
 function longRest(){
  el('hp').value=el('hpmax').value;el('temphp').value=0;
+ const u=Number(el('hdUsed').value)||0;
+ el('hdUsed').value=Math.max(0,u-Math.max(1,Math.floor(lvl()/2)));
  document.querySelectorAll('.slot-pip.spent').forEach(s=>s.classList.remove('spent'));
  document.querySelectorAll('.ds-pip').forEach(s=>s.classList.remove('on'));
+ resources.forEach(r=>r.used=0);renderRes();
+ el('concSpell').value='';
  suggestionUsed=false;el('suggBtn').disabled=false;
+ rebuild();
  log('Long rest — everything restored.');saveState();}
 function useSuggestion(){if(suggestionUsed)return;suggestionUsed=true;el('suggBtn').disabled=true;
  log('Suggestion cast — Wis save vs DC '+el('innateDC').textContent+'.');saveState();}
@@ -567,7 +673,7 @@ function collectState(){
  s._cond=[...document.querySelectorAll('#conds .tag.on')].map(t=>t.textContent);
  s._ds=[...document.querySelectorAll('.ds-pip')].map(p=>p.classList.contains('on'));
  s._spent={};document.querySelectorAll('.slot-pip.spent').forEach(p=>{const i=p.dataset.slot;s._spent[i]=(s._spent[i]||0)+1;});
- s._inv=inv;s._known=knownSpells;
+ s._inv=inv;s._known=knownSpells;s._res=resources;s._atk=customAtk;
  s._cls=baseClass;s._variant=el('variantSel').value||'';
  s._race=el('raceLabel').textContent;s._bg=el('bgLabel').textContent;s._align=el('alignLabel').textContent;
  s._bio=el('bio').textContent;
@@ -588,6 +694,8 @@ function applyState(s){
  if(s._align)el('alignLabel').textContent=s._align;
  if(s._bio)el('bio').textContent=s._bio;
  inv=s._inv||inv;knownSpells=s._known||{};
+ resources=s._res||resources;customAtk=s._atk||customAtk;
+ renderRes();renderAtkCustom();
  suggestionUsed=!!s._sugg;el('suggBtn').disabled=suggestionUsed;
  rebuild();
  (s._skills||[]).forEach((v,i)=>{const c=document.querySelectorAll('.skillProf')[i];if(c)c.checked=v;});
@@ -682,6 +790,24 @@ function delChar(){
 }
 function populateCharSel(){
  el('charSel').innerHTML=Object.keys(store.chars).map(n=>`<option ${n===curChar?'selected':''}>${n}</option>`).join('');
+}
+function exportChar(){
+ store.chars[curChar]=collectState();
+ const blob=new Blob([JSON.stringify({name:curChar,state:store.chars[curChar]},null,1)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=curChar.replace(/\s+/g,'-')+'.json';a.click();
+ log('Exported '+curChar+'.');
+}
+function importChar(inp){
+ const f=inp.files[0];if(!f)return;
+ const rd=new FileReader();
+ rd.onload=()=>{try{
+   const j=JSON.parse(rd.result);
+   const name=j.name||f.name.replace('.json','');
+   store.chars[name]=j.state||j;
+   populateCharSel();switchChar(name);
+   log('Imported '+name+'.');
+  }catch(e){log('Import failed: '+e.message);}};
+ rd.readAsText(f);inp.value='';
 }
 
 // ================= NEW CHARACTER =================
