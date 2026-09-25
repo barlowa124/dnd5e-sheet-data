@@ -1275,7 +1275,7 @@ function exportDiscord(){
  const st=['str','dex','con','int','wis','cha'].map(a=>`${a.toUpperCase()} ${document.querySelector(`[data-stat="${a}"]`).value} (${fmt(mod(a))})`).join(' · ');
  const saves=[...document.querySelectorAll('.saveProf')].filter(c=>c.checked).map(c=>`${c.dataset.stat.toUpperCase()} ${document.querySelector(`.sv[data-stat="${c.dataset.stat}"]`).textContent}`).join(' · ');
  const skills=[...document.querySelectorAll('#skills tr')].filter(t=>t.querySelector('.skillProf').checked).map(t=>`${t.children[1].textContent} ${t.querySelector('.sk').textContent}`).join(' · ');
- const atk=[...document.querySelectorAll('#attacks tr')].filter(t=>t.children.length>2).map(t=>`${t.children[0].textContent.trim()} ${t.children[1].textContent} ${t.children[2].textContent}`).join(' · ');
+ const atk=[...document.querySelectorAll('#attacks tr')].filter(t=>t.children.length>2).map(t=>`${t.children[0].textContent.replace(/\s*\d+[–-]\d+%/g,'').trim()} ${t.children[1].textContent} ${t.children[2].textContent}`).join(' · ');
  const known=Object.keys(knownSpells).filter(k=>knownSpells[k]);
  const slots=[...document.querySelectorAll('.slot-pip:not(.spent)')].length;
  const featsLine=feats.length?'Feats: '+feats.join(', '):'';
