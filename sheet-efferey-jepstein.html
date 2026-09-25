@@ -66,6 +66,13 @@
   <select id="charSel" onchange="switchChar(this.value)"></select>
   <button onclick="el('newChar').style.display='block'">+ New</button>
   <button onclick="delChar()">Delete</button>
+  <button onclick="const p=el('syncPanel');p.style.display=p.style.display==='none'?'inline':'none'">⚙ Sync</button>
+  <span id="syncPanel" style="display:none">
+    <input type="password" id="ghPat" class="txt-in" style="width:230px;display:inline" placeholder="GitHub PAT (repo scope)">
+    <button onclick="ghSavePat()">Set</button>
+    <button onclick="pullAll()">Pull</button>
+    <button onclick="pushAll()">Push</button>
+  </span>
   <span class="save-note" id="saveNote"></span>
 </div>
 
@@ -361,7 +368,7 @@ function renderSpells(){
  el('spellTable').innerHTML=`<tr><th></th><th>Spell</th><th>Lvl</th><th></th><th></th></tr>`+list.map(s=>`
   <tr class="spellRow" onclick="el('spellInfo').innerHTML='<b>${s.n}</b> — ${s.s||''}, lvl ${s.l}. ${s.t||''} · ${s.r||''} · ${s.c||''} · ${s.d||''}. ${s.src?'['+s.src+']':''}<br>${s.desc||''}'">
    <td><button onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
-   <td>${s.n}${s.xge||s.src?' <span class="tag-rit">(${s.src||'XGE'})</span>':''}</td><td>${s.l}</td>
+   <td>${s.n}${s.xge||s.src?` <span class="tag-rit">(${s.src||'XGE'})</span>`:''}</td><td>${s.l}</td>
    <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}</td>
    <td><button ${casting?'':'disabled'} onclick="event.stopPropagation();castSpell('${s.n}')">Cast</button></td></tr>`).join('');
  el('spellCount').textContent=list.length+' entries';
@@ -564,7 +571,56 @@ function saveState(){
   store.chars[curChar]=collectState();store.current=curChar;
   localStorage.setItem(STORE_KEY,JSON.stringify(store));
   el('saveNote').textContent='saved '+new Date().toLocaleTimeString();
- },400);
+  if(GH_PAT)pushChar(curChar).catch(e=>log('Sync: '+e.message));
+ },600);
+}
+
+// ================= GITHUB SYNC =================
+let GH_PAT=localStorage.getItem('gh-pat')||'';
+let stateShas={};
+function ghSavePat(){GH_PAT=el('ghPat').value.trim();localStorage.setItem('gh-pat',GH_PAT);log('Token saved. Pull to sync other machines.');}
+async function ghApi(path,method,body){
+ const r=await fetch(`https://api.github.com/repos/barlowa124/dnd5e-sheet-data/contents/${path}`,{
+  method:method||'GET',
+  headers:{Authorization:'Bearer '+GH_PAT,Accept:'application/vnd.github+json'},
+  body:body?JSON.stringify(body):undefined});
+ if(r.status===404)return null;
+ if(!r.ok)throw new Error('GitHub '+r.status);
+ return r.json();
+}
+async function pullAll(){
+ if(!GH_PAT){log('Paste a PAT and hit Set first.');return;}
+ try{
+  const files=(await ghApi('state'))||[];
+  let n=0;
+  for(const f of files.filter(f=>f.name.endsWith('.json'))){
+   const j=await ghApi(f.path);if(!j)continue;stateShas[f.path]=j.sha;
+   store.chars[decodeURIComponent(f.name.replace('.json',''))]=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+   n++;
+  }
+  localStorage.setItem(STORE_KEY,JSON.stringify(store));
+  populateCharSel();
+  if(!store.chars[curChar])curChar=Object.keys(store.chars)[0]||curChar;
+  el('charName').textContent=curChar;
+  if(store.chars[curChar])applyState(store.chars[curChar]);
+  log(`Pulled ${n} character(s) from GitHub.`);
+ }catch(e){log('Pull failed: '+e.message);}
+}
+async function pushChar(name){
+ const path='state/'+encodeURIComponent(name)+'.json';
+ const body={message:'sync '+name,content:btoa(unescape(encodeURIComponent(JSON.stringify(store.chars[name]))))};
+ if(stateShas[path])body.sha=stateShas[path];
+ else{const ex=await ghApi(path);if(ex){body.sha=ex.sha;stateShas[path]=ex.sha;}}
+ const res=await ghApi(path,'PUT',body);
+ if(res&&res.content)stateShas[path]=res.content.sha;
+}
+async function pushAll(){
+ if(!GH_PAT){log('Paste a PAT and hit Set first.');return;}
+ store.chars[curChar]=collectState();
+ try{
+  for(const name of Object.keys(store.chars))await pushChar(name);
+  log('Pushed '+Object.keys(store.chars).length+' character(s) to GitHub.');
+ }catch(e){log('Push failed: '+e.message);}
 }
 function switchChar(name){
  if(!name)return;
@@ -577,7 +633,9 @@ function switchChar(name){
 }
 function delChar(){
  if(!confirm('Delete '+curChar+'?'))return;
+ const rpath='state/'+encodeURIComponent(curChar)+'.json';
  delete store.chars[curChar];
+ if(GH_PAT)ghApi(rpath).then(ex=>ex?ghApi(rpath,'DELETE',{message:'delete char',sha:ex.sha}):null).catch(()=>{});
  const names=Object.keys(store.chars);
  curChar=names[0]||null;
  if(!curChar){curChar='New Character';store.chars[curChar]={};}
@@ -676,7 +734,7 @@ el('conds').innerHTML=CONDS.map(c=>`<span class="tag" onclick="this.classList.to
 const DATA_BASE='https://raw.githubusercontent.com/barlowa124/dnd5e-sheet-data/main/data/';
 async function loadRemote(){
  try{
-  const [eq,mo,co,sp,extra,opts,cf,rng]=await Promise.all([
+  const [eq,mo,co,sp,extra,opts,cf,rng,ua]=await Promise.all([
    fetch(DATA_BASE+'5e-SRD-Equipment.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Monsters.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Conditions.json').then(r=>r.json()),
@@ -684,7 +742,8 @@ async function loadRemote(){
    fetch(DATA_BASE+'spells-extra.json').then(r=>r.json()).catch(()=>[]),
    fetch(DATA_BASE+'options.json').then(r=>r.json()).catch(()=>null),
    fetch(DATA_BASE+'class-features.json').then(r=>r.json()).catch(()=>null),
-   fetch(DATA_BASE+'ranger-spells-full.json').then(r=>r.json()).catch(()=>[])
+   fetch(DATA_BASE+'ranger-spells-full.json').then(r=>r.json()).catch(()=>[]),
+   fetch(DATA_BASE+'ua.json').then(r=>r.json()).catch(()=>null)
   ]);
   EQUIPMENT=eq;
   el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}"></option>`).join('');
@@ -696,6 +755,13 @@ async function loadRemote(){
   const extra2=`<span class="tag" onclick="this.classList.toggle('on');saveState()">Poisoned (immune!)</span>`;
   el('conds').innerHTML=extra2+co.map(c=>`<span class="tag" title="${(c.desc||[]).join(' ').replace(/"/g,'&quot;')}" onclick="this.classList.toggle('on');saveState()">${c.name}</span>`).join('');
   OPTIONS=opts;CLASS_FEATURES=cf||CLASS_FEATURES;
+  if(ua){
+   if(OPTIONS){
+    if(ua.uaSubclasses)Object.keys(ua.uaSubclasses).forEach(c=>{OPTIONS.subclasses[c]=(OPTIONS.subclasses[c]||[]).concat(ua.uaSubclasses[c]);});
+    if(ua.uaRaces)OPTIONS.races=OPTIONS.races.concat(ua.uaRaces);
+   }
+   if(ua.uaSpells)ALLSPELLS=ua.uaSpells.concat(ALLSPELLS);
+  }
   populateNC();
   rebuild();
   log(`Repo content: ${eq.length} items · ${mo.length} monsters · ${srd.length}+${extra.length} spells · ${co.length} conditions`);
@@ -707,6 +773,7 @@ populateCharSel();
 populateNC();
 if(store.chars[curChar])applyState(store.chars[curChar]);
 rebuild();renderCoins();loadRemote();
+if(GH_PAT)pullAll();
 document.querySelectorAll('input,select,textarea').forEach(e=>e.addEventListener('input',saveState));
 log('Sheet loaded. Welcome to Hell, Efferey.');
 </script>
