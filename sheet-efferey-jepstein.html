@@ -94,12 +94,12 @@
 
 <h1 id="charName">Efferey Jepstein</h1>
 <div class="sub">
-  Level <input class="num-in" id="level" type="number" value="1" min="1" max="20" style="width:55px"> <span id="clsLabel">Ranger</span>
-  <select id="variantSel" style="display:none" onchange="setVariant()"></select> ·
+  Level <input class="num-in" id="level" type="number" value="1" min="1" max="20" style="width:55px" readonly title="total character level — edit per-class levels below"> <span id="clsLabel">Ranger</span> ·
   <span id="raceLabel">Yuan-ti Pureblood</span> · <span id="bgLabel">Criminal</span> · <span id="alignLabel">Neutral Evil</span> ·
   Prof Bonus <span class="bonus" id="profBonus">+2</span> ·
   XP <input class="num-in" id="xp" type="number" value="0" style="width:80px"> <span id="xpNext" class="sub"></span>
   <button onclick="levelUp()">Level Up</button>
+  <div id="classRows" style="margin-top:4px"></div>
 </div>
 <div class="sub" id="bio">Disgraced financier, isekai'd into the Nine Hells. Now pursuing his long-suppressed dream of desert snake-charming — and tracking down his accomplice and wife, Mhislane Gaxwell, who was also damned.</div>
 
@@ -129,7 +129,6 @@
       <tr><td>Speed</td><td>30 ft</td></tr>
       <tr><td>Hit Dice</td><td><span id="hitdice">1d10</span> <span class="sub" id="hdLeft"></span> <button onclick="spendHD()">Spend</button></td></tr>
     </table>
-    <input type="hidden" id="hdUsed" value="0">
     <h2>Roll Mode</h2>
     <button id="advBtn" onclick="cycleAdv()">Normal</button>
     <h2>Conditions</h2>
@@ -192,6 +191,10 @@
     <h2>Skills</h2>
     <table id="skills"></table>
     <div class="sub" style="margin-top:6px">Expertise (double prof): <input class="txt-in" id="expertise" style="width:180px;display:inline" placeholder="e.g. Stealth, Deception" onchange="recalc();saveState()"></div>
+    <h2>Feats</h2>
+    <div id="featsList"></div>
+    <input class="txt-in" id="featPick" list="featList" style="width:170px;display:inline" placeholder="add feat…"><datalist id="featList"></datalist>
+    <button onclick="addFeat()">Add</button>
   </div>
   <div class="panel" id="spellPanel">
     <h2>Spellcasting</h2>
@@ -345,15 +348,17 @@ let VARIANTS={'Ranger':[
   18:['Feral Senses'],19:['Ability Score Improvement'],20:['Foe Slayer']}},
  {n:'Ranger (Spell-less UA)',hitDie:10,caster:'none',features:(()=>{const f={...RANGER_FEATURES};f[2]=['Fighting Style','Poultices & Natural Remedies (UA — replaces Spellcasting)'];return f;})()}
 ]};
-let baseClass='Ranger';
-function baseCls(){return baseClass;}
-function populateVariants(){
- const vs=VARIANTS[baseClass]||[];
- const sel=el('variantSel');
- sel.innerHTML=`<option value="">${baseClass} (standard)</option>`+vs.map(v=>`<option>${v.n}</option>`).join('');
- sel.style.display=vs.length?'inline':'none';
+function baseCls(){return mclasses[0].c;}
+function renderClassRows(){
+ const allCls=OPTIONS?OPTIONS.classes:Object.keys(HITDIE);
+ el('classRows').innerHTML=mclasses.map((m,i)=>`<span style="white-space:nowrap">
+  <select onchange="mclasses[${i}].c=this.value;mclasses[${i}].v='';renderClassRows();rebuild();saveState()">${allCls.map(c=>`<option ${c===m.c?'selected':''}>${c}</option>`).join('')}</select>
+  <input class="num-in" type="number" min="1" max="20" value="${m.l}" style="width:44px" title="class level" onchange="mclasses[${i}].l=Math.min(20,Math.max(1,Number(this.value)||1));renderClassRows();rebuild();saveState()">
+  <select onchange="mclasses[${i}].v=this.value;rebuild();saveState()" title="ruleset"><option value="">std</option>${(VARIANTS[m.c]||[]).map(v=>`<option ${v.n===m.v?'selected':''}>${v.n}</option>`).join('')}</select>
+  <button title="spend hit die" onclick="spendHD(${i})">HD</button>
+  ${i>0?`<button onclick="mclasses.splice(${i},1);renderClassRows();rebuild();saveState()">×</button>`:''}</span>`).join('')
+ +`<button onclick="mclasses.push({c:'Rogue',l:1,v:''});renderClassRows();rebuild();saveState()" title="multiclass">+ Class</button>`;
 }
-function setVariant(){el('clsLabel').textContent=el('variantSel').value||baseClass;rebuild();saveState();}
 function registerVariants(){
  Object.keys(VARIANTS).forEach(base=>(VARIANTS[base]||[]).forEach(v=>{
   HITDIE[v.n]=v.hitDie||HITDIE[base]||10;
@@ -369,6 +374,9 @@ const SPELLS=[]; // populated by loadRemote + embedded fallback below
 
 // ================= STATE =================
 let advMode=0, suggestionUsed=false;
+let mclasses=[{c:'Ranger',l:1,v:''}]; // multiclass rows; [0] = primary
+let hdSpent={};   // className -> dice spent
+let feats=[];     // feat names
 let knownSpells={};
 let inv=[["Leather armor",1,10],["Scimitar",2,3],["Longbow",1,2],["Arrows",20,0.05],["Backpack",1,5],["Crowbar",1,5],["Hammer",1,3],["Piton",10,0.25],["Torch",10,1],["Tinderbox",1,1],["Rations",10,2],["Waterskin",1,5],["Hempen rope 50 ft",1,10],["Pungi (snake flute)",1,1],["Thieves' tools",1,1],["Playing card set",1,0],["Manacles ('for the snakes')",1,6]];
 let curChar='Efferey Jepstein';
@@ -378,13 +386,28 @@ let customAtk=[];   // [{n:name,h:hitOverrideOrEmpty,d:'2d6+3'}]
 let resources=[];   // [{name,max,used,reset:'S'|'L'|''}]
 
 function mod(s){return Math.floor((Number(document.querySelector(`[data-stat="${s}"]`).value)-10)/2);}
-function lvl(){return Math.min(20,Math.max(1,Number(el('level').value)||1));}
+function lvl(){return Math.min(20,Math.max(1,mclasses.reduce((t,m)=>t+(Number(m.l)||0),0)));}
+function clsLvl(name){const m=mclasses.find(x=>x.c===name);return m?m.l:0;}
 function prof(){return Math.ceil(lvl()/4)+1;}
 function fmt(n){return (n>=0?'+':'')+n;}
 function el(id){return document.getElementById(id);}
-function cls(){return el('clsLabel').textContent;}
+function effName(m){return m.v||m.c;}
+function cls(){return effName(mclasses[0]);}
 function HD(){return HITDIE[cls()]||10;}
-function slotTable(){const t=CASTER[cls()];return SLOT_TABLES[t]&&SLOT_TABLES[t][lvl()]?SLOT_TABLES[t][lvl()]:[];}
+const ABBREV={'Bard':'Brd','Cleric':'Clr','Druid':'Drd','Paladin':'Pal','Ranger':'Ran','Sorcerer':'Sor','Warlock':'War','Wizard':'Wiz','Artificer':'Art'};
+// multiclass caster level: full adds all, half adds l/2 (Artificer rounds up), third adds l/3; pact handled separately
+function casterLvl(){let t=0;mclasses.forEach(m=>{const cat=CASTER[effName(m)]||'none';
+ if(cat==='full')t+=m.l;else if(cat==='half')t+=m.c==='Artificer'?Math.ceil(m.l/2):Math.floor(m.l/2);else if(cat==='third')t+=Math.floor(m.l/3);});return t;}
+function pactLvl(){let t=0;mclasses.forEach(m=>{if(CASTER[effName(m)]==='pact')t+=m.l;});return t;}
+function castUnlocked(m){const cat=CASTER[effName(m)]||'none';
+ return (cat==='full'||cat==='pact')?m.l>=1:cat==='half'?m.l>=2:cat==='third'?m.l>=3:false;}
+function slotTable(){const c=casterLvl();return c>0&&SLOT_TABLES.full[c]?SLOT_TABLES.full[c]:[];}
+function pactTable(){const p=pactLvl();return p>0&&SLOT_TABLES.pact[p]?SLOT_TABLES.pact[p]:[];}
+function spellStatFor(sp){
+ const list=(sp.cls||'').split('/');
+ for(const m of mclasses){const a=ABBREV[m.c];if(a&&list.includes(a))return SPELLSTAT[effName(m)]||SPELLSTAT[m.c]||'wis';}
+ return SPELLSTAT[cls()]||'wis';
+}
 
 function log(m){const d=document.createElement('div');d.textContent=m;el('log').prepend(d);}
 function d20(mode){const a=Math.ceil(Math.random()*20),b=Math.ceil(Math.random()*20);
@@ -404,15 +427,13 @@ function spendSlot(l){
 function castSpell(name){
  const sp=ALLSPELLS.find(s=>s.n===name);
  if(!sp){log(name+'? not found');return;}
- const cat=CASTER[cls()];
- if(cat==='none'){log(`${cls()} can't cast.`);return;}
- if(cat==='half'&&lvl()<2){log(`${name}: spellcasting unlocks at level 2.`);return;}
- if(cat==='third'&&lvl()<3){log(`${name}: spellcasting unlocks at level 3.`);return;}
+ const owner=mclasses.find(m=>{const a=ABBREV[m.c];return a&&(sp.cls||'').split('/').includes(a);})||mclasses[0];
+ if(!castUnlocked(owner)){log(`${name}: ${effName(owner)} hasn't unlocked spellcasting.`);return;}
  if(sp.rit&&confirm('Cast '+name+' as ritual (10 extra min, no slot)?')){log(`Ritual cast ${name} — ${sp.desc||''}`);saveState();return;}
- if(!spendSlot(sp.l)){log(`${name}: no level-${sp.l} slots left.`);return;}
+ if(!spendSlot(sp.l)&&!spendPact(sp.l)){log(`${name}: no level-${sp.l} slots left.`);return;}
  if(sp.conc)el('concSpell').value=name;
- log(`Cast ${name} (lvl ${sp.l})${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
- if(sp.atk)roll(name+' attack',prof()+mod(SPELLSTAT[cls()]||'wis'));
+ log(`Cast ${name} (lvl ${sp.l}, via ${effName(owner)})${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
+ if(sp.atk)roll(name+' attack',prof()+mod(spellStatFor(sp)));
  if(sp.dx){const[sides,mo]=sp.dx;const n=typeof mo==='string'?mod(mo):0;const cnt=typeof mo==='number'&&mo>0?mo:1;
   let t=0,rs=[];for(let i=0;i<cnt;i++){const r=Math.ceil(Math.random()*sides);rs.push(r);t+=r;}
   log(`${name} effect: [${rs.join(',')}] ${fmt(n)} = ${t+n}`);}
@@ -421,8 +442,9 @@ function castSpell(name){
 function toggleKnown(name){knownSpells[name]=!knownSpells[name];renderSpells();saveState();}
 function renderSpells(){
  const f=el('spellFilter').value;
- const casting=CASTER[cls()]!=='none';
- const list=ALLSPELLS.filter(s=>f==='cls'?s.ranger:f==='all'?true:f==='known'?knownSpells[s.n]:s.l===Number(f));
+ const casting=mclasses.some(castUnlocked);
+ const myA=mclasses.map(m=>ABBREV[m.c]).filter(Boolean);
+ const list=ALLSPELLS.filter(s=>f==='cls'?((s.cls||'').split('/').some(a=>myA.includes(a))||(s.ranger&&myA.includes('Ran'))):f==='all'?true:f==='known'?knownSpells[s.n]:s.l===Number(f));
  el('spellTable').innerHTML=`<tr><th></th><th>Spell</th><th>Lvl</th><th></th><th></th></tr>`+list.map(s=>`
   <tr class="spellRow" onclick="el('spellInfo').innerHTML='<b>${s.n}</b> — ${s.s||''}, lvl ${s.l}. ${s.t||''} · ${s.r||''} · ${s.c||''} · ${s.d||''}. ${s.src?'['+s.src+']':''}<br>${s.desc||''}'">
    <td><button onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
@@ -486,42 +508,52 @@ function pickCompanion(idx){
  el('compHit2').textContent=fmt(compAtk[1].hit);
  el('compDmg2').textContent=compAtk[1].n+'d'+compAtk[1].die+'+'+compAtk[1].dv;
  el('compDC').textContent='DC '+(8+p+2);
- el('compSrc').textContent=baseCls()==='Ranger'&&String(el('variantSel').value).includes('Revised')?'(Beast Conclave — UA rules)':'(Beast Master — PHB)';
+ const rm=mclasses.find(m=>m.c==='Ranger');
+ el('compSrc').textContent=rm&&String(rm.v).includes('Revised')?'(Beast Conclave — UA rules)':'(Beast Master — PHB)';
 }
 
 // ================= FEATURES =================
-function featuresFor(l){return (CLASS_FEATURES[cls()]||{})[l]||[];}
+function featuresFor(cName,l){return (CLASS_FEATURES[cName]||{})[l]||[];}
 
 // ================= REBUILD =================
 function rebuild(){
  const p=prof(),l=lvl();
  el('profBonus').textContent=fmt(p);
  ['str','dex','con','int','wis','cha'].forEach(s=>el('mod-'+s).textContent=fmt(mod(s)));
- el('init').textContent=fmt(mod('dex'));
- el('hitdice').textContent=l+'d'+HD();
- const hdUsed=Number(el('hdUsed').value)||0;
- el('hdLeft').textContent='('+(l-hdUsed)+' left)';
+ el('init').textContent=fmt(mod('dex')+(feats.includes('Alert')?5:0));
+ el('clsLabel').textContent=mclasses.map(m=>effName(m)+' '+m.l).join(' / ');
+ el('level').value=l;
+ el('hitdice').textContent=mclasses.map(m=>m.l+'d'+(HITDIE[effName(m)]||10)).join(' + ');
+ el('hdLeft').textContent='('+(l-Object.values(hdSpent).reduce((a,b)=>a+b,0))+' left)';
  const ss=SPELLSTAT[cls()]||'wis';
  el('spellDC').textContent=8+p+mod(ss);
  el('spellAtk').textContent=fmt(p+mod(ss));
  el('innateDC').textContent=8+p+mod('cha');
- el('spellsKnown').textContent=baseCls()==='Ranger'&&CASTER[cls()]!=='none'?(KNOWN[l]||0):'—';
- const casting=CASTER[cls()]!=='none'&&!(CASTER[cls()]==='half'&&l<2)&&!(CASTER[cls()]==='third'&&l<3);
+ const rngL=clsLvl('Ranger');
+ el('spellsKnown').textContent=rngL?(KNOWN[rngL]||0):'—';
+ const casting=mclasses.some(castUnlocked);
  el('spellLocked').style.display=casting?'none':'block';
  el('spellUnlocked').classList.toggle('locked',!casting);
- const hasComp=baseCls()==='Ranger'&&l>=3;
+ const hasComp=rngL>=3;
  el('compLocked').style.display=hasComp?'none':'block';
  el('compUnlocked').classList.toggle('locked',!hasComp);
  pickCompanion(el('compPick')?el('compPick').value:'');
  const xp=Number(el('xp').value)||0;
  el('xpNext').textContent=l<20?`· next at ${XP_THRESH[l].toLocaleString()} XP${xp>=XP_THRESH[l]?' — LEVEL UP READY!':''}`:'';
- el('nextLevel').innerHTML=l<20?`Next: <b>level ${l+1}</b> → ${featuresFor(l+1).join(', ')||'—'}`:'Max level.';
+ el('nextLevel').innerHTML=l<20?`Next: <b>${effName(mclasses[0])} ${mclasses[0].l+1}</b> → ${featuresFor(effName(mclasses[0]),mclasses[0].l+1).join(', ')||'—'}`:'Max level.';
  let html='';
- for(let i=1;i<=20;i++){const u=i<=l;html+=`<tr class="${u?'':'locked'}"><td style="width:40px">L${i}</td><td class="${i===l?'newfeat':''}">${featuresFor(i).join(', ')||'—'}</td></tr>`;}
+ mclasses.forEach(m=>{
+  const en=effName(m);
+  html+=`<tr><td colspan="2" style="padding-top:6px"><b>${en}</b></td></tr>`;
+  for(let i=1;i<=20;i++){const u=i<=m.l;html+=`<tr class="${u?'':'locked'}"><td style="width:40px">L${i}</td><td class="${i===m.l?'newfeat':''}">${featuresFor(en,i).join(', ')||'—'}</td></tr>`;}
+ });
  el('features').innerHTML=html;
  const sl=slotTable();let sh='';
  for(let i=0;i<sl.length;i++){if(sl[i]>0){sh+=`<div>Lvl ${i+1} slots: `;
   for(let k=0;k<sl[i];k++)sh+=`<span class="slot-pip" data-slot="${i}" onclick="this.classList.toggle('spent');saveState()"></span>`;sh+='</div>';}}
+ const pt=pactTable();
+ for(let i=0;i<pt.length;i++){if(pt[i]>0){sh+=`<div>Lvl ${i+1} <b>pact</b>: `;
+  for(let k=0;k<pt[i];k++)sh+=`<span class="slot-pip" data-pslot="${i}" onclick="this.classList.toggle('spent');saveState()"></span>`;sh+='</div>';}}
  el('slots').innerHTML=sh||'<span class="sub">No slots.</span>';
  renderSpells();recalc();renderInv();
 }
@@ -537,9 +569,9 @@ function recalc(){
   const ex=exp.includes(nm.toLowerCase());
   const b=mod(cb.dataset.stat)+(cb.checked?p*(ex?2:1):0);
   const e=tr.querySelector('.sk');e.textContent=fmt(b)+(ex?' ⯈':'');e.dataset.v=b;
-  if(nm==='Perception')el('passPerc').textContent=10+b;
+  if(nm==='Perception')el('passPerc').textContent=10+b+(feats.includes('Observant')?5:0);
   if(nm==='Insight')el('passIns').textContent=10+b;
-  if(nm==='Investigation')el('passInv').textContent=10+b;});
+  if(nm==='Investigation')el('passInv').textContent=10+b+(feats.includes('Observant')?5:0);});
  const style=el('fightStyle').value,dexHit=p+mod('dex'),strHit=p+mod('str');
  const best=Math.max(dexHit,strHit);
  const arch=style==='archery'?2:0,twf=style==='twf',duel=style==='dueling'?2:0;
@@ -597,6 +629,25 @@ function renderRes(){
   <button onclick="resources.splice(${i},1);renderRes();saveState()">×</button></div>`).join('');
 }
 function addRes(){resources.push({name:'Resource',max:1,used:0,reset:'L'});renderRes();saveState();}
+// ---- feats ----
+function featDesc(n){const f=(OPTIONS&&OPTIONS.feats||[]).find(x=>(x.n||x)===n);return f&&f.desc?f.desc:'';}
+function renderFeats(){
+ el('featsList').innerHTML=feats.length?feats.map(f=>`<span class="tag on" title="${featDesc(f).replace(/"/g,'&quot;')}">${f} <a href="#" onclick="removeFeat('${f}');return false" style="color:#c00">×</a></span>`).join(' '):'<span class="sub">None.</span>';
+}
+function addFeat(){
+ const n=el('featPick').value.trim();el('featPick').value='';
+ if(!n||feats.includes(n))return;
+ feats.push(n);
+ if(n==='Tough'){const g=2*lvl();el('hpmax').value=Number(el('hpmax').value)+g;log(`Tough: +${g} max HP (grows with level).`);}
+ if(n==='Lucky'&&!resources.find(r=>r.name==='Luck points')){resources.push({name:'Luck points',max:3,used:0,reset:'L'});renderRes();}
+ renderFeats();recalc();saveState();
+}
+function removeFeat(n){
+ feats.splice(feats.indexOf(n),1);
+ if(n==='Tough')el('hpmax').value=Number(el('hpmax').value)-2*lvl();
+ if(n==='Lucky'){const i=resources.findIndex(r=>r.name==='Luck points');if(i>=0){resources.splice(i,1);renderRes();}}
+ renderFeats();recalc();saveState();
+}
 const ARMOR={none:[10,99],leather:[11,99],studded:[12,99],'chain shirt':[13,2],'scale mail':[14,2],breastplate:[14,2],'half plate':[15,2],'ring mail':[14,0],'chain mail':[16,0],splint:[17,0],plate:[18,0]};
 function autoAC(){
  const a=el('armorSel').value||'none',b=ARMOR[a]||ARMOR.none;
@@ -604,23 +655,35 @@ function autoAC(){
  const def=el('fightStyle').value==='defense'&&a!=='none'?1:0;
  el('ac').value=b[0]+dex+(el('shieldChk').checked?2:0)+def;
 }
-function spendHD(){
- const l=lvl(),u=Number(el('hdUsed').value)||0;
- if(u>=l){log('No hit dice left.');return;}
- el('hdUsed').value=u+1;
- const d=HD(),r=Math.ceil(Math.random()*d),heal=r+mod('con');
- el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+Math.max(1,heal));
- rebuild();log(`HD spent: [${r}] ${fmt(mod('con'))} = healed ${Math.max(1,heal)} (${l-u-1} dice left)`);saveState();
+function spendHD(i){
+ const m=mclasses[i]||mclasses[0],en=effName(m),d=HITDIE[en]||10,u=hdSpent[en]||0;
+ if(u>=m.l){log('No '+en+' hit dice left.');return;}
+ hdSpent[en]=u+1;
+ const r=Math.ceil(Math.random()*d),heal=Math.max(1,r+mod('con'));
+ el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+heal);
+ rebuild();log(`${en} HD spent: [${r}] ${fmt(mod('con'))} = healed ${heal} (${m.l-u-1} left)`);saveState();
+}
+function spendPact(l){
+ const pt=pactTable();
+ for(let i=Math.max(0,l-1);i<pt.length;i++){
+  if(pt[i]>0){const pips=document.querySelectorAll(`.slot-pip[data-pslot="${i}"]`);
+   for(const p of pips){if(!p.classList.contains('spent')){p.classList.add('spent');saveState();return true;}}}}
+ return false;
 }
 
 // ================= LEVEL / REST =================
 function levelUp(){
  if(lvl()>=20){log('Max level.');return;}
- el('level').value=lvl()+1;
- const gain=Math.ceil((HD()+2)/2)+mod('con');
+ let i=0;
+ if(mclasses.length>1){
+  const q=mclasses.map((m,j)=>`${j}: ${effName(m)} ${m.l}`).join('   ');
+  i=Math.max(0,Math.min(mclasses.length-1,Number(prompt('Level up which class? '+q,'0'))||0));
+ }
+ const m=mclasses[i];m.l++;
+ const gain=Math.ceil(((HITDIE[effName(m)]||10)+2)/2)+mod('con')+(feats.includes('Tough')?2:0);
  el('hpmax').value=Number(el('hpmax').value)+gain;el('hp').value=el('hpmax').value;
- rebuild();
- log(`LEVEL UP → ${lvl()}. HP +${gain}. New: ${featuresFor(lvl()).join('; ')}`);
+ renderClassRows();rebuild();
+ log(`LEVEL UP → ${effName(m)} ${m.l}. HP +${gain}. New: ${featuresFor(effName(m),m.l).join('; ')||'—'}`);
  saveState();
 }
 function healPrompt(){const n=Number(prompt('Heal how much?','0'))||0;el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+n);saveState();}
@@ -639,16 +702,23 @@ function dmgPrompt(){
 }
 function shortRest(){
  resources.forEach(r=>{if(r.reset==='S')r.used=0;});renderRes();
- const u=Number(el('hdUsed').value)||0,left=lvl()-u;
- if(left<=0){log('Short rest — no hit dice left to spend.');saveState();return;}
- const n=Math.min(left,Number(prompt(`Spend how many hit dice? (${left} left)`,'1'))||0);
- for(let i=0;i<n;i++)spendHD();
- log(`Short rest — spent ${n} HD.`);saveState();
+ let idx=0;
+ if(mclasses.length>1){
+  const q=mclasses.map((m,i)=>`${i}: ${effName(m)}`).join('   ');
+  idx=Math.max(0,Math.min(mclasses.length-1,Number(prompt('Spend HD from which class? '+q,'0'))||0));
+ }
+ const m=mclasses[idx],en=effName(m),left=m.l-(hdSpent[en]||0);
+ if(left<=0){log('Short rest — no '+en+' hit dice left.');saveState();return;}
+ const n=Math.min(left,Number(prompt(`Spend how many ${en} hit dice? (${left} left)`,'1'))||0);
+ for(let i=0;i<n;i++)spendHD(idx);
+ log(`Short rest — spent ${n} ${en} HD.`);saveState();
 }
 function longRest(){
  el('hp').value=el('hpmax').value;el('temphp').value=0;
- const u=Number(el('hdUsed').value)||0;
- el('hdUsed').value=Math.max(0,u-Math.max(1,Math.floor(lvl()/2)));
+ Object.keys(hdSpent).forEach(c=>{
+  const m=mclasses.find(x=>effName(x)===c);
+  hdSpent[c]=Math.max(0,hdSpent[c]-Math.max(1,Math.floor((m?m.l:lvl())/2)));
+ });
  document.querySelectorAll('.slot-pip.spent').forEach(s=>s.classList.remove('spent'));
  document.querySelectorAll('.ds-pip').forEach(s=>s.classList.remove('on'));
  resources.forEach(r=>r.used=0);renderRes();
@@ -672,9 +742,10 @@ function collectState(){
  s._saves=[...document.querySelectorAll('.saveProf')].map(c=>c.checked);
  s._cond=[...document.querySelectorAll('#conds .tag.on')].map(t=>t.textContent);
  s._ds=[...document.querySelectorAll('.ds-pip')].map(p=>p.classList.contains('on'));
- s._spent={};document.querySelectorAll('.slot-pip.spent').forEach(p=>{const i=p.dataset.slot;s._spent[i]=(s._spent[i]||0)+1;});
+ s._spent={};document.querySelectorAll('.slot-pip.spent').forEach(p=>{const i=p.dataset.pslot!==undefined?'p'+p.dataset.pslot:p.dataset.slot;s._spent[i]=(s._spent[i]||0)+1;});
  s._inv=inv;s._known=knownSpells;s._res=resources;s._atk=customAtk;
- s._cls=baseClass;s._variant=el('variantSel').value||'';
+ s._mclasses=mclasses;s._hd=hdSpent;s._feats=feats;
+ s._cls=baseCls();s._variant=mclasses[0].v||'';
  s._race=el('raceLabel').textContent;s._bg=el('bgLabel').textContent;s._align=el('alignLabel').textContent;
  s._bio=el('bio').textContent;
  s._sugg=suggestionUsed;
@@ -688,7 +759,10 @@ function applyState(s){
   const e=el(k);if(!e)return;
   if(e.type==='checkbox')e.checked=s[k];else e.value=s[k];
  });
- if(s._cls){baseClass=s._cls;populateVariants();el('variantSel').value=s._variant||'';el('clsLabel').textContent=s._variant||s._cls;}
+ if(s._mclasses&&s._mclasses.length)mclasses=s._mclasses;
+ else if(s._cls)mclasses=[{c:s._cls,l:Number(s.level)||1,v:s._variant||''}];
+ hdSpent=s._hd||{};feats=s._feats||feats;
+ renderClassRows();renderFeats();
  if(s._race)el('raceLabel').textContent=s._race;
  if(s._bg)el('bgLabel').textContent=s._bg;
  if(s._align)el('alignLabel').textContent=s._align;
@@ -702,7 +776,8 @@ function applyState(s){
  (s._saves||[]).forEach((v,i)=>{const c=document.querySelectorAll('.saveProf')[i];if(c)c.checked=v;});
  recalc();
  (s._spent||{})&&Object.keys(s._spent).forEach(i=>{
-  let n=s._spent[i];document.querySelectorAll(`.slot-pip[data-slot="${i}"]`).forEach(p=>{if(n-->0)p.classList.add('spent');});
+  const sel=i[0]==='p'?`.slot-pip[data-pslot="${i.slice(1)}"]`:`.slot-pip[data-slot="${i}"]`;
+  let n=s._spent[i];document.querySelectorAll(sel).forEach(p=>{if(n-->0)p.classList.add('spent');});
  });
  if(s._cond)document.querySelectorAll('#conds .tag').forEach(t=>{if(s._cond.includes(t.textContent))t.classList.add('on');});
  (s._ds||[]).forEach((v,i)=>{const p=document.querySelectorAll('.ds-pip')[i];if(p)p.classList.toggle('on',v);});
@@ -848,6 +923,7 @@ function createChar(){
   _cls:c,_race:el('ncRace').value,_bg:el('ncBg').value,_align:el('ncAlign').value,
   _bio:'A soul newly arrived in the Nine Hells.',
   _skills:[],_saves:[],_cond:[],_ds:[],_spent:{},_inv:[["Adventurer's pack",1,0],["Clothes",1,3]],_known:{},
+  _mclasses:[{c:c,l:1,v:''}],_hd:{},_feats:[],
   personality:'',backstory:'',planNotes:'',att1:'',att2:'',att3:'',spellbook:'',
   coin_gp:15
  };
@@ -911,8 +987,9 @@ async function loadRemote(){
   el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}"></option>`).join('');
   MONSTERS=mo.filter(m=>m.type==='beast'&&m.challenge_rating<=0.25&&['Tiny','Small','Medium'].includes(m.size));
   el('compPick').innerHTML='<option value="">Acosta (Constrictor Snake)</option>'+MONSTERS.map(m=>`<option value="${m.index}">${m.name} (CR ${m.challenge_rating})</option>`).join('');
-  const srd=sp.map(s=>({n:s.name,l:s.level,t:s.casting_time,r:s.range,c:(s.components||[]).join(','),d:s.duration,s:s.school&&s.school.name,rit:s.ritual,conc:s.concentration,src:'SRD',desc:(s.desc||[]).join(' ')}));
-  const custom=rng.map(e=>{e.ranger=1;return e;}).concat(extra);
+  const CL2A={'Bard':'Brd','Cleric':'Clr','Druid':'Drd','Paladin':'Pal','Ranger':'Ran','Sorcerer':'Sor','Warlock':'War','Wizard':'Wiz'};
+  const srd=sp.map(s=>({n:s.name,l:s.level,t:s.casting_time,r:s.range,c:(s.components||[]).join(','),d:s.duration,s:s.school&&s.school.name,rit:s.ritual,conc:s.concentration,src:'SRD',cls:(s.classes||[]).map(c=>CL2A[c.name]).filter(Boolean).join('/'),desc:(s.desc||[]).join(' ')}));
+  const custom=rng.map(e=>{e.ranger=1;e.cls=e.cls||'Ran';return e;}).concat(extra);
   ALLSPELLS=custom.concat(srd.filter(s=>!custom.find(e=>e.n===s.name)));
   const extra2=`<span class="tag" onclick="this.classList.toggle('on');saveState()">Poisoned (immune!)</span>`;
   el('conds').innerHTML=extra2+co.map(c=>`<span class="tag" title="${(c.desc||[]).join(' ').replace(/"/g,'&quot;')}" onclick="this.classList.toggle('on');saveState()">${c.name}</span>`).join('');
@@ -921,6 +998,7 @@ async function loadRemote(){
    if(OPTIONS){
     if(ua.uaSubclasses)Object.keys(ua.uaSubclasses).forEach(c=>{OPTIONS.subclasses[c]=(OPTIONS.subclasses[c]||[]).concat(ua.uaSubclasses[c]);});
     if(ua.uaRaces)OPTIONS.races=OPTIONS.races.concat(ua.uaRaces);
+    if(ua.uaFeats)OPTIONS.feats=(OPTIONS.feats||[]).concat(ua.uaFeats);
    }
    if(ua.uaSpells)ALLSPELLS=ua.uaSpells.concat(ALLSPELLS);
   }
@@ -929,8 +1007,8 @@ async function loadRemote(){
    VARIANTS[base]=VARIANTS[base]||[];
    cv[base].forEach(v=>{if(!VARIANTS[base].find(x=>x.n===v.n))VARIANTS[base].push(v);});
   });
-  registerVariants();populateVariants();
-  el('variantSel').value=el('clsLabel').textContent===baseClass?'':el('clsLabel').textContent;
+  registerVariants();renderClassRows();
+  el('featList').innerHTML=(OPTIONS&&OPTIONS.feats||[]).map(f=>`<option value="${f.n||f}">`).join('');
   populateNC();
   rebuild();
   log(`Repo content: ${eq.length} items · ${mo.length} monsters · ${srd.length}+${extra.length} spells · ${co.length} conditions`);
@@ -940,6 +1018,10 @@ async function loadRemote(){
 // ================= BOOT =================
 populateCharSel();
 populateNC();
+renderClassRows();
+renderFeats();
+renderAtkCustom();
+renderRes();
 if(store.chars[curChar])applyState(store.chars[curChar]);
 rebuild();renderCoins();loadRemote();
 if(GH_PAT)pullAll();
