@@ -102,6 +102,7 @@
   <button onclick="el('impFile').click()">Import</button>
   <button onclick="snapshot()">Snapshot</button>
   <button onclick="restoreSnap()">Restore</button>
+  <button onclick="exportDiscord()">Discord</button>
   <input type="file" id="impFile" accept=".json" style="display:none" onchange="importChar(this)">
   <button onclick="const p=el('syncPanel');p.style.display=p.style.display==='none'?'inline':'none'">⚙ Sync</button>
   <span id="syncPanel" style="display:none">
@@ -1267,6 +1268,45 @@ function saveState(){
   if(GH_PAT)pushChar(curChar).catch(e=>log('Sync: '+e.message));
  },600);
 }
+
+// ================= DISCORD EXPORT =================
+function exportDiscord(){
+ const S=id=>el(id)?el(id).textContent.trim():'',V=id=>el(id)?el(id).value:'';
+ const st=['str','dex','con','int','wis','cha'].map(a=>`${a.toUpperCase()} ${document.querySelector(`[data-stat="${a}"]`).value} (${fmt(mod(a))})`).join(' · ');
+ const saves=[...document.querySelectorAll('.saveProf')].filter(c=>c.checked).map(c=>`${c.dataset.stat.toUpperCase()} ${document.querySelector(`.sv[data-stat="${c.dataset.stat}"]`).textContent}`).join(' · ');
+ const skills=[...document.querySelectorAll('#skills tr')].filter(t=>t.querySelector('.skillProf').checked).map(t=>`${t.children[1].textContent} ${t.querySelector('.sk').textContent}`).join(' · ');
+ const atk=[...document.querySelectorAll('#attacks tr')].filter(t=>t.children.length>2).map(t=>`${t.children[0].textContent.trim()} ${t.children[1].textContent} ${t.children[2].textContent}`).join(' · ');
+ const known=Object.keys(knownSpells).filter(k=>knownSpells[k]);
+ const slots=[...document.querySelectorAll('.slot-pip:not(.spent)')].length;
+ const featsLine=feats.length?'Feats: '+feats.join(', '):'';
+ const comp=el('compUnlocked')&&el('compUnlocked').classList.contains('locked')?'':`Companion: ${el('compPick').options[el('compPick').selectedIndex]?.text||'Acosta'} — HP ${V('compHP')}/${S('compHPMax')} AC ${S('compAC')}`;
+ const conds=[...document.querySelectorAll('#conds .tag.on')].map(t=>t.textContent).join(', ');
+ const lines=[
+  `**${S('charName')}** — L${V('level')} ${mclasses.map(effName).join('/')}, ${S('raceLabel')} · ${S('bgLabel')} · ${S('alignLabel')}`,
+  `**HP** ${V('hp')}/${V('hpmax')}${V('temphp')>0?' +'+V('temphp')+' temp':''} · **AC** ${V('ac')} · **Spd** ${S('speedCell')} · **Init** ${S('init')} · **Prof** ${S('profBonus')}`,
+  st,
+  saves?`Saves: ${saves}`:'',
+  skills?`Skills: ${skills}`:'',
+  atk?`Attacks: ${atk}`:'',
+  `Spells: DC ${S('spellDC')} · atk ${S('spellAtk')} · ${slots} slots left`+(known.length?` — ${known.join(', ')}`:''),
+  featsLine,
+  comp,
+  conds?`Conditions: ${conds}`:'',
+  `Gold: ${S('coinTotal')} · ${S('bio').slice(0,140)}`
+ ].filter(Boolean).join('\n');
+ let out=lines;
+ if(out.length>1950){// trim to fit Discord's 2000-char limit
+  const arr=out.split('\n');
+  while(out.length>1950&&arr.length>4){arr.splice(arr.length-2,1);out=arr.join('\n');}
+ }
+ const done=ok=>log(ok?'Discord card copied — paste it straight into chat.':'Clipboard blocked — downloaded as .md instead.');
+ if(navigator.clipboard&&navigator.clipboard.writeText){
+  navigator.clipboard.writeText(out).then(()=>done(true)).catch(()=>{dlMD(out);done(false);});
+ }else{dlMD(out);done(false);}
+}
+function dlMD(txt){const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([txt],{type:'text/markdown'}));
+ a.download=el('charName').textContent.replace(/\s+/g,'-')+'-discord.md';a.click();}
 
 // ================= GITHUB SYNC =================
 let GH_PAT=localStorage.getItem('gh-pat')||'';
