@@ -1,0 +1,642 @@
+[
+ {
+  "n": "Absorb Elements",
+  "l": 1,
+  "t": "1 reaction",
+  "r": "Self",
+  "d": "1 round",
+  "s": "Abjuration",
+  "c": "S",
+  "xge": 1,
+  "desc": "Halve incoming acid/cold/fire/lightning/thunder damage; your next melee hit deals +1d6 of that type.",
+  "dx": [
+   6,
+   0
+  ]
+ },
+ {
+  "n": "Alarm",
+  "l": 1,
+  "t": "1 min",
+  "r": "30 ft",
+  "d": "8 hours",
+  "s": "Abjuration",
+  "c": "V,S,M",
+  "rit": 1,
+  "desc": "Ward an area; alerts you when a creature enters."
+ },
+ {
+  "n": "Animal Friendship",
+  "l": 1,
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "24 hours",
+  "s": "Enchantment",
+  "c": "V,S,M",
+  "desc": "Wis save or beast is charmed by you. Your racial version covers snakes at will \u2014 this covers the rest."
+ },
+ {
+  "n": "Beast Bond",
+  "l": 1,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Conc, 10 min",
+  "s": "Divination",
+  "c": "V,S,M",
+  "conc": 1,
+  "xge": 1,
+  "desc": "Link telepathically with a friendly beast (like, say, Acosta); it gets advantage on attacks vs creatures near you."
+ },
+ {
+  "n": "Cure Wounds",
+  "l": 1,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Instant",
+  "s": "Evocation",
+  "c": "V,S",
+  "desc": "Heal 1d8 + Wis per slot.",
+  "dx": [
+   8,
+   "wis"
+  ]
+ },
+ {
+  "n": "Detect Magic",
+  "l": 1,
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "s": "Divination",
+  "c": "V,S",
+  "rit": 1,
+  "conc": 1,
+  "desc": "Sense magic within 30 ft; see its school."
+ },
+ {
+  "n": "Detect Poison and Disease",
+  "l": 1,
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "s": "Divination",
+  "c": "V,S,M",
+  "rit": 1,
+  "conc": 1,
+  "desc": "Sense poisons/diseases within 30 ft. He's immune to poison anyway; party trick."
+ },
+ {
+  "n": "Ensnaring Strike",
+  "l": 1,
+  "t": "1 bonus action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "s": "Conjuration",
+  "c": "V",
+  "conc": 1,
+  "desc": "Next weapon hit restrains target (Str save); 1d6 piercing each turn restrained.",
+  "dx": [
+   6,
+   0
+  ]
+ },
+ {
+  "n": "Fog Cloud",
+  "l": 1,
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Conc, 1 hour",
+  "s": "Conjuration",
+  "c": "V,S",
+  "conc": 1,
+  "desc": "20-ft-radius heavily obscured fog."
+ },
+ {
+  "n": "Goodberry",
+  "l": 1,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Instant",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "desc": "10 berries, each heals 1 HP and feeds a creature for a day. Hell's most efficient meal service."
+ },
+ {
+  "n": "Hail of Thorns",
+  "l": 1,
+  "t": "1 bonus action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "s": "Conjuration",
+  "c": "V",
+  "conc": 1,
+  "desc": "Next ranged hit: thorns explode \u2014 1d10 piercing to target & nearby creatures (Dex save).",
+  "dx": [
+   10,
+   0
+  ]
+ },
+ {
+  "n": "Hunter's Mark",
+  "l": 1,
+  "t": "1 bonus action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "s": "Divination",
+  "c": "V",
+  "conc": 1,
+  "desc": "Mark quarry: +1d6 damage on each weapon hit against it; advantage tracking it. The Mhislane-finder.",
+  "dx": [
+   6,
+   0
+  ]
+ },
+ {
+  "n": "Jump",
+  "l": 1,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "1 min",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "desc": "Triple jump distance."
+ },
+ {
+  "n": "Longstrider",
+  "l": 1,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "1 hour",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "desc": "+10 ft speed."
+ },
+ {
+  "n": "Snare",
+  "l": 1,
+  "t": "1 min",
+  "r": "Touch",
+  "d": "8 hours",
+  "s": "Abjuration",
+  "c": "S,M",
+  "xge": 1,
+  "desc": "Magic trap: creature triggers \u2192 hoisted upside down, restrained."
+ },
+ {
+  "n": "Speak with Animals",
+  "l": 1,
+  "t": "1 action",
+  "r": "Self",
+  "d": "10 min",
+  "s": "Divination",
+  "c": "V,S",
+  "rit": 1,
+  "desc": "Talk to beasts. Finally, someone who listens."
+ },
+ {
+  "n": "Zephyr Strike",
+  "l": 1,
+  "t": "1 bonus action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "s": "Transmutation",
+  "c": "V",
+  "conc": 1,
+  "xge": 1,
+  "desc": "Move without provoking opportunity attacks; next weapon attack gets +1d8 & adv. Win-win.",
+  "dx": [
+   8,
+   0
+  ]
+ },
+ {
+  "n": "Barkskin",
+  "l": 2,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Conc, 1 hour",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "conc": 1,
+  "desc": "Target's AC can't be less than 16. Put it on the snake."
+ },
+ {
+  "n": "Beast Sense",
+  "l": 2,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Conc, 1 hour",
+  "s": "Divination",
+  "c": "S",
+  "rit": 1,
+  "conc": 1,
+  "desc": "See/hear through a beast's senses."
+ },
+ {
+  "n": "Cordon of Arrows",
+  "l": 2,
+  "t": "1 action",
+  "r": "5 ft",
+  "d": "8 hours",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "desc": "4 arrows become a trap; creatures entering take 1d6 piercing.",
+  "dx": [
+   6,
+   0
+  ]
+ },
+ {
+  "n": "Darkvision",
+  "l": 2,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "8 hours",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "desc": "60 ft darkvision \u2014 he already has it; share with Acosta or allies."
+ },
+ {
+  "n": "Find Traps",
+  "l": 2,
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Instant",
+  "s": "Divination",
+  "c": "V,S",
+  "desc": "Learn that traps exist nearby (not where). Infernal tax audits."
+ },
+ {
+  "n": "Healing Spirit",
+  "l": 2,
+  "t": "1 bonus action",
+  "r": "60 ft",
+  "d": "Conc, 1 min",
+  "s": "Conjuration",
+  "c": "V,S",
+  "conc": 1,
+  "xge": 1,
+  "desc": "Spirit heals 1d6 when allies move into its space.",
+  "dx": [
+   6,
+   0
+  ]
+ },
+ {
+  "n": "Lesser Restoration",
+  "l": 2,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Instant",
+  "s": "Abjuration",
+  "c": "V,S",
+  "desc": "End one disease or condition (blinded/deafened/paralyzed/poisoned)."
+ },
+ {
+  "n": "Locate Animals or Plants",
+  "l": 2,
+  "t": "1 action",
+  "r": "Self",
+  "d": "Instant",
+  "s": "Divination",
+  "c": "V,S,M",
+  "rit": 1,
+  "desc": "Find nearest beast or plant within 5 miles. Snakes included."
+ },
+ {
+  "n": "Locate Object",
+  "l": 2,
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "s": "Divination",
+  "c": "V,S,M",
+  "conc": 1,
+  "desc": "Sense direction to a described object within 1000 ft."
+ },
+ {
+  "n": "Pass without Trace",
+  "l": 2,
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 1 hour",
+  "s": "Abjuration",
+  "c": "V,S,M",
+  "conc": 1,
+  "desc": "+10 Stealth to party, leave no tracks. He's had practice."
+ },
+ {
+  "n": "Protection from Poison",
+  "l": 2,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "1 hour",
+  "s": "Abjuration",
+  "c": "V,S,M",
+  "desc": "Poison resistance & neutralize one poison. He's immune; it's a party favor."
+ },
+ {
+  "n": "Silence",
+  "l": 2,
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Conc, 10 min",
+  "s": "Illusion",
+  "c": "V,S",
+  "rit": 1,
+  "conc": 1,
+  "desc": "20-ft sphere of silence; no sound, no thunder, no verbal casting."
+ },
+ {
+  "n": "Spike Growth",
+  "l": 2,
+  "t": "1 action",
+  "r": "150 ft",
+  "d": "Conc, 10 min",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "conc": 1,
+  "desc": "20-ft radius difficult terrain; 2d4 piercing per 5 ft moved.",
+  "dx": [
+   4,
+   2
+  ]
+ },
+ {
+  "n": "Conjure Animals",
+  "l": 3,
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 hour",
+  "s": "Conjuration",
+  "c": "V,S",
+  "conc": 1,
+  "desc": "Summon beasts (up to CR 2 total). A squad of snakes is legal."
+ },
+ {
+  "n": "Conjure Barrage",
+  "l": 3,
+  "t": "1 action",
+  "r": "Self",
+  "d": "Instant",
+  "s": "Conjuration",
+  "c": "V,S,M",
+  "desc": "60-ft cone: 3d8 weapon damage (Dex save half).",
+  "dx": [
+   8,
+   3
+  ]
+ },
+ {
+  "n": "Daylight",
+  "l": 3,
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "1 hour",
+  "s": "Evocation",
+  "c": "V,S",
+  "desc": "60-ft sphere of bright light; dispels \u22643rd darkness. Rare commodity in Hell."
+ },
+ {
+  "n": "Flame Arrows",
+  "l": 3,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Conc, 1 hour",
+  "s": "Transmutation",
+  "c": "V,S",
+  "conc": 1,
+  "desc": "12 pieces of ammo deal +1d6 fire.",
+  "dx": [
+   6,
+   0
+  ]
+ },
+ {
+  "n": "Lightning Arrow",
+  "l": 3,
+  "t": "1 bonus action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "s": "Transmutation",
+  "c": "V,S",
+  "conc": 1,
+  "desc": "Ranged hit becomes 4d8 lightning (half on miss); nearby creatures 2d8 (Dex save).",
+  "dx": [
+   8,
+   4
+  ]
+ },
+ {
+  "n": "Nondetection",
+  "l": 3,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "8 hours",
+  "s": "Abjuration",
+  "c": "V,S,M",
+  "desc": "Target can't be detected by divination for 8 hrs. Old habits die hard."
+ },
+ {
+  "n": "Plant Growth",
+  "l": 3,
+  "t": "1 action/8 hrs",
+  "r": "150 ft",
+  "d": "Instant",
+  "s": "Transmutation",
+  "c": "V,S",
+  "desc": "100-ft radius becomes difficult terrain, or enrich crops."
+ },
+ {
+  "n": "Protection from Energy",
+  "l": 3,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Conc, 1 hour",
+  "s": "Abjuration",
+  "c": "V,S",
+  "conc": 1,
+  "desc": "Resistance to one energy type. Fire, in Hell. Novel concept."
+ },
+ {
+  "n": "Speak with Plants",
+  "l": 3,
+  "t": "1 action",
+  "r": "Self",
+  "d": "10 min",
+  "s": "Transmutation",
+  "c": "V,S",
+  "desc": "Plants answer questions. Hell's plants are rude."
+ },
+ {
+  "n": "Water Breathing",
+  "l": 3,
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "24 hours",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "rit": 1,
+  "desc": "Up to 10 creatures breathe water. For the River Styx detours."
+ },
+ {
+  "n": "Water Walk",
+  "l": 3,
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "1 hour",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "rit": 1,
+  "desc": "Walk on liquid. Even lava counts as a surface? Ask your DM."
+ },
+ {
+  "n": "Wind Wall",
+  "l": 3,
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Conc, 1 min",
+  "s": "Evocation",
+  "c": "V,S,M",
+  "conc": 1,
+  "desc": "Wall of wind: 3d8 bludgeon (Str save), blocks small fliers/gases.",
+  "dx": [
+   8,
+   3
+  ]
+ },
+ {
+  "n": "Conjure Woodland Beings",
+  "l": 4,
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 hour",
+  "s": "Conjuration",
+  "c": "V,S,M",
+  "conc": 1,
+  "desc": "Summon fey (up to CR 2)."
+ },
+ {
+  "n": "Freedom of Movement",
+  "l": 4,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "1 hour",
+  "s": "Abjuration",
+  "c": "V,S,M",
+  "desc": "Can't be slowed/restrained/paralyzed by magic; escape grapples with 5 ft."
+ },
+ {
+  "n": "Grasping Vine",
+  "l": 4,
+  "t": "1 bonus action",
+  "r": "30 ft",
+  "d": "Conc, 1 min",
+  "s": "Conjuration",
+  "c": "V,S",
+  "conc": 1,
+  "desc": "Vine drags a creature 30 ft (Con save) and holds it."
+ },
+ {
+  "n": "Guardian of Nature",
+  "l": 4,
+  "t": "1 bonus action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "s": "Transmutation",
+  "c": "V",
+  "conc": 1,
+  "xge": 1,
+  "desc": "Become a Great Tree (temp HP, adv attacks) or Primal Beast (+10 speed, +1d6 dmg, adv Str/Dex saves).",
+  "dx": [
+   6,
+   0
+  ]
+ },
+ {
+  "n": "Locate Creature",
+  "l": 4,
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 1 hour",
+  "s": "Divination",
+  "c": "V,S,M",
+  "conc": 1,
+  "desc": "Direction to a known creature within 1000 ft. Mhislane radar."
+ },
+ {
+  "n": "Stoneskin",
+  "l": 4,
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Conc, 1 hour",
+  "s": "Abjuration",
+  "c": "V,S,M",
+  "conc": 1,
+  "desc": "Resistance to nonmagical weapon damage. 100gp dust consumed."
+ },
+ {
+  "n": "Commune with Nature",
+  "l": 5,
+  "t": "1 min",
+  "r": "Self",
+  "d": "Instant",
+  "s": "Divination",
+  "c": "V,S",
+  "rit": 1,
+  "desc": "Learn about the land within 3 miles \u2014 terrain, creatures, influence."
+ },
+ {
+  "n": "Conjure Volley",
+  "l": 5,
+  "t": "1 action",
+  "r": "150 ft",
+  "d": "Instant",
+  "s": "Conjuration",
+  "c": "V,S,M",
+  "desc": "40-ft cylinder of ammo rain: 8d8 (Dex save half).",
+  "dx": [
+   8,
+   8
+  ]
+ },
+ {
+  "n": "Steel Wind Strike",
+  "l": 5,
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Instant",
+  "s": "Conjuration",
+  "c": "S,M",
+  "conc": 0,
+  "xge": 1,
+  "desc": "Flourish: strike up to 5 creatures (spell attack each), 6d10 force, then teleport to one.",
+  "dx": [
+   10,
+   6
+  ],
+  "atk": 1
+ },
+ {
+  "n": "Swift Quiver",
+  "l": 5,
+  "t": "1 bonus action",
+  "r": "Touch",
+  "d": "Conc, 1 min",
+  "s": "Transmutation",
+  "c": "V,S,M",
+  "conc": 1,
+  "desc": "Quiver refills; bonus action = two extra bow attacks."
+ },
+ {
+  "n": "Tree Stride",
+  "l": 5,
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "s": "Conjuration",
+  "c": "V,S",
+  "conc": 1,
+  "desc": "Step into a tree, out of another within 500 ft, once per round."
+ }
+]
