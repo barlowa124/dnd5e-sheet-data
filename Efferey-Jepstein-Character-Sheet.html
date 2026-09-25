@@ -100,6 +100,8 @@
   <button onclick="delChar()">Delete</button>
   <button onclick="exportChar()">Export</button>
   <button onclick="el('impFile').click()">Import</button>
+  <button onclick="snapshot()">Snapshot</button>
+  <button onclick="restoreSnap()">Restore</button>
   <input type="file" id="impFile" accept=".json" style="display:none" onchange="importChar(this)">
   <button onclick="const p=el('syncPanel');p.style.display=p.style.display==='none'?'inline':'none'">⚙ Sync</button>
   <span id="syncPanel" style="display:none">
@@ -170,6 +172,8 @@
       <tr><td>Speed</td><td><span id="speedCell">30 ft</span></td></tr>
       <tr><td>Hit Dice</td><td><span id="hitdice">1d10</span> <span class="sub" id="hdLeft"></span> <button onclick="spendHD()">Spend</button></td></tr>
     </table>
+    <div class="sub" style="margin-top:4px">Resist: <input class="txt-in" id="resList" style="width:110px;display:inline" placeholder="fire, cold"> Vuln: <input class="txt-in" id="vulnList" style="width:80px;display:inline"> Immune: <input class="txt-in" id="immList" style="width:90px;display:inline" value="poison"></div>
+    <div class="sub" style="margin-top:2px">This turn: <span class="tag" id="tuA" onclick="tglTurn('a')">Action</span> <span class="tag" id="tuB" onclick="tglTurn('b')">Bonus</span> <span class="tag" id="tuR" onclick="tglTurn('r')">Reaction</span> · round <b id="roundNum">0</b></div>
     <h2>Roll Mode</h2>
     <button id="advBtn" onclick="cycleAdv()">Normal</button>
     <h2>Conditions</h2>
@@ -178,6 +182,9 @@
     <h2>Resources</h2>
     <div id="resBody"></div>
     <button onclick="addRes()">+ Add tracker</button>
+    <h2>Supplies</h2>
+    <div id="supBody"></div>
+    <button onclick="addSupply()">+ Add</button> <span class="sub">"rest" items burn 1 per long rest</span>
   </div>
 
   <div class="panel">
@@ -207,6 +214,8 @@
       <tr><td>cp</td><td><input class="num-in coin" data-coin="cp" type="number" value="0"></td>
           <td><b>Total</b></td><td><span class="bonus" id="coinTotal">10 gp</span></td></tr>
     </table>
+    <div><button onclick="consolidateCoins()">⇆ Consolidate</button> <label class="sub"><input type="checkbox" id="coinWt" onchange="renderInv();saveState()"> coins weigh (50/lb)</label></div>
+    <div class="sub" id="dcCard"></div>
   </div>
 
   <div class="panel">
@@ -224,6 +233,11 @@
     <h2>Custom Attacks</h2>
     <div id="custAtk"></div>
     <button onclick="addAtk()">+ Add attack</button>
+    <h2>Dice Macros</h2>
+    <div id="macroBody"></div>
+    <button onclick="addMacro()">+ Macro</button>
+    <h2>Horde Roller</h2>
+    <div class="sub"><input class="num-in" id="hN" type="number" value="4" style="width:40px"> <select id="hMode"><option value="atk">attacks at</option><option value="save">saves at</option></select> <input class="num-in" id="hBonus" type="number" value="4" style="width:45px" title="bonus"> vs <input class="num-in" id="hTarget" type="number" value="15" style="width:45px" title="AC or DC"> <input class="txt-in" id="hDmg" style="width:62px;display:inline" placeholder="1d6+2 dmg"> <button onclick="hordeRoll()">Roll</button></div>
   </div>
 </div>
 
@@ -260,7 +274,7 @@
     <div class="sub" id="spellInfo">Click a spell for details. ★ = known.</div>
   </div>
   <div class="panel">
-    <h2>Roll Log</h2>
+    <h2>Roll Log <span class="sub" id="diceStats"></span></h2>
     <div id="log"></div>
     <div style="margin-top:8px">
       <button onclick="roll('d20',0)">d20</button>
@@ -296,6 +310,14 @@
       </table>
       <div class="sub">Obeys commands · moves on your initiative. <span id="compSrc"></span></div>
     </div>
+    <div id="wsPanel" style="display:none">
+      <div style="margin-top:6px">Wild Shape: <select id="wsPick" onchange="pickWS(this.value)"></select></div>
+      <div class="sub" id="wsStats"></div>
+    </div>
+    <h2>Summons</h2>
+    <div class="sub"><select id="sumSel" onchange="renderSummon()"></select> at slot <input class="num-in" id="sumSlot" type="number" min="2" max="9" value="3" style="width:42px" onchange="renderSummon()"></div>
+    <div class="sub" id="sumOut" style="font-style:normal"></div>
+    </div>
     <h2>Build Planner</h2>
     <div id="nextLevel" class="sub"></div>
     <textarea class="txt-in" id="planNotes" placeholder="Level-up plans — e.g. 'L4: +2 Dex. L5: take Spike Growth.'"></textarea>
@@ -323,11 +345,8 @@
     <h2>Features & Traits</h2>
     <table id="features"></table>
     <h2>Proficiencies / Languages</h2>
-    <div id="profTags">
-      <span class="tag" style="cursor:default">Light & medium armor</span><span class="tag" style="cursor:default">Shields</span><span class="tag" style="cursor:default">Simple & martial weapons</span>
-      <span class="tag" style="cursor:default">Thieves' tools</span><span class="tag" style="cursor:default">Playing card set</span>
-      <span class="tag" style="cursor:default">Common</span><span class="tag" style="cursor:default">Abyssal</span><span class="tag" style="cursor:default">Draconic</span>
-    </div>
+    <div id="profTags" class="sub"></div>
+    <input class="txt-in" id="profExtra" placeholder="extra proficiencies — tools, languages…">
   </div>
 </div>
 
@@ -348,6 +367,8 @@
   </div>
   <div class="panel">
     <h2>Personality / Notes</h2>
+    <div class="sub">Trait <input class="txt-in" id="pTrait" placeholder="personality trait"> Ideal <input class="txt-in" id="pIdeal" placeholder="ideal"></div>
+    <div class="sub">Bond <input class="txt-in" id="pBond" placeholder="bond"> Flaw <input class="txt-in" id="pFlaw" placeholder="flaw"></div>
     <textarea class="txt-in" id="personality">Trait: "I can charm anything with a flute." Has never once played a flute.
 Trait: Name-drops archdevils he's never met. They have all heard of him. They're not fans.
 Ideal: Snakes don't judge. Snakes just vibe.
@@ -356,6 +377,16 @@ Flaw: Insists he's "this close" to a plea deal. The infernal courts do not plea 
 Flaw: Keeps referring to "his island." The island owns him.</textarea>
     <h2>Backstory</h2>
     <textarea class="txt-in" id="backstory">A man who spent a mortal lifetime cultivating the wrong talents, Efferey Jepstein awoke in the Nine Hells with nothing — no island, no jet, no black book. Just a flute he'd never learned, a suspiciously natural affinity for serpents (draw your own conclusions), and the sudden certainty that his true calling was always desert snake-charming. Now he wanders the scorched plains of Avernus asking every damned soul: "Have you seen Mhislane? Tall. Controlling. Kind of the whole problem, honestly."</textarea>
+  </div>
+  <div class="panel">
+    <h2>Homebrew</h2>
+    <div class="sub"><select id="hbType"><option value="items">Item (name|weight)</option><option value="feats">Feat (name|desc)</option><option value="spells">Spell (name|level|school)</option></select></div>
+    <input class="txt-in" id="hbLine" placeholder="e.g. Flame Tongue Scimitar|3">
+    <button onclick="addHB()">Add</button>
+    <div id="hbList"></div>
+    <h2>Rules Reference</h2>
+    <input class="txt-in" id="ruleQ" placeholder="search rules…" oninput="renderRules()">
+    <div id="ruleList" class="sub" style="font-style:normal;max-height:220px;overflow:auto"></div>
   </div>
 </div>
 
@@ -489,6 +520,7 @@ function roll(name,bonus,kind){
  else if(kind==='save'&&(exh>=3||condOn('Poisoned')))auto='auto-disadv';
  const eff=auto?-1:advMode;
  const{r,txt}=d20(eff);const tag=eff===1?' (adv)':eff===-1?' (dis)':'';
+ dstat.n++;dstat.sum+=r;if(r===20)dstat.c20++;if(r===1)dstat.c1++;updateDiceStats();
  const crit=r>=critRange()&&/(hit|attack)/i.test(name);
  log(`${name}${tag}${auto?' ⚠'+auto:''}: [${txt}] ${fmt(bonus)} = ${r+bonus}${crit?' — CRIT!':r===20&&eff>=0?' — NAT 20':''}${r===1&&eff<=0?' — NAT 1':''}`);}
 function rollAtk(name,bonus){roll(name,bonus,'attack');}
@@ -513,6 +545,7 @@ function castSpell(name,ev){
  if(!spendSlot(useLvl)&&!spendPact(useLvl)){log(`${name}: no level-${useLvl}+ slots left.`);return;}
  if(sp.conc)el('concSpell').value=name;
  log(`Cast ${name} (slot ${useLvl}${useLvl>sp.l?' — upcast':''}, via ${effName(owner)})${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
+ if(REMIND[name])log(REMIND[name]);
  if(sp.atk)roll(name+' attack',prof()+mod(spellStatFor(sp)),'attack');
  if(sp.dx){const[sides,mo]=sp.dx;const n=typeof mo==='string'?mod(mo):0;
   const cnt=(typeof mo==='number'&&mo>0?mo:1)+(useLvl-sp.l);
@@ -525,7 +558,7 @@ function renderSpells(){
  const f=el('spellFilter').value;
  const casting=mclasses.some(castUnlocked);
  const myA=mclasses.map(m=>ABBREV[m.c]).filter(Boolean);
- const list=ALLSPELLS.filter(s=>f==='cls'?((s.cls||'').split('/').some(a=>myA.includes(a))||(s.ranger&&myA.includes('Ran'))):f==='all'?true:f==='known'?knownSpells[s.n]:s.l===Number(f));
+ const list=ALLSPELLS.filter(s=>f==='cls'?(s.cls==='*'||(s.cls||'').split('/').some(a=>myA.includes(a))||(s.ranger&&myA.includes('Ran'))):f==='all'?true:f==='known'?knownSpells[s.n]:s.l===Number(f));
  el('spellTable').innerHTML=`<tr><th></th><th>Spell</th><th>Lvl</th><th></th><th></th></tr>`+list.map(s=>`
   <tr class="spellRow" onclick="el('spellInfo').innerHTML='<b>${s.n}</b> — ${s.s||''}, lvl ${s.l}. ${s.t||''} · ${s.r||''} · ${s.c||''} · ${s.d||''}. ${s.src?'['+s.src+']':''}<br>${s.desc||''}'">
    <td><button onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
@@ -545,6 +578,7 @@ function renderInv(){
   <td><input class="num-in invw" type="number" step="0.05" value="${it[2]}" onchange="inv[${i}][2]=Number(this.value);renderInv();saveState()"></td>
   <td>${(Math.round(w*100)/100)} lb</td>
   <td><button onclick="inv.splice(${i},1);renderInv();saveState()">×</button></td></tr>`;}).join('');
+ if(el('coinWt')&&el('coinWt').checked){const cn=['pp','gp','ep','sp','cp'].reduce((a,k)=>a+(Number(document.querySelector(`[data-coin="${k}"]`).value)||0),0);total+=cn/50;}
  const cap=Number(document.querySelector('[data-stat="str"]').value)*15;
  el('weightTotal').textContent=`— ${Math.round(total*10)/10} lb / ${cap} lb cap`;
  el('encumbrance').innerHTML=total>cap?'<span class="enc-bad">OVER CAPACITY.</span>':total>cap*2/3?'<span class="enc-warn">Heavy load.</span>':'<span class="enc-ok">Comfortable.</span>';
@@ -614,6 +648,7 @@ function renderAssess(){
   if(cand.length&&cand[0].b>0)out.push(`Flat damage bonus +${cand[0].b} → if melee/ranged, attacking stat ≈ ${10+2*cand[0].b}–${11+2*cand[0].b}`);
  }
  el('inferBox').innerHTML=out.length?out.map(x=>'· '+x).join('<br>'):'No data yet.';
+ recalc();
 }
 
 // ================= COMPANION =================
@@ -694,7 +729,7 @@ function rebuild(){
  for(let i=0;i<pt.length;i++){if(pt[i]>0){sh+=`<div>Lvl ${i+1} <b>pact</b>: `;
   for(let k=0;k<pt[i];k++)sh+=`<span class="slot-pip" data-pslot="${i}" onclick="this.classList.toggle('spent');saveState()"></span>`;sh+='</div>';}}
  el('slots').innerHTML=sh||'<span class="sub">No slots.</span>';
- renderSpells();recalc();renderInv();pbUpdate();autoResources();
+ renderSpells();recalc();renderInv();pbUpdate();autoResources();renderProfs();renderWS();renderSummon();
 }
 
 function recalc(){
@@ -730,13 +765,14 @@ function recalc(){
   if(props.includes('Light')&&fin&&it[1]>=2&&twf)
    rows.push([it[0]+' (off-hand)',hit,`${dd.n}d${dd.s}+${plus+st}`,plus+st]);
  });
- el('attacks').innerHTML=rows.map(([n,h,d,dv])=>`<tr><td>${n}</td><td class="bonus">${fmt(h)}</td><td>${d}</td><td><button data-h="${h}" data-dv="${dv}" onclick="attackRow(this)">Attack</button></td></tr>`).join('')||'<tr><td class="sub">Add weapons to Inventory.</td></tr>';
+ el('attacks').innerHTML=rows.map(([n,h,d,dv])=>`<tr><td>${n}${hitPct(h)}</td><td class="bonus">${fmt(h)}</td><td>${d}</td><td><button data-h="${h}" data-dv="${dv}" onclick="attackRow(this)">Attack</button></td></tr>`).join('')||'<tr><td class="sub">Add weapons to Inventory.</td></tr>';
  el('fightStyle').disabled=lvl()<2;
  el('styleNote').textContent=lvl()<2?'Fighting Style unlocks at level 2.':
   style==='twf'?'TWF: off-hand damage includes ability mod.':
   style==='archery'?'Archery: longbow attack +2.':
   style==='defense'?'Defense: add +1 to your AC.':
   style==='dueling'?'Dueling: one-hand damage +2.':'Pick a fighting style.';
+ renderDCs();
 }
 function attackRow(btn){
  const tr=btn.closest('tr'),name=tr.children[0].textContent;
@@ -761,7 +797,7 @@ function cantripDmg(n,s){const c=1+(lvl()>=5)+(lvl()>=11)+(lvl()>=17);let rs=[],
 function atkGo(i){
  const a=customAtk[i];
  const h=a.h===''?Math.max(prof()+mod('dex'),prof()+mod('str')):Number(a.h);
- roll(a.n+' hit',h);
+ roll(a.n+' hit',h,'attack');
  const m=/(\d+)d(\d+)\s*([+-]\s*\d+)?/.exec(a.d);
  if(m){const n=+m[1],s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let t=0,rs=[];
   for(let k=0;k<n;k++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
@@ -816,7 +852,9 @@ function rollInitFor(){
  initOrder.push({n:curChar,v});initOrder.sort((a,b)=>b.v-a.v);initIdx=0;renderInit();
  log(`Initiative: [${txt}] ${fmt(mod('dex'))} = ${v}`);saveState();
 }
-function nextInit(){if(!initOrder.length)return;initIdx=(initIdx+1)%initOrder.length;renderInit();log('Turn → '+initOrder[initIdx].n);saveState();}
+function nextInit(){if(!initOrder.length)return;initIdx=(initIdx+1)%initOrder.length;
+ if(initIdx===0){roundN++;turnUse={a:0,b:0,r:0};renderTurn();log('— round '+roundN+' —');}
+ renderInit();log('Turn → '+initOrder[initIdx].n);saveState();}
 // ---- feats ----
 function featDesc(n){const f=(OPTIONS&&OPTIONS.feats||[]).find(x=>(x.n||x)===n);return f&&f.desc?f.desc:'';}
 function renderFeats(){
@@ -992,7 +1030,13 @@ function levelUp(){
 }
 function healPrompt(){const n=Number(prompt('Heal how much?','0'))||0;el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+n);saveState();}
 function dmgPrompt(){
- const n=Number(prompt('Damage taken?','0'))||0;
+ const raw=prompt('Damage taken? (e.g. "14 fire")','0')||'0';
+ const mm=/(\d+)\s*([a-z]*)/i.exec(raw);let n=+mm[1]||0;const t=(mm[2]||'').toLowerCase();
+ if(t&&n>0){
+  if(il('immList').includes(t)){log(`${n} ${t} — IMMUNE, no damage.`);n=0;}
+  else if(il('resList').includes(t)){const h=Math.floor(n/2);log(`${n} ${t} resisted → ${h}.`);n=h;}
+  else if(il('vulnList').includes(t)){log(`${n} ${t} — vulnerable, doubled to ${n*2}.`);n*=2;}
+ }
  el('hp').value=Math.max(0,Number(el('hp').value)-n);
  const conc=el('concSpell').value;
  if(n>0&&conc){
@@ -1028,6 +1072,7 @@ function longRest(){
  document.querySelectorAll('.slot-pip.spent').forEach(s=>s.classList.remove('spent'));
  document.querySelectorAll('.ds-pip').forEach(s=>s.classList.remove('on'));
  resources.forEach(r=>r.used=0);renderRes();
+ supplies.forEach(s=>{if(s.burn==='rest'&&s.q>0){s.q--;if(s.q===0)log('Out of '+s.n+'.');}});renderSup();
  el('concSpell').value='';
  suggestionUsed=false;el('suggBtn').disabled=false;
  rebuild();
@@ -1055,6 +1100,103 @@ function deathSave(){
 function useSuggestion(){if(suggestionUsed)return;suggestionUsed=true;el('suggBtn').disabled=true;
  log('Suggestion cast — Wis save vs DC '+el('innateDC').textContent+'.');saveState();}
 
+// ================= GAMEPLAY EXTRAS =================
+let turnUse={a:0,b:0,r:0},roundN=0,macros=[],supplies=[],hb={feats:[],items:[],spells:[]},
+    dstat={n:0,sum:0,c20:0,c1:0},snaps={},wsSel='',ALLBEASTS=[];
+function tglTurn(k){turnUse[k]=!turnUse[k];renderTurn();saveState();}
+function renderTurn(){['a','b','r'].forEach(k=>{const e=el('tu'+k.toUpperCase());if(e)e.classList.toggle('on',!!turnUse[k]);});
+ if(el('roundNum'))el('roundNum').textContent=roundN;}
+// damage intake w/ resist/vuln/immune — replaces simple prompt
+const il=id=>(el(id).value||'').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
+// DC card
+function renderDCs(){if(!el('dcCard'))return;const p=prof();
+ const line=['str','dex','con','int','wis','cha'].map(s=>`${s.toUpperCase()} ${8+p+mod(s)}`).join(' · ');
+ el('dcCard').innerHTML=`Ability DCs: ${line}<br>Spell DC <b>${el('spellDC').textContent}</b> · Innate DC <b>${el('innateDC').textContent}</b> · Companion DC <b>${el('compDC')?el('compDC').textContent:'—'}</b>`;}
+// horde roller
+function rollDiceExpr(str){const m=/(\d*)d(\d+)\s*([+-]?\s*\d+)?/.exec(str||'');if(!m)return{rs:[],t:0};const n=+m[1]||1,s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let rs=[],t=b;for(let i=0;i<n;i++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}return{rs,t};}
+function hordeRoll(){
+ const n=Math.max(1,+el('hN').value||1),mode=el('hMode').value,bon=+el('hBonus').value||0,tgt=+el('hTarget').value||0;
+ const rd=()=>Math.ceil(Math.random()*20);
+ if(mode==='save'){let pass=0;for(let i=0;i<n;i++)if(rd()+bon>=tgt)pass++;
+  log(`Horde saves: ${pass}/${n} passed vs DC ${tgt} at +${bon} — ${n-pass} failed.`);return;}
+ let hit=0,crit=0,td=0;
+ for(let i=0;i<n;i++){const r=rd();if(r===20||r!==1&&r+bon>=tgt){hit++;if(r===20)crit++;
+  if(el('hDmg').value){const{rs,t}=rollDiceExpr(el('hDmg').value);let tot=t;if(r===20){const{rs:r2,t:t2}=rollDiceExpr(el('hDmg').value.replace(/^(\d*)d/,(m,x)=>((+x||1)*2)+'d'));tot=t2;}td+=tot;}}}
+ log(`Horde: ${hit}/${n} hit vs ${tgt} at +${bon}${crit?', '+crit+' crit':''}${el('hDmg').value?' — '+td+' total damage':''}.`);
+}
+// hit% preview vs assessed monster AC
+function mobACBounds(){const obs=curMob();let lo=2,hi=30;obs.forEach(o=>{if(o.t==='hit')hi=Math.min(hi,o.v);if(o.t==='miss')lo=Math.max(lo,o.v+1);});return (hi<30||lo>2)&&lo<=hi?{lo,hi}:null;}
+function hitPct(h){const b=mobACBounds();if(!b)return'';const p=ac=>Math.min(95,Math.max(5,Math.round((21+h-ac)*5)));return` <span class="sub">${p(b.hi)}–${p(b.lo)}%</span>`;}
+// dice macros
+function renderMacros(){el('macroBody').innerHTML=macros.map((m,i)=>`<span class="tag" onclick="macroGo(${i})">${m.n} <span class="sub">${m.d}</span></span><a href="#" onclick="macros.splice(${i},1);renderMacros();saveState();return false" style="color:#c00">×</a> `).join('');}
+function addMacro(){const n=prompt('Macro name?','Sneak Attack');if(!n)return;const d=prompt('Dice expr (e.g. 2d6+3)?','2d6');if(!d)return;macros.push({n,d});renderMacros();saveState();}
+function macroGo(i){const m=macros[i],{rs,t}=rollDiceExpr(m.d);log(`${m.n}: ${m.d} [${rs.join(',')}] = ${t}`);saveState();}
+// supplies (burn on long rest)
+function renderSup(){el('supBody').innerHTML=supplies.map((s,i)=>`<div>${s.n} ×<input class="num-in" style="width:44px" type="number" value="${s.q}" onchange="supplies[${i}].q=+this.value;saveState()"> <span class="sub">${s.burn}</span> <a href="#" onclick="supplies.splice(${i},1);renderSup();saveState();return false" style="color:#c00">×</a></div>`).join('');}
+function addSupply(){const n=prompt('Supply name (e.g. Rations, Torches)?');if(!n)return;const b=prompt('Burn rate — "rest" burns 1 per long rest, anything else = manual','rest');supplies.push({n,q:+(prompt('Qty?','5')||5),burn:b==='rest'?'rest':'manual'});renderSup();saveState();}
+// coins
+function consolidateCoins(){const v=k=>Number(document.querySelector(`[data-coin="${k}"]`).value)||0;
+ let cp=Math.round(v('pp')*1000+v('gp')*100+v('ep')*50+v('sp')*10+v('cp'));
+ const set=(k,x)=>document.querySelector(`[data-coin="${k}"]`).value=x;
+ const gp=Math.floor(cp/100);cp-=gp*100;const sp=Math.floor(cp/10);cp-=sp*10;
+ set('pp',0);set('ep',0);set('gp',gp);set('sp',sp);set('cp',cp);renderCoins();renderInv();log(`Consolidated: ${gp} gp ${sp} sp ${cp} cp.`);saveState();}
+// snapshots
+function snapshot(){const n=prompt('Snapshot name?','checkpoint '+new Date().toLocaleTimeString());if(!n)return;snaps[n]=JSON.parse(JSON.stringify(collectState()));log('Snapshot "'+n+'" saved.');saveState();}
+function restoreSnap(){const ks=Object.keys(snaps);if(!ks.length){log('No snapshots.');return;}
+ const pick=prompt('Restore which? '+ks.join(' | '),ks[ks.length-1]);
+ if(pick&&snaps[pick]){applyState(JSON.parse(JSON.stringify(snaps[pick])));log('Restored "'+pick+'".');saveState();}}
+// TCE summon stat blocks (summarized)
+const SUMMONS={
+ 'Summon Beast (2)':{sl:2,ac:11,hp:30,hpS:10,dmg:'1d6',b:4},'Summon Fey (3)':{sl:3,ac:12,hp:30,hpS:10,dmg:'2d6',b:3},
+ 'Summon Shadowspawn (3)':{sl:3,ac:11,hp:35,hpS:15,dmg:'1d12',b:3},'Summon Undead (3)':{sl:3,ac:11,hp:30,hpS:10,dmg:'1d10',b:3},
+ 'Summon Construct (4)':{sl:4,ac:13,hp:40,hpS:15,dmg:'2d4',b:4},'Summon Elemental (4)':{sl:4,ac:11,hp:50,hpS:10,dmg:'1d10',b:4},
+ 'Summon Aberration (4)':{sl:4,ac:11,hp:40,hpS:10,dmg:'1d10',b:3},'Summon Celestial (5)':{sl:5,ac:11,hp:40,hpS:10,dmg:'2d6',b:3},
+ 'Draconic Spirit (5)':{sl:5,ac:14,hp:50,hpS:10,dmg:'1d6',b:4},'Summon Fiend (6)':{sl:6,ac:12,hp:50,hpS:15,dmg:'1d10',b:3}};
+function renderSummon(){const s=SUMMONS[el('sumSel').value];if(!s)return;
+ const L=Math.max(s.sl,+el('sumSlot').value||s.sl),up=L-s.sl;
+ el('sumOut').innerHTML=`AC <b>${s.ac+L}</b> · HP <b>${s.hp+up*s.hpS}</b> · Multiattack <b>${Math.floor(L/2)}×</b> — ${s.dmg}+${s.b+L} each · attacks use your spell attack <span class="sub">(summarized)</span>`;}
+// wild shape
+function druidLvl(){const m=mclasses.find(m=>m.c==='Druid');return m?m.l:0;}
+function renderWS(){
+ const l=druidLvl();if(!el('wsPanel'))return;el('wsPanel').style.display=l?'block':'none';if(!l)return;
+ const moon=mclasses.some(m=>m.c==='Druid'&&/moon/i.test(m.s||''));
+ const cap=moon?Math.max(1,Math.floor(l/3)):(l<4?0.25:l<8?0.5:1);
+ const fly=l>=8||moon,swim=l>=4||moon;
+ const list=ALLBEASTS.filter(b=>b.challenge_rating<=cap&&(fly||!/fly/i.test(JSON.stringify(b.speed)))&&(swim||!/swim/i.test(JSON.stringify(b.speed))));
+ el('wsPick').innerHTML='<option value="">— pick form —</option>'+list.map(m=>`<option value="${m.index}" ${m.index===wsSel?'selected':''}>${m.name} (CR ${m.challenge_rating})</option>`).join('');
+ if(!wsSel)el('wsStats').textContent=`CR ≤ ${cap}${moon?' (Moon circle)':''} · ${fly?'fly ok':'no flying'} · ${list.length} forms`;}
+function pickWS(idx){wsSel=idx;const m=ALLBEASTS.find(x=>x.index===idx);
+ if(!m){renderWS();saveState();return;}
+ const spd=typeof m.speed==='object'?Object.entries(m.speed||{}).map(([k,v])=>`${k} ${v}`).join(', '):m.speed;
+ el('wsStats').innerHTML=`<b>${m.name}</b> — AC ${(m.armor_class&&m.armor_class[0]?m.armor_class[0].value:m.armor_class)} · HP ${m.hit_points} · ${spd} · STR ${m.strength} DEX ${m.dexterity} CON ${m.constitution}<br>${(m.actions||[]).map(a=>a.name).join(' · ')}`;saveState();}
+// homebrew
+function addHB(){const t=el('hbType').value,parts=el('hbLine').value.split('|').map(x=>x.trim());if(!parts[0])return;
+ if(t==='items')hb.items.push({name:parts[0],weight:+(parts[1]||0)});
+ if(t==='feats')hb.feats.push({n:parts[0],desc:parts[1]||'',src:'HB'});
+ if(t==='spells')hb.spells.push({n:parts[0],l:+(parts[1]||0),s:parts[2]||'—',src:'HB',cls:'*',t:'1 action',r:'—',c:'—',d:'—'});
+ el('hbLine').value='';applyHB();renderHB();saveState();}
+function renderHB(){el('hbList').innerHTML=['items','feats','spells'].flatMap(k=>hb[k].map((x,i)=>`<span class="tag">${k[0]}: ${x.name||x.n} <a href="#" onclick="hb.${k}.splice(${i},1);applyHB();renderHB();saveState();return false" style="color:#c00">×</a></span>`)).join('')||'<span class="sub">none</span>';}
+function applyHB(){hb.items.forEach(it=>{if(!EQUIPMENT.find(e=>e.name===it.name))EQUIPMENT.push(it);});
+ el('itemList').innerHTML=EQUIPMENT.map(e=>`<option value="${e.name}"></option>`).join('');
+ if(OPTIONS&&OPTIONS.feats)hb.feats.forEach(f=>{if(!OPTIONS.feats.find(x=>(x.n||x)===f.n))OPTIONS.feats.push(f);});
+ el('featList').innerHTML=(OPTIONS&&OPTIONS.feats||[]).map(f=>`<option value="${f.n||f}">`).join('');
+ hb.spells.forEach(s=>{if(!ALLSPELLS.find(x=>x.n===s.n))ALLSPELLS.push(s);});}
+// proficiencies
+const CLASS_PROF={Barbarian:'light/med armor, shields · simple+martial',Bard:'light armor · simple, hand-xbow, longsword, rapier, shortsword · 3 instruments',Cleric:'light/med armor, shields · simple',Druid:'light/med armor + shields (nonmetal) · club, dagger, dart, javelin, mace, qstaff, scimitar, sickle, sling, spear · herbalism kit',Fighter:'all armor, shields · simple+martial',Monk:'simple, shortsword · one artisan/instrument',Paladin:'all armor, shields · simple+martial',Ranger:'light/med armor, shields · simple+martial',Rogue:'light armor · simple, hand-xbow, longsword, rapier, shortsword · thieves\u2019 tools',Sorcerer:'dagger, dart, sling, qstaff, light xbow',Warlock:'light armor · simple',Wizard:'dagger, dart, sling, qstaff, light xbow',Artificer:'light/med armor, shields · simple · thieves\u2019 + artisan tools'};
+const BG_TOOLS={Criminal:"thieves' tools, gaming set",Charlatan:'disguise kit, forgery kit',Spy:"thieves' tools, gaming set",Urchin:"disguise kit, thieves' tools",Entertainer:'disguise kit, instrument',Sailor:"navigator's tools, water vehicles",Soldier:'gaming set, land vehicles',Noble:'gaming set',Hermit:'herbalism kit',Outlander:'instrument','Folk Hero':'artisan tools, land vehicles',Acolyte:'—',Sage:'—'};
+const RACE_LANG={'Yuan-ti Pureblood':'Common, Abyssal, Draconic'};
+function renderProfs(){if(!el('profTags'))return;
+ el('profTags').innerHTML=mclasses.map(m=>`· <b>${m.c}:</b> ${CLASS_PROF[m.c]||'—'}`).join('<br>')
+  +`<br>· <b>Tools (bg):</b> ${BG_TOOLS[el('bgLabel').textContent.split(' (')[0]]||'—'}<br>· <b>Languages:</b> ${RACE_LANG[el('raceLabel').textContent.split(' (')[0]]||'Common + racial'}`;}
+// rules reference
+const RULES_REF=[['Grappling','Contest: your Athletics vs their Athletics or Acrobatics. Speed 0; drag at half speed.'],['Shoving','As grapple — target prone or pushed 5 ft.'],['Falling','1d6 per 10 ft, max 20d6; lands prone.'],['Suffocating','Breath = 1+Con mod min; then Con mod rounds; then 0 HP.'],['Cover','Half +2 · 3/4 +5 · total = untargetable.'],['Opportunity attack','Reaction when a seen creature leaves your reach.'],['Two-weapon fighting','Bonus-action off-hand, light melee only; no stat mod to dmg unless TWF style.'],['Ready','Spend your reaction to act on a declared trigger.'],['Help','Ally gets advantage on their next check/attack vs a target within 5 ft of you.'],['Dodge / Disengage / Dash','Disadv on attacks vs you + adv Dex saves · no opportunity attacks · double movement.'],['Unseen attackers','You hit unseen targets at disadvantage; hidden attackers get advantage on you.'],['Underwater','Melee disadv unless dagger/javelin/shortsword/spear/trident/piercing or swim speed.'],['Concentration','DC 10-or-half Con save on damage; ends on incap or a second conc spell.'],['Death saves','DC 10 flat; 3 pass = stable, 3 fail = dead; nat 20 = up at 1 HP; nat 1 = two fails; hit at 0 HP = auto fail.'],['Short rest','1 hr; spend hit dice to heal; pact magic recharges.'],['Long rest','8 hr; full HP; half your hit dice back; once per 24 hr.'],['Exhaustion','1 disadv checks · 2 half speed · 3 disadv attacks+saves · 4 half HP · 5 speed 0 · 6 dead.'],['Attunement','Max 3 items; a short rest focused on the item.'],['Ritual casting','+10 min, no slot spent; needs ritual tag + a class that rituals.'],['Surprise','Compare Stealth vs passive Perception; surprised creatures skip turn 1 and can\u2019t react.'],['Flanking (variant)','Advantage when you and an ally are on opposite sides.'],['Squeezing','Half speed; disadv on attacks and Dex saves; attacks vs you have advantage.'],['Mounted','Controlled mount shares your initiative, only Dash/Disengage/Dodge.']];
+function renderRules(){const q=(el('ruleQ').value||'').toLowerCase();
+ el('ruleList').innerHTML=RULES_REF.filter(r=>!q||r[0].toLowerCase().includes(q)||r[1].toLowerCase().includes(q)).map(r=>`<div style="margin:4px 0"><b>${r[0]}:</b> ${r[1]}</div>`).join('')||'No match.';}
+// dice stats
+function updateDiceStats(){el('diceStats').textContent=dstat.n?`${dstat.n} rolls · avg ${(dstat.sum/dstat.n).toFixed(1)} · ${dstat.c20}×20 · ${dstat.c1}×1`:'';}
+// feature reminders
+const REMIND={"Hunter's Mark":'tip — move it to a new target as a bonus action; +1d6 per hit','Ensnaring Strike':'tip — Str save each turn to escape','Spike Growth':'tip — 2d4 per 5 ft moved inside','Zephyr Strike':'tip — adv on one attack this turn; move without OAs','Pass without Trace':'tip — +10 Stealth to everyone within 30 ft — tell the party','Silence':'tip — no verbal spellcasting inside','Absorb Elements':'tip — +1d6 of that element on your next melee hit','Conjure Animals':'tip — you pick the CR, the DM picks the beast'};
+
 // ================= PERSISTENCE =================
 const STORE_KEY='dnd5e-sheet-v2';
 let store=JSON.parse(localStorage.getItem(STORE_KEY)||'{"current":"Efferey Jepstein","chars":{}}');
@@ -1071,6 +1213,7 @@ function collectState(){
  s._spent={};document.querySelectorAll('.slot-pip.spent').forEach(p=>{const i=p.dataset.pslot!==undefined?'p'+p.dataset.pslot:p.dataset.slot;s._spent[i]=(s._spent[i]||0)+1;});
  s._inv=inv;s._known=knownSpells;s._res=resources;s._atk=customAtk;
  s._mclasses=mclasses;s._hd=hdSpent;s._feats=feats;s._init={o:initOrder,i:initIdx};s._mob=mobBook;
+ s._macros=macros;s._sup=supplies;s._hb=hb;s._dstat=dstat;s._snaps=snaps;s._turn={u:turnUse,r:roundN};s._ws=wsSel;
  s._cls=baseCls();s._variant=mclasses[0].v||'';
  s._race=el('raceLabel').textContent;s._bg=el('bgLabel').textContent;s._align=el('alignLabel').textContent;
  s._bio=el('bio').textContent;
@@ -1098,7 +1241,10 @@ function applyState(s){
  if(s._bio)el('bio').textContent=s._bio;
  inv=s._inv||inv;knownSpells=s._known||{};
  resources=s._res||resources;customAtk=s._atk||customAtk;
- renderRes();renderAtkCustom();
+ macros=s._macros||[];supplies=s._sup||[];hb=s._hb||hb;dstat=s._dstat||dstat;snaps=s._snaps||{};
+ if(s._turn){turnUse=s._turn.u||{a:0,b:0,r:0};roundN=s._turn.r||0;}
+ if(s._ws)wsSel=s._ws;
+ renderRes();renderAtkCustom();renderMacros();renderSup();applyHB();renderHB();updateDiceStats();renderTurn();
  suggestionUsed=!!s._sugg;el('suggBtn').disabled=suggestionUsed;
  rebuild();
  (s._skills||[]).forEach((v,i)=>{const c=document.querySelectorAll('.skillProf')[i];if(c)c.checked=v;});
@@ -1317,6 +1463,7 @@ async function loadRemote(){
   ]);
   EQUIPMENT=eq;
   el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}"></option>`).join('');
+  ALLBEASTS=mo.filter(m=>m.type==='beast');
   MONSTERS=mo.filter(m=>m.type==='beast'&&m.challenge_rating<=0.25&&['Tiny','Small','Medium'].includes(m.size));
   el('compPick').innerHTML='<option value="">Acosta (Constrictor Snake)</option>'+MONSTERS.map(m=>`<option value="${m.index}">${m.name} (CR ${m.challenge_rating})</option>`).join('');
   const CL2A={'Bard':'Brd','Cleric':'Clr','Druid':'Drd','Paladin':'Pal','Ranger':'Ran','Sorcerer':'Sor','Warlock':'War','Wizard':'Wiz'};
@@ -1341,6 +1488,7 @@ async function loadRemote(){
   });
   SUBFEATS=sf||{};
   registerVariants();renderClassRows();
+  if(wsSel)pickWS(wsSel);
   el('featList').innerHTML=(OPTIONS&&OPTIONS.feats||[]).map(f=>`<option value="${f.n||f}">`).join('');
   populateNC();
   rebuild();
@@ -1356,6 +1504,8 @@ renderFeats();
 renderAtkCustom();
 renderRes();
 el('pbBtns').innerHTML=STAT_ORDER.map(s=>`${s.toUpperCase()} <button onclick="pbBump('${s}',-1)">−</button><button onclick="pbBump('${s}',1)">+</button>`).join(' ');
+el('sumSel').innerHTML=Object.keys(SUMMONS).map(n=>`<option>${n}</option>`).join('');
+renderSummon();renderRules();renderMacros();renderSup();updateDiceStats();renderTurn();renderProfs();
 if(store.chars[curChar])applyState(store.chars[curChar]);
 rebuild();renderCoins();loadRemote();
 if(GH_PAT)pullAll();
