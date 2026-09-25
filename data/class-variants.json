@@ -1,0 +1,299 @@
+{
+ "note": "Alternate class rules (UA playtest etc). Features are summarized approximations, not official text.",
+ "Ranger": [
+  {
+   "n": "Ranger (Revised UA)",
+   "hitDie": 10,
+   "caster": "half",
+   "spellStat": "wis",
+   "src": "UA 2016",
+   "features": {
+    "1": [
+     "Favored Enemy (adv. initiative & Survival to track them; +2 dmg)",
+     "Natural Explorer \u2014 works in ANY terrain"
+    ],
+    "2": [
+     "Fighting Style",
+     "Fleet of Foot (+10 ft while moving)",
+     "Primeval Awareness",
+     "Spellcasting"
+    ],
+    "3": [
+     "Ranger Conclave \u2014 Beast Conclave: companion adds your prof bonus to AC/attacks/damage/saves/skills; HP = normal max or 4\u00d7 ranger lvl; acts on your initiative"
+    ],
+    "4": [
+     "Ability Score Improvement"
+    ],
+    "5": [
+     "Conclave feature",
+     "Extra Attack"
+    ],
+    "6": [
+     "Greater Favored Enemy (+4 dmg vs favored enemies)"
+    ],
+    "7": [
+     "Conclave feature"
+    ],
+    "8": [
+     "Ability Score Improvement",
+     "Land's Stride"
+    ],
+    "9": [
+     "\u2014 (spell slots improve)"
+    ],
+    "10": [
+     "Conclave feature",
+     "Hide in Plain Sight"
+    ],
+    "11": [
+     "Conclave feature"
+    ],
+    "12": [
+     "Ability Score Improvement"
+    ],
+    "13": [
+     "\u2014 (spell slots improve)"
+    ],
+    "14": [
+     "Vanish"
+    ],
+    "15": [
+     "Conclave feature"
+    ],
+    "16": [
+     "Ability Score Improvement"
+    ],
+    "17": [
+     "\u2014 (spell slots improve)"
+    ],
+    "18": [
+     "Feral Senses"
+    ],
+    "19": [
+     "Ability Score Improvement"
+    ],
+    "20": [
+     "Foe Slayer"
+    ]
+   }
+  },
+  {
+   "n": "Ranger (Spell-less UA)",
+   "hitDie": 10,
+   "caster": "none",
+   "src": "UA Modifying Classes",
+   "features": {
+    "1": [
+     "Favored Enemy: Fiends",
+     "Natural Explorer: Desert"
+    ],
+    "2": [
+     "Fighting Style",
+     "Poultices & Natural Remedies (UA 'Modifying Classes': replaces Spellcasting \u2014 mundane healing/poisons)"
+    ],
+    "3": [
+     "Ranger Archetype: Beast Master \u2014 Ranger's Companion (Acosta)",
+     "Primeval Awareness"
+    ],
+    "4": [
+     "Ability Score Improvement"
+    ],
+    "5": [
+     "Extra Attack"
+    ],
+    "6": [
+     "Greater Favored Enemy",
+     "Natural Explorer improvement"
+    ],
+    "7": [
+     "Beast Master: Exceptional Training"
+    ],
+    "8": [
+     "Ability Score Improvement",
+     "Land's Stride"
+    ],
+    "9": [
+     "\u2014"
+    ],
+    "10": [
+     "Hide in Plain Sight",
+     "Natural Explorer improvement"
+    ],
+    "11": [
+     "Beast Master: Bestial Fury"
+    ],
+    "12": [
+     "Ability Score Improvement"
+    ],
+    "13": [
+     "\u2014"
+    ],
+    "14": [
+     "Vanish",
+     "Favored Enemy improvement"
+    ],
+    "15": [
+     "Beast Master: Share Spells \u2192 Extra poultices"
+    ],
+    "16": [
+     "Ability Score Improvement"
+    ],
+    "17": [
+     "\u2014"
+    ],
+    "18": [
+     "Feral Senses"
+    ],
+    "19": [
+     "Ability Score Improvement"
+    ],
+    "20": [
+     "Foe Slayer"
+    ]
+   }
+  }
+ ],
+ "Artificer": [
+  {
+   "n": "Artificer (UA 2019)",
+   "hitDie": 8,
+   "caster": "half",
+   "spellStat": "int",
+   "src": "UA",
+   "features": {
+    "1": [
+     "Spellcasting",
+     "Magical Tinkering"
+    ],
+    "2": [
+     "Infuse Item"
+    ],
+    "3": [
+     "Artificer Specialist",
+     "The Right Tool for the Job"
+    ],
+    "4": [
+     "Ability Score Improvement"
+    ],
+    "5": [
+     "Arcane Armament"
+    ],
+    "6": [
+     "Tool Expertise"
+    ],
+    "7": [
+     "\u2014"
+    ],
+    "8": [
+     "Ability Score Improvement"
+    ],
+    "9": [
+     "\u2014"
+    ],
+    "10": [
+     "\u2014"
+    ],
+    "11": [
+     "\u2014"
+    ],
+    "12": [
+     "Ability Score Improvement"
+    ],
+    "13": [
+     "\u2014"
+    ],
+    "14": [
+     "Magic Item Savant"
+    ],
+    "15": [
+     "\u2014"
+    ],
+    "16": [
+     "Ability Score Improvement"
+    ],
+    "17": [
+     "\u2014"
+    ],
+    "18": [
+     "\u2014"
+    ],
+    "19": [
+     "Ability Score Improvement"
+    ],
+    "20": [
+     "Soul of Artifice"
+    ]
+   }
+  },
+  {
+   "n": "Artificer (UA 2017)",
+   "hitDie": 8,
+   "caster": "third",
+   "spellStat": "int",
+   "src": "UA",
+   "features": {
+    "1": [
+     "Magic Item Analysis",
+     "Artificer's Knowledge"
+    ],
+    "2": [
+     "Mechanical Servant (pet construct)"
+    ],
+    "3": [
+     "Artificer Specialist: Alchemist or Gunsmith"
+    ],
+    "4": [
+     "Ability Score Improvement"
+    ],
+    "5": [
+     "\u2014"
+    ],
+    "6": [
+     "Specialist feature"
+    ],
+    "7": [
+     "\u2014"
+    ],
+    "8": [
+     "Ability Score Improvement"
+    ],
+    "9": [
+     "\u2014"
+    ],
+    "10": [
+     "\u2014"
+    ],
+    "11": [
+     "\u2014"
+    ],
+    "12": [
+     "Ability Score Improvement"
+    ],
+    "13": [
+     "\u2014"
+    ],
+    "14": [
+     "Specialist feature"
+    ],
+    "15": [
+     "\u2014"
+    ],
+    "16": [
+     "Ability Score Improvement"
+    ],
+    "17": [
+     "\u2014"
+    ],
+    "18": [
+     "\u2014"
+    ],
+    "19": [
+     "Ability Score Improvement"
+    ],
+    "20": [
+     "\u2014"
+    ]
+   }
+  }
+ ]
+}
