@@ -1,0 +1,1413 @@
+{
+ "Barbarian": {
+  "Berserker": {
+   "3": [
+    "Frenzy"
+   ],
+   "6": [
+    "Mindless Rage"
+   ],
+   "10": [
+    "Intimidating Presence"
+   ],
+   "14": [
+    "Retaliation"
+   ]
+  },
+  "Totem Warrior": {
+   "3": [
+    "Spirit Seeker",
+    "Totem Spirit (Bear/Eagle/Wolf)"
+   ],
+   "6": [
+    "Aspect of the Beast"
+   ],
+   "10": [
+    "Spirit Walker"
+   ],
+   "14": [
+    "Totemic Attunement"
+   ]
+  },
+  "Zealot": {
+   "3": [
+    "Divine Fury",
+    "Warrior of the Gods"
+   ],
+   "6": [
+    "Fanatical Focus"
+   ],
+   "10": [
+    "Zealous Presence"
+   ],
+   "14": [
+    "Rage beyond Death"
+   ]
+  }
+ },
+ "Bard": {
+  "Lore": {
+   "3": [
+    "Bonus Proficiencies",
+    "Cutting Words"
+   ],
+   "6": [
+    "Additional Magical Secrets"
+   ],
+   "14": [
+    "Peerless Skill"
+   ]
+  },
+  "Valor": {
+   "3": [
+    "Combat Inspiration",
+    "Bonus Proficiencies"
+   ],
+   "6": [
+    "Extra Attack"
+   ],
+   "14": [
+    "Battle Magic"
+   ]
+  },
+  "Swords": {
+   "3": [
+    "Blade Flourish",
+    "Bonus Proficiencies"
+   ],
+   "6": [
+    "Extra Attack"
+   ],
+   "14": [
+    "Master's Flourish"
+   ]
+  },
+  "Whispers": {
+   "3": [
+    "Psychic Blades",
+    "Words of Terror"
+   ],
+   "6": [
+    "Mantle of Whispers"
+   ],
+   "14": [
+    "Shadow Lore"
+   ]
+  },
+  "Glamour": {
+   "3": [
+    "Mantle of Inspiration",
+    "Enthralling Performance"
+   ],
+   "6": [
+    "Mantle of Majesty"
+   ],
+   "14": [
+    "Unbreakable Majesty"
+   ]
+  }
+ },
+ "Cleric": {
+  "Life": {
+   "1": [
+    "Bonus Proficiency",
+    "Disciple of Life"
+   ],
+   "2": [
+    "Channel Divinity: Preserve Life"
+   ],
+   "6": [
+    "Blessed Healer"
+   ],
+   "8": [
+    "Divine Strike"
+   ],
+   "17": [
+    "Supreme Healing"
+   ]
+  },
+  "Light": {
+   "1": [
+    "Light cantrip",
+    "Warding Flare"
+   ],
+   "2": [
+    "Channel Divinity: Radiance of Dawn"
+   ],
+   "6": [
+    "Improved Flare"
+   ],
+   "8": [
+    "Potent Spellcasting"
+   ],
+   "17": [
+    "Corona of Light"
+   ]
+  },
+  "Trickery": {
+   "1": [
+    "Blessing of the Trickster"
+   ],
+   "2": [
+    "Channel Divinity: Invoke Duplicity"
+   ],
+   "6": [
+    "Channel Divinity: Cloak of Shadows"
+   ],
+   "8": [
+    "Divine Strike"
+   ],
+   "17": [
+    "Improved Duplicity"
+   ]
+  },
+  "War": {
+   "1": [
+    "Bonus Proficiencies",
+    "War Priest"
+   ],
+   "2": [
+    "Channel Divinity: Guided Strike"
+   ],
+   "6": [
+    "Channel Divinity: War God's Blessing"
+   ],
+   "8": [
+    "Divine Strike"
+   ],
+   "17": [
+    "Avatar of Battle"
+   ]
+  },
+  "Knowledge": {
+   "1": [
+    "Blessings of Knowledge"
+   ],
+   "2": [
+    "Channel Divinity: Knowledge of the Ages"
+   ],
+   "6": [
+    "Channel Divinity: Read Thoughts"
+   ],
+   "8": [
+    "Potent Spellcasting"
+   ],
+   "17": [
+    "Visions of the Past"
+   ]
+  },
+  "Tempest": {
+   "1": [
+    "Bonus Proficiencies",
+    "Wrath of the Storm"
+   ],
+   "2": [
+    "Channel Divinity: Destructive Wrath"
+   ],
+   "6": [
+    "Thunderbolt Strike"
+   ],
+   "8": [
+    "Divine Strike"
+   ],
+   "17": [
+    "Stormborn"
+   ]
+  },
+  "Nature": {
+   "1": [
+    "Acolyte of Nature",
+    "Bonus Proficiency"
+   ],
+   "2": [
+    "Channel Divinity: Charm Animals"
+   ],
+   "6": [
+    "Dampen Elements"
+   ],
+   "8": [
+    "Divine Strike"
+   ],
+   "17": [
+    "Master of Nature"
+   ]
+  },
+  "Death": {
+   "1": [
+    "Bonus Proficiency",
+    "Reaper"
+   ],
+   "2": [
+    "Channel Divinity: Touch of Death"
+   ],
+   "6": [
+    "Inescapable Destruction"
+   ],
+   "8": [
+    "Divine Strike"
+   ],
+   "17": [
+    "Improved Reaper"
+   ]
+  },
+  "Forge": {
+   "1": [
+    "Bonus Proficiencies",
+    "Blessing of the Forge"
+   ],
+   "2": [
+    "Channel Divinity: Artisan's Blessing"
+   ],
+   "6": [
+    "Soul of the Forge"
+   ],
+   "8": [
+    "Divine Strike"
+   ],
+   "17": [
+    "Saint of Forge and Fire"
+   ]
+  },
+  "Grave": {
+   "1": [
+    "Circle of Mortality",
+    "Eyes of the Grave"
+   ],
+   "2": [
+    "Channel Divinity: Path to the Grave"
+   ],
+   "6": [
+    "Sentinel at Death's Door"
+   ],
+   "8": [
+    "Potent Spellcasting"
+   ],
+   "17": [
+    "Keeper of Souls"
+   ]
+  }
+ },
+ "Druid": {
+  "Land": {
+   "2": [
+    "Bonus Cantrip",
+    "Natural Recovery"
+   ],
+   "6": [
+    "Land's Stride"
+   ],
+   "10": [
+    "Nature's Ward"
+   ],
+   "14": [
+    "Nature's Sanctuary"
+   ]
+  },
+  "Moon": {
+   "2": [
+    "Combat Wild Shape",
+    "Circle Forms"
+   ],
+   "6": [
+    "Primal Strike"
+   ],
+   "10": [
+    "Elemental Wild Shape"
+   ],
+   "14": [
+    "Thousand Forms"
+   ]
+  },
+  "Dreams": {
+   "2": [
+    "Balm of the Summer Court"
+   ],
+   "6": [
+    "Hearth of Moonlight and Shadow"
+   ],
+   "10": [
+    "Hidden Paths"
+   ],
+   "14": [
+    "Walker in Dreams"
+   ]
+  },
+  "Shepherd": {
+   "2": [
+    "Speech of the Woods",
+    "Spirit Totem"
+   ],
+   "6": [
+    "Mighty Summoner"
+   ],
+   "10": [
+    "Guardian Spirit"
+   ],
+   "14": [
+    "Faithful Summons"
+   ]
+  },
+  "Spores": {
+   "2": [
+    "Halo of Spores",
+    "Symbiotic Entity"
+   ],
+   "6": [
+    "Fungal Infestation"
+   ],
+   "10": [
+    "Spreading Spores"
+   ],
+   "14": [
+    "Fungal Body"
+   ]
+  },
+  "Wildfire": {
+   "2": [
+    "Summon Wildfire Spirit"
+   ],
+   "6": [
+    "Enhanced Bond"
+   ],
+   "10": [
+    "Cauterizing Flames"
+   ],
+   "14": [
+    "Blazing Endurance"
+   ]
+  },
+  "Stars": {
+   "2": [
+    "Star Map",
+    "Starry Form"
+   ],
+   "6": [
+    "Cosmic Omen"
+   ],
+   "10": [
+    "Twinkling Constellations"
+   ],
+   "14": [
+    "Full of Stars"
+   ]
+  }
+ },
+ "Fighter": {
+  "Champion": {
+   "3": [
+    "Improved Critical"
+   ],
+   "7": [
+    "Remarkable Athlete"
+   ],
+   "10": [
+    "Additional Fighting Style"
+   ],
+   "15": [
+    "Superior Critical"
+   ],
+   "18": [
+    "Survivor"
+   ]
+  },
+  "Battle Master": {
+   "3": [
+    "Combat Superiority",
+    "Student of War"
+   ],
+   "7": [
+    "Know Your Enemy"
+   ],
+   "10": [
+    "Improved Combat Superiority"
+   ],
+   "15": [
+    "Relentless"
+   ],
+   "18": [
+    "Improved Combat Superiority"
+   ]
+  },
+  "Eldritch Knight": {
+   "3": [
+    "Weapon Bond",
+    "Spellcasting (Wiz/3)"
+   ],
+   "7": [
+    "War Magic"
+   ],
+   "10": [
+    "Eldritch Strike"
+   ],
+   "15": [
+    "Arcane Charge"
+   ],
+   "18": [
+    "Improved War Magic"
+   ]
+  },
+  "Samurai": {
+   "3": [
+    "Bonus Proficiency",
+    "Fighting Spirit"
+   ],
+   "7": [
+    "Elegant Courtier"
+   ],
+   "10": [
+    "Tireless Spirit"
+   ],
+   "15": [
+    "Rapid Strike"
+   ],
+   "18": [
+    "Strength before Death"
+   ]
+  },
+  "Echo Knight": {
+   "3": [
+    "Manifest Echo",
+    "Unleash Incarnation"
+   ],
+   "7": [
+    "Echo Avatar"
+   ],
+   "10": [
+    "Shadow Martyr"
+   ],
+   "15": [
+    "Reclaim Potential"
+   ],
+   "18": [
+    "Legion of One"
+   ]
+  },
+  "Psi Warrior": {
+   "3": [
+    "Psionic Power"
+   ],
+   "7": [
+    "Telekinetic Adept"
+   ],
+   "10": [
+    "Guarded Mind"
+   ],
+   "15": [
+    "Bulwark of Force"
+   ],
+   "18": [
+    "Telekinetic Master"
+   ]
+  }
+ },
+ "Monk": {
+  "Open Hand": {
+   "3": [
+    "Open Hand Technique"
+   ],
+   "6": [
+    "Wholeness of Body"
+   ],
+   "11": [
+    "Tranquility"
+   ],
+   "17": [
+    "Quivering Palm"
+   ]
+  },
+  "Shadow": {
+   "3": [
+    "Shadow Arts"
+   ],
+   "6": [
+    "Shadow Step"
+   ],
+   "11": [
+    "Cloak of Shadows"
+   ],
+   "17": [
+    "Opportunist"
+   ]
+  },
+  "Four Elements": {
+   "3": [
+    "Disciple of the Elements"
+   ],
+   "6": [
+    "Elemental Discipline"
+   ],
+   "11": [
+    "Elemental Discipline"
+   ],
+   "17": [
+    "Elemental Discipline"
+   ]
+  },
+  "Drunken Master": {
+   "3": [
+    "Bonus Proficiencies",
+    "Drunken Technique"
+   ],
+   "6": [
+    "Tipsy Sway"
+   ],
+   "11": [
+    "Drunkard's Luck"
+   ],
+   "17": [
+    "Intoxicated Frenzy"
+   ]
+  },
+  "Kensei": {
+   "3": [
+    "Path of the Kensei"
+   ],
+   "6": [
+    "One with the Blade"
+   ],
+   "11": [
+    "Sharpen the Blade"
+   ],
+   "17": [
+    "Unerring Accuracy"
+   ]
+  },
+  "Mercy": {
+   "3": [
+    "Implements of Mercy",
+    "Hand of Healing/Harm"
+   ],
+   "6": [
+    "Physician's Touch"
+   ],
+   "11": [
+    "Flurry of Healing and Harm"
+   ],
+   "17": [
+    "Hand of Ultimate Mercy"
+   ]
+  },
+  "Astral Self": {
+   "3": [
+    "Arms of the Astral Self"
+   ],
+   "6": [
+    "Visage of the Astral Self"
+   ],
+   "11": [
+    "Body of the Astral Self"
+   ],
+   "17": [
+    "Awakened Astral Self"
+   ]
+  }
+ },
+ "Paladin": {
+  "Devotion": {
+   "3": [
+    "Channel Divinity: Sacred Weapon/Turn Unholy",
+    "Oath spells"
+   ],
+   "7": [
+    "Aura of Devotion"
+   ],
+   "15": [
+    "Purity of Spirit"
+   ],
+   "20": [
+    "Holy Nimbus"
+   ]
+  },
+  "Ancients": {
+   "3": [
+    "Channel Divinity: Nature's Wrath/Turn Faithless",
+    "Oath spells"
+   ],
+   "7": [
+    "Aura of Warding"
+   ],
+   "15": [
+    "Undying Sentinel"
+   ],
+   "20": [
+    "Elder Champion"
+   ]
+  },
+  "Vengeance": {
+   "3": [
+    "Channel Divinity: Abjure Enemy/Vow of Enmity",
+    "Oath spells"
+   ],
+   "7": [
+    "Relentless Avenger"
+   ],
+   "15": [
+    "Soul of Vengeance"
+   ],
+   "20": [
+    "Avenging Angel"
+   ]
+  },
+  "Conquest": {
+   "3": [
+    "Channel Divinity: Conquering Presence/Guided Strike",
+    "Oath spells"
+   ],
+   "7": [
+    "Aura of Conquest"
+   ],
+   "15": [
+    "Scornful Rebuke"
+   ],
+   "20": [
+    "Invincible Conqueror"
+   ]
+  },
+  "Redemption": {
+   "3": [
+    "Channel Divinity: Emissary of Peace/Rebuke Violent",
+    "Oath spells"
+   ],
+   "7": [
+    "Aura of the Guardian"
+   ],
+   "15": [
+    "Protective Spirit"
+   ],
+   "20": [
+    "Emissary of Redemption"
+   ]
+  },
+  "Glory": {
+   "3": [
+    "Channel Divinity: Peerless Athlete/Inspiring Smite",
+    "Oath spells"
+   ],
+   "7": [
+    "Aura of Alacrity"
+   ],
+   "15": [
+    "Glorious Defense"
+   ],
+   "20": [
+    "Living Legend"
+   ]
+  }
+ },
+ "Ranger": {
+  "Hunter": {
+   "3": [
+    "Hunter's Prey"
+   ],
+   "7": [
+    "Defensive Tactics"
+   ],
+   "11": [
+    "Multiattack"
+   ],
+   "15": [
+    "Superior Hunter's Defense"
+   ]
+  },
+  "Beast Master": {
+   "3": [
+    "Ranger's Companion"
+   ],
+   "7": [
+    "Exceptional Training"
+   ],
+   "11": [
+    "Bestial Fury"
+   ],
+   "15": [
+    "Share Spells"
+   ]
+  },
+  "Gloom Stalker": {
+   "3": [
+    "Dread Ambusher",
+    "Umbral Sight"
+   ],
+   "7": [
+    "Iron Mind"
+   ],
+   "11": [
+    "Stalker's Flurry"
+   ],
+   "15": [
+    "Shadowy Dodge"
+   ]
+  },
+  "Horizon Walker": {
+   "3": [
+    "Detect Portal",
+    "Planar Warrior"
+   ],
+   "7": [
+    "Ethereal Step"
+   ],
+   "11": [
+    "Distant Strike"
+   ],
+   "15": [
+    "Spectral Defense"
+   ]
+  },
+  "Monster Slayer": {
+   "3": [
+    "Hunter's Sense",
+    "Slayer's Prey"
+   ],
+   "7": [
+    "Supernatural Defense"
+   ],
+   "11": [
+    "Magic-User's Nemesis"
+   ],
+   "15": [
+    "Slayer's Counter"
+   ]
+  },
+  "Fey Wanderer": {
+   "3": [
+    "Dreadful Strikes",
+    "Fey Wanderer Magic"
+   ],
+   "7": [
+    "Beguiling Twist"
+   ],
+   "11": [
+    "Fey Reinforcements"
+   ],
+   "15": [
+    "Misty Wanderer"
+   ]
+  },
+  "Swarmkeeper": {
+   "3": [
+    "Gathered Swarm",
+    "Swarmkeeper Magic"
+   ],
+   "7": [
+    "Writhing Tide"
+   ],
+   "11": [
+    "Mighty Swarm"
+   ],
+   "15": [
+    "Swarming Dispersal"
+   ]
+  }
+ },
+ "Rogue": {
+  "Thief": {
+   "3": [
+    "Fast Hands",
+    "Second-Story Work"
+   ],
+   "9": [
+    "Supreme Sneak"
+   ],
+   "13": [
+    "Use Magic Device"
+   ],
+   "17": [
+    "Thief's Reflexes"
+   ]
+  },
+  "Assassin": {
+   "3": [
+    "Bonus Proficiencies",
+    "Assassinate"
+   ],
+   "9": [
+    "Infiltration Expertise"
+   ],
+   "13": [
+    "Impostor"
+   ],
+   "17": [
+    "Death Strike"
+   ]
+  },
+  "Arcane Trickster": {
+   "3": [
+    "Mage Hand Legerdemain",
+    "Spellcasting (Wiz/3)"
+   ],
+   "9": [
+    "Magical Ambush"
+   ],
+   "13": [
+    "Versatile Trickster"
+   ],
+   "17": [
+    "Spell Thief"
+   ]
+  },
+  "Swashbuckler": {
+   "3": [
+    "Fancy Footwork",
+    "Rakish Audacity"
+   ],
+   "9": [
+    "Panache"
+   ],
+   "13": [
+    "Elegant Maneuver"
+   ],
+   "17": [
+    "Master Duelist"
+   ]
+  },
+  "Inquisitive": {
+   "3": [
+    "Ear for Deceit",
+    "Eye for Detail",
+    "Insightful Fighting"
+   ],
+   "9": [
+    "Steady Eye"
+   ],
+   "13": [
+    "Unerring Eye"
+   ],
+   "17": [
+    "Eye for Weakness"
+   ]
+  },
+  "Scout (UA)": {
+   "3": [
+    "Skirmisher",
+    "Survivalist"
+   ],
+   "9": [
+    "Superior Mobility"
+   ],
+   "13": [
+    "Ambush Master"
+   ],
+   "17": [
+    "Sudden Strike"
+   ]
+  },
+  "Soulknife": {
+   "3": [
+    "Psionic Power",
+    "Psychic Blades"
+   ],
+   "9": [
+    "Soul Blades"
+   ],
+   "13": [
+    "Psychic Veil"
+   ],
+   "17": [
+    "Rend Mind"
+   ]
+  },
+  "Phantom": {
+   "3": [
+    "Whispers of the Dead",
+    "Wails from the Grave"
+   ],
+   "9": [
+    "Tokens of the Departed"
+   ],
+   "13": [
+    "Ghost Walk"
+   ],
+   "17": [
+    "Death's Friend"
+   ]
+  }
+ },
+ "Sorcerer": {
+  "Draconic Bloodline": {
+   "1": [
+    "Dragon Ancestor",
+    "Draconic Resilience"
+   ],
+   "6": [
+    "Elemental Affinity"
+   ],
+   "14": [
+    "Dragon Wings"
+   ],
+   "18": [
+    "Draconic Presence"
+   ]
+  },
+  "Wild Magic": {
+   "1": [
+    "Wild Magic Surge",
+    "Tides of Chaos"
+   ],
+   "6": [
+    "Bend Luck"
+   ],
+   "14": [
+    "Controlled Chaos"
+   ],
+   "18": [
+    "Spell Bombardment"
+   ]
+  },
+  "Divine Soul": {
+   "1": [
+    "Divine Magic",
+    "Favored by the Gods"
+   ],
+   "6": [
+    "Empowered Healing"
+   ],
+   "14": [
+    "Otherworldly Wings"
+   ],
+   "18": [
+    "Unearthly Recovery"
+   ]
+  },
+  "Shadow Magic": {
+   "1": [
+    "Eyes of the Dark",
+    "Strength of the Grave"
+   ],
+   "3": [
+    "Darkness spell",
+    "Hound of Ill Omen"
+   ],
+   "6": [
+    "Shadow Walk"
+   ],
+   "14": [
+    "Shadow Form"
+   ],
+   "18": [
+    "Umbral Form"
+   ]
+  },
+  "Storm Sorcery": {
+   "1": [
+    "Wind Speaker",
+    "Tempestuous Magic"
+   ],
+   "6": [
+    "Heart of the Storm",
+    "Storm Guide"
+   ],
+   "14": [
+    "Storm's Fury"
+   ],
+   "18": [
+    "Wind Soul"
+   ]
+  },
+  "Aberrant Mind": {
+   "1": [
+    "Psionic Spells",
+    "Telepathic Speech"
+   ],
+   "6": [
+    "Psionic Sorcery",
+    "Psychic Defenses"
+   ],
+   "14": [
+    "Revelation in Flesh"
+   ],
+   "18": [
+    "Warping Implosion"
+   ]
+  },
+  "Clockwork Soul": {
+   "1": [
+    "Clockwork Magic",
+    "Restore Balance"
+   ],
+   "6": [
+    "Bastion of Law"
+   ],
+   "14": [
+    "Trance of Order"
+   ],
+   "18": [
+    "Clockwork Cavalcade"
+   ]
+  }
+ },
+ "Warlock": {
+  "Archfey": {
+   "1": [
+    "Expanded spells",
+    "Fey Presence"
+   ],
+   "6": [
+    "Misty Escape"
+   ],
+   "10": [
+    "Beguiling Defenses"
+   ],
+   "14": [
+    "Dark Delirium"
+   ]
+  },
+  "Fiend": {
+   "1": [
+    "Expanded spells",
+    "Dark One's Blessing"
+   ],
+   "6": [
+    "Dark One's Own Luck"
+   ],
+   "10": [
+    "Fiendish Resilience"
+   ],
+   "14": [
+    "Hurl Through Hell"
+   ]
+  },
+  "Great Old One": {
+   "1": [
+    "Expanded spells",
+    "Awakened Mind"
+   ],
+   "6": [
+    "Entropic Ward"
+   ],
+   "10": [
+    "Thought Shield"
+   ],
+   "14": [
+    "Create Thrall"
+   ]
+  },
+  "Hexblade": {
+   "1": [
+    "Expanded spells",
+    "Hexblade's Curse",
+    "Hex Warrior"
+   ],
+   "6": [
+    "Accursed Specter"
+   ],
+   "10": [
+    "Armor of Hexes"
+   ],
+   "14": [
+    "Master of Hexes"
+   ]
+  },
+  "Celestial": {
+   "1": [
+    "Expanded spells",
+    "Bonus cantrips",
+    "Healing Light"
+   ],
+   "6": [
+    "Radiant Soul"
+   ],
+   "10": [
+    "Celestial Resilience"
+   ],
+   "14": [
+    "Searing Vengeance"
+   ]
+  },
+  "Fathomless": {
+   "1": [
+    "Expanded spells",
+    "Tentacle of the Deeps",
+    "Gift of the Sea"
+   ],
+   "6": [
+    "Oceanic Soul",
+    "Grip of the Deep"
+   ],
+   "10": [
+    "Fathomless Plunge"
+   ],
+   "14": [
+    "Deep Pact"
+   ]
+  },
+  "Genie": {
+   "1": [
+    "Expanded spells",
+    "Genie's Vessel"
+   ],
+   "6": [
+    "Elemental Gift"
+   ],
+   "10": [
+    "Sanctuary Vessel"
+   ],
+   "14": [
+    "Limited Wish"
+   ]
+  }
+ },
+ "Wizard": {
+  "Abjuration": {
+   "2": [
+    "Abjuration Savant",
+    "Arcane Ward"
+   ],
+   "6": [
+    "Projected Ward"
+   ],
+   "10": [
+    "Improved Abjuration"
+   ],
+   "14": [
+    "Spell Resistance"
+   ]
+  },
+  "Conjuration": {
+   "2": [
+    "Conjuration Savant",
+    "Minor Conjuration"
+   ],
+   "6": [
+    "Benign Transposition"
+   ],
+   "10": [
+    "Focused Conjuration"
+   ],
+   "14": [
+    "Durable Summons"
+   ]
+  },
+  "Divination": {
+   "2": [
+    "Divination Savant",
+    "Portent"
+   ],
+   "6": [
+    "Expert Divination"
+   ],
+   "10": [
+    "Third Eye"
+   ],
+   "14": [
+    "Greater Portent"
+   ]
+  },
+  "Enchantment": {
+   "2": [
+    "Enchantment Savant",
+    "Hypnotic Gaze"
+   ],
+   "6": [
+    "Instinctive Charm"
+   ],
+   "10": [
+    "Split Enchantment"
+   ],
+   "14": [
+    "Alter Memories"
+   ]
+  },
+  "Evocation": {
+   "2": [
+    "Evocation Savant",
+    "Sculpt Spells"
+   ],
+   "6": [
+    "Potent Cantrip"
+   ],
+   "10": [
+    "Empowered Evocation"
+   ],
+   "14": [
+    "Overchannel"
+   ]
+  },
+  "Illusion": {
+   "2": [
+    "Illusion Savant",
+    "Improved Minor Illusion"
+   ],
+   "6": [
+    "Malleable Illusions"
+   ],
+   "10": [
+    "Illusory Self"
+   ],
+   "14": [
+    "Illusory Reality"
+   ]
+  },
+  "Necromancy": {
+   "2": [
+    "Necromancy Savant",
+    "Grim Harvest"
+   ],
+   "6": [
+    "Undead Thralls"
+   ],
+   "10": [
+    "Inured to Undeath"
+   ],
+   "14": [
+    "Command Undead"
+   ]
+  },
+  "Transmutation": {
+   "2": [
+    "Transmutation Savant",
+    "Minor Alchemy"
+   ],
+   "6": [
+    "Transmuter's Stone"
+   ],
+   "10": [
+    "Shapechanger"
+   ],
+   "14": [
+    "Master Transmuter"
+   ]
+  },
+  "War Magic": {
+   "2": [
+    "War Magic Savant",
+    "Arcane Deflection",
+    "Tactical Wit"
+   ],
+   "6": [
+    "Power Surge"
+   ],
+   "10": [
+    "Durable Magic"
+   ],
+   "14": [
+    "Deflecting Shroud"
+   ]
+  },
+  "Bladesinging": {
+   "2": [
+    "Bladesong",
+    "Bonus Proficiencies"
+   ],
+   "6": [
+    "Extra Attack"
+   ],
+   "10": [
+    "Song of Defense"
+   ],
+   "14": [
+    "Song of Victory"
+   ]
+  },
+  "Chronurgy": {
+   "2": [
+    "Chronal Shift",
+    "Temporal Awareness"
+   ],
+   "6": [
+    "Momentary Stasis"
+   ],
+   "10": [
+    "Arcane Abeyance"
+   ],
+   "14": [
+    "Convergent Future"
+   ]
+  },
+  "Graviturgy": {
+   "2": [
+    "Adjust Density"
+   ],
+   "6": [
+    "Gravity Well"
+   ],
+   "10": [
+    "Violent Attraction"
+   ],
+   "14": [
+    "Event Horizon"
+   ]
+  },
+  "Order of Scribes": {
+   "2": [
+    "Wizardly Quill",
+    "Awakened Spellbook"
+   ],
+   "6": [
+    "Manifest Mind"
+   ],
+   "10": [
+    "Master Scrivener"
+   ],
+   "14": [
+    "One with the Word"
+   ]
+  }
+ },
+ "Artificer": {
+  "Alchemist": {
+   "3": [
+    "Tool Proficiency",
+    "Alchemist spells",
+    "Experimental Elixir"
+   ],
+   "5": [
+    "Alchemical Savant"
+   ],
+   "9": [
+    "Restorative Reagents"
+   ],
+   "15": [
+    "Chemical Mastery"
+   ]
+  },
+  "Artillerist": {
+   "3": [
+    "Tool Proficiency",
+    "Artillerist spells",
+    "Eldritch Cannon"
+   ],
+   "5": [
+    "Arcane Firearm"
+   ],
+   "9": [
+    "Explosive Cannon"
+   ],
+   "15": [
+    "Fortified Position"
+   ]
+  },
+  "Battle Smith": {
+   "3": [
+    "Tool Proficiency",
+    "Battle Smith spells",
+    "Battle Ready",
+    "Steel Defender"
+   ],
+   "5": [
+    "Extra Attack"
+   ],
+   "9": [
+    "Arcane Jolt"
+   ],
+   "15": [
+    "Improved Defender"
+   ]
+  },
+  "Armorer": {
+   "3": [
+    "Tool Proficiency",
+    "Armorer spells",
+    "Power Armor"
+   ],
+   "5": [
+    "Extra Attack"
+   ],
+   "9": [
+    "Armor Modifications"
+   ],
+   "15": [
+    "Perfected Armor"
+   ]
+  }
+ }
+}
