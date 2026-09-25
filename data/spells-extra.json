@@ -1,0 +1,1280 @@
+[
+ {
+  "n": "Booming Blade",
+  "l": 0,
+  "cls": "Sor/War/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "1 round",
+  "conc": 0,
+  "rit": 0,
+  "src": "SCAG/TCE",
+  "desc": "Melee weapon hit; if target moves, takes 1d8 thunder (scales).",
+  "dx": [
+   8,
+   0
+  ],
+  "atk": 1
+ },
+ {
+  "n": "Green-Flame Blade",
+  "l": 0,
+  "cls": "Sor/War/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Instant",
+  "conc": 0,
+  "rit": 0,
+  "src": "SCAG/TCE",
+  "desc": "Melee hit + fire leaps to adjacent foe (1d8+mod, scales).",
+  "dx": [
+   8,
+   0
+  ],
+  "atk": 1
+ },
+ {
+  "n": "Lightning Lure",
+  "l": 0,
+  "cls": "Sor/War/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "15 ft",
+  "d": "Instant",
+  "conc": 0,
+  "rit": 0,
+  "src": "SCAG/TCE",
+  "desc": "Str save or pulled 10 ft + 1d8 lightning (scales)."
+ },
+ {
+  "n": "Sword Burst",
+  "l": 0,
+  "cls": "Sor/War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "5 ft",
+  "d": "Instant",
+  "conc": 0,
+  "rit": 0,
+  "src": "SCAG/TCE",
+  "desc": "All adjacent creatures: Dex save or 1d6 force (scales)."
+ },
+ {
+  "n": "Control Flames",
+  "l": 0,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Shape/extinguish small flames."
+ },
+ {
+  "n": "Create Bonfire",
+  "l": 0,
+  "cls": "Dru/Sor/War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "5-ft bonfire: Dex save or 1d8 fire (scales)."
+ },
+ {
+  "n": "Frostbite",
+  "l": 0,
+  "cls": "Dru/Sor/War/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Con save or 1d6 cold + dis on next attack (scales)."
+ },
+ {
+  "n": "Gust",
+  "l": 0,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Push creature/object with wind."
+ },
+ {
+  "n": "Infestation",
+  "l": 0,
+  "cls": "Dru/Sor/War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Con save or 1d6 poison, moves 5 ft random (scales)."
+ },
+ {
+  "n": "Magic Stone",
+  "l": 0,
+  "cls": "Dru/War",
+  "s": "Transmutation",
+  "t": "1 bonus action",
+  "r": "Touch",
+  "d": "1 min",
+  "src": "XGE",
+  "desc": "3 stones: ranged spell attack 1d6+mod (scales)."
+ },
+ {
+  "n": "Mold Earth",
+  "l": 0,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Shape loose earth; difficult terrain/shapes."
+ },
+ {
+  "n": "Primal Savagery",
+  "l": 0,
+  "cls": "Dru",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Claw melee spell attack, 1d10 acid (scales).",
+  "dx": [
+   10,
+   0
+  ],
+  "atk": 1
+ },
+ {
+  "n": "Shape Water",
+  "l": 0,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Shape/freeze/animate water."
+ },
+ {
+  "n": "Thunderclap",
+  "l": 0,
+  "cls": "Bard/Dru/Sor/War/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "5 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "All in 5 ft: Con save or 1d6 thunder (scales)."
+ },
+ {
+  "n": "Toll the Dead",
+  "l": 0,
+  "cls": "Clr/War/Wiz",
+  "s": "Necromancy",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Wis save or 1d8 necrotic (1d12 if damaged; scales)."
+ },
+ {
+  "n": "Catapult",
+  "l": 1,
+  "cls": "Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Hurl object: Dex save or 3d8 bludgeon.",
+  "dx": [
+   8,
+   3
+  ]
+ },
+ {
+  "n": "Cause Fear",
+  "l": 1,
+  "cls": "War/Wiz",
+  "s": "Necromancy",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Wis save or frightened; +1 target/slot."
+ },
+ {
+  "n": "Ceremony",
+  "l": 1,
+  "cls": "Clr/Pal",
+  "s": "Abjuration",
+  "t": "1 hour",
+  "r": "Touch",
+  "d": "Instant",
+  "rit": 1,
+  "src": "XGE",
+  "desc": "Ritual blessing (marriage rites exist \u2014 legally binding in Hell?)."
+ },
+ {
+  "n": "Chaos Bolt",
+  "l": 1,
+  "cls": "Sor",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "2d8+1d6 random-type damage; doubles = chain.",
+  "dx": [
+   8,
+   2
+  ],
+  "atk": 1
+ },
+ {
+  "n": "Earth Tremor",
+  "l": 1,
+  "cls": "Bard/Dru/Sor/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "10 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Dex save or 1d6 bludgeon + prone; +1d6/slot."
+ },
+ {
+  "n": "Ice Knife",
+  "l": 1,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "1d10 pierce on hit, then 2d6 cold AoE Dex save.",
+  "atk": 1
+ },
+ {
+  "n": "Aganazzar's Scorcher",
+  "l": 2,
+  "cls": "Sor/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "30-ft line: Dex save or 3d8 fire.",
+  "dx": [
+   8,
+   3
+  ]
+ },
+ {
+  "n": "Dragon's Breath",
+  "l": 2,
+  "cls": "Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 bonus action",
+  "r": "Touch",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Target exhales 3d6 elemental cone each turn.",
+  "dx": [
+   6,
+   3
+  ]
+ },
+ {
+  "n": "Dust Devil",
+  "l": 2,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "5-ft cube air elemental pushes creatures (Str save 1d8)."
+ },
+ {
+  "n": "Earthbind",
+  "l": 2,
+  "cls": "Dru/Sor/War/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "300 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Str save or flying creature falls; no flying."
+ },
+ {
+  "n": "Maximilian's Earthen Grasp",
+  "l": 2,
+  "cls": "Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Earth hand: Str save or 2d6 bludgeon + restrained."
+ },
+ {
+  "n": "Mind Spike",
+  "l": 2,
+  "cls": "Sor/War/Wiz",
+  "s": "Divination",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Wis save 3d8 psychic; you know its location.",
+  "dx": [
+   8,
+   3
+  ]
+ },
+ {
+  "n": "Pyrotechnics",
+  "l": 2,
+  "cls": "Bard/Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Fire source becomes fireworks or smoke cloud."
+ },
+ {
+  "n": "Shadow Blade",
+  "l": 2,
+  "cls": "Sor/War/Wiz",
+  "s": "Illusion",
+  "t": "1 bonus action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Conjure blade: 2d8 psychic melee, finesse, adv in dim/dark.",
+  "dx": [
+   8,
+   2
+  ]
+ },
+ {
+  "n": "Skywrite",
+  "l": 2,
+  "cls": "Bard/Dru/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "Sight",
+  "d": "Conc, 1 hr",
+  "rit": 1,
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Write a message in clouds."
+ },
+ {
+  "n": "Snilloc's Snowball Swarm",
+  "l": 2,
+  "cls": "Sor/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "5-ft radius: Dex save or 3d6 cold.",
+  "dx": [
+   6,
+   3
+  ]
+ },
+ {
+  "n": "Warding Wind",
+  "l": 2,
+  "cls": "Bard/Dru/Sor/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Wind aura: deafens, difficult terrain, deflects projectiles."
+ },
+ {
+  "n": "Catnap",
+  "l": 3,
+  "cls": "Bard/Sor/Wiz",
+  "s": "Enchantment",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "10 min",
+  "src": "XGE",
+  "desc": "3 creatures get a short rest's benefit in 10 min."
+ },
+ {
+  "n": "Enemies Abound",
+  "l": 3,
+  "cls": "Sor/War/Wiz",
+  "s": "Enchantment",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Int save or creature treats all as enemies."
+ },
+ {
+  "n": "Erupting Earth",
+  "l": 3,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "20-ft cube: Dex save or 3d12 bludgeon + difficult terrain.",
+  "dx": [
+   12,
+   3
+  ]
+ },
+ {
+  "n": "Life Transference",
+  "l": 3,
+  "cls": "Clr/Wiz",
+  "s": "Necromancy",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Take 4d8 necrotic; heal another creature for 2\u00d7."
+ },
+ {
+  "n": "Melf's Minute Meteors",
+  "l": 3,
+  "cls": "Sor/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "6 meteors, each 2d6 fire AoE (Dex save)."
+ },
+ {
+  "n": "Summon Lesser Demons",
+  "l": 3,
+  "cls": "War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Summon hostile demons; they attack nearest \u2014 risky in Hell."
+ },
+ {
+  "n": "Tidal Wave",
+  "l": 3,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "30-ft wave: Dex save 4d8 bludgeon + prone.",
+  "dx": [
+   8,
+   4
+  ]
+ },
+ {
+  "n": "Tiny Servant",
+  "l": 3,
+  "cls": "Wiz",
+  "s": "Transmutation",
+  "t": "1 min",
+  "r": "Touch",
+  "d": "8 hours",
+  "src": "XGE",
+  "desc": "Animate a Tiny object as a servant."
+ },
+ {
+  "n": "Wall of Sand",
+  "l": 3,
+  "cls": "Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "30-ft sand wall: blinds, difficult terrain."
+ },
+ {
+  "n": "Wall of Water",
+  "l": 3,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Water wall: adv/dis vs fire, difficult terrain, cold damage risks freezing it."
+ },
+ {
+  "n": "Charm Monster",
+  "l": 4,
+  "cls": "Bard/Dru/Sor/War/Wiz",
+  "s": "Enchantment",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "1 hour",
+  "src": "XGE",
+  "desc": "Wis save or any creature charmed (adv if you're fighting it)."
+ },
+ {
+  "n": "Elemental Bane",
+  "l": 4,
+  "cls": "Dru/War/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Strip energy resistance; +2d6 of that type when hit.",
+  "dx": [
+   6,
+   2
+  ]
+ },
+ {
+  "n": "Find Greater Steed",
+  "l": 4,
+  "cls": "Pal",
+  "s": "Conjuration",
+  "t": "10 min",
+  "r": "30 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Summon griffon/pegasus/etc as bonded mount."
+ },
+ {
+  "n": "Sickening Radiance",
+  "l": 4,
+  "cls": "Sor/War/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "30-ft radiant light: Con save 4d10 radiant + exhaustion levels."
+ },
+ {
+  "n": "Summon Greater Demon",
+  "l": 4,
+  "cls": "War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Summon demon CR\u22645; control slips on failed saves. Hell-appropriate."
+ },
+ {
+  "n": "Vitriolic Sphere",
+  "l": 4,
+  "cls": "Sor/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "150 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "20-ft radius: Dex save 10d4 acid + 5d4 next turn.",
+  "dx": [
+   4,
+   10
+  ]
+ },
+ {
+  "n": "Watery Sphere",
+  "l": 4,
+  "cls": "Dru/Sor/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Sphere rolls, traps creatures (Str save), can smash them."
+ },
+ {
+  "n": "Danse Macabre",
+  "l": 5,
+  "cls": "War/Wiz",
+  "s": "Necromancy",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Raise up to 5 corpses as zombie/skeleton allies."
+ },
+ {
+  "n": "Dawn",
+  "l": 5,
+  "cls": "Clr/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "30-ft sunlight column: Con save 4d10 radiant each turn."
+ },
+ {
+  "n": "Druid Grove",
+  "l": 5,
+  "cls": "Dru",
+  "s": "Abjuration",
+  "t": "10 min",
+  "r": "Touch",
+  "d": "24 hours",
+  "src": "XGE",
+  "desc": "Ward a grove: alarms, hazards, spies blocked."
+ },
+ {
+  "n": "Enervation",
+  "l": 5,
+  "cls": "Sor/War/Wiz",
+  "s": "Necromancy",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Dex save 4d8 necrotic each turn; heal yourself half.",
+  "dx": [
+   8,
+   4
+  ]
+ },
+ {
+  "n": "Far Step",
+  "l": 5,
+  "cls": "Sor/War/Wiz",
+  "s": "Conjuration",
+  "t": "1 bonus action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Teleport 60 ft each turn as bonus action."
+ },
+ {
+  "n": "Holy Weapon",
+  "l": 5,
+  "cls": "Clr/Pal",
+  "s": "Evocation",
+  "t": "1 bonus action",
+  "r": "Touch",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Weapon: +2d8 radiant per hit; ends with 4d8 AoE burst.",
+  "dx": [
+   8,
+   2
+  ]
+ },
+ {
+  "n": "Infernal Calling",
+  "l": 5,
+  "cls": "War/Wiz",
+  "s": "Conjuration",
+  "t": "1 min",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Summon a devil CR\u22646 that may disobey. He knows devils."
+ },
+ {
+  "n": "Investiture of Flame",
+  "l": 6,
+  "cls": "Dru/Sor/War/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Fire immunity aura + fire line action (4d8)."
+ },
+ {
+  "n": "Investiture of Ice",
+  "l": 6,
+  "cls": "Dru/Sor/War/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Cold/ice powers aura + freezing cone."
+ },
+ {
+  "n": "Investiture of Stone",
+  "l": 6,
+  "cls": "Dru/Sor/War/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Earth powers; bonus-action prone quake."
+ },
+ {
+  "n": "Investiture of Wind",
+  "l": 6,
+  "cls": "Dru/Sor/War/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Fly 60 ft; push/pull creatures with wind."
+ },
+ {
+  "n": "Maelstrom",
+  "l": 5,
+  "cls": "Dru",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "30-ft whirlpool: Str save 6d6 bludgeon + pulled.",
+  "dx": [
+   6,
+   6
+  ]
+ },
+ {
+  "n": "Negative Energy Flood",
+  "l": 5,
+  "cls": "War/Wiz",
+  "s": "Necromancy",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "4d8+30 necrotic to living target, or HP to undead.",
+  "dx": [
+   8,
+   4
+  ]
+ },
+ {
+  "n": "Skill Empowerment",
+  "l": 5,
+  "cls": "Bard/Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "Touch",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Target gains expertise (double prof) in one skill."
+ },
+ {
+  "n": "Synaptic Static",
+  "l": 5,
+  "cls": "Bard/Sor/War/Wiz",
+  "s": "Enchantment",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "20-ft sphere: Int save 8d6 psychic + subtract 1d6 from rolls 1 min."
+ },
+ {
+  "n": "Temple of the Gods",
+  "l": 5,
+  "cls": "Clr",
+  "s": "Conjuration",
+  "t": "1 hour",
+  "r": "120 ft",
+  "d": "1 year",
+  "src": "XGE",
+  "desc": "Create a consecrated temple ward."
+ },
+ {
+  "n": "Transmute Rock",
+  "l": 5,
+  "cls": "Dru/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Rock\u2194mud: restrain creatures or collapse structures."
+ },
+ {
+  "n": "Wall of Light",
+  "l": 5,
+  "cls": "Sor/War/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Light wall: Con save 6d8 radiant + blinded.",
+  "dx": [
+   8,
+   6
+  ]
+ },
+ {
+  "n": "Wrath of Nature",
+  "l": 5,
+  "cls": "Dru/Ran",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Terrain animates: trees/rocks/roots attack foes."
+ },
+ {
+  "n": "Bones of the Earth",
+  "l": 6,
+  "cls": "Dru",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Pillars erupt: Dex save 4d6 bludgeon + restrained."
+ },
+ {
+  "n": "Create Homunculus",
+  "l": 6,
+  "cls": "Wiz",
+  "s": "Transmutation",
+  "t": "1 hour",
+  "r": "Touch",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Craft a telepathic homunculus servant (uses your HP)."
+ },
+ {
+  "n": "Mental Prison",
+  "l": 6,
+  "cls": "Sor/War/Wiz",
+  "s": "Illusion",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Int save: target sees prison; 5d10 psychic if it breaks out.",
+  "dx": [
+   10,
+   5
+  ]
+ },
+ {
+  "n": "Primordial Ward",
+  "l": 6,
+  "cls": "Dru",
+  "s": "Abjuration",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Resistance to elemental damage types; redirect damage to attacker."
+ },
+ {
+  "n": "Scatter",
+  "l": 6,
+  "cls": "Sor/War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Teleport up to 5 creatures to visible points (Wis save)."
+ },
+ {
+  "n": "Soul Cage",
+  "l": 6,
+  "cls": "War/Wiz",
+  "s": "Necromancy",
+  "t": "1 reaction",
+  "r": "60 ft",
+  "d": "8 hours",
+  "src": "XGE",
+  "desc": "Cage a soul on death: gain temp HP, answers questions. Dark."
+ },
+ {
+  "n": "Tenser's Transformation",
+  "l": 6,
+  "cls": "Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Become a melee monster: +50 temp HP, 2d12 weapon hits.",
+  "dx": [
+   12,
+   2
+  ]
+ },
+ {
+  "n": "Crown of Stars",
+  "l": 7,
+  "cls": "Sor/War/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "1 hour",
+  "src": "XGE",
+  "desc": "7 motes orbit; spend one: ranged attack 4d12 radiant.",
+  "dx": [
+   12,
+   4
+  ],
+  "atk": 1
+ },
+ {
+  "n": "Power Word Pain",
+  "l": 7,
+  "cls": "Sor/War/Wiz",
+  "s": "Enchantment",
+  "t": "1 action",
+  "r": "60 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Target \u2264100 HP: crippling pain, limited actions."
+ },
+ {
+  "n": "Whirlwind (XGE is 7th for dru? using core)",
+  "l": 7,
+  "cls": "Dru/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "300 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Controllable whirlwind pulls/hurls creatures."
+ },
+ {
+  "n": "Abi-Dalzim's Horrid Wilting",
+  "l": 8,
+  "cls": "Sor/Wiz",
+  "s": "Necromancy",
+  "t": "1 action",
+  "r": "150 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "30-ft cube: Con save 12d8 necrotic (half: plants worse).",
+  "dx": [
+   8,
+   12
+  ]
+ },
+ {
+  "n": "Maddening Darkness",
+  "l": 8,
+  "cls": "War/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "150 ft",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "60-ft sphere of darkness: 8d8 psychic + madness whispers."
+ },
+ {
+  "n": "Mighty Fortress",
+  "l": 8,
+  "cls": "Wiz",
+  "s": "Conjuration",
+  "t": "1 min",
+  "r": "1 mile",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "Raise a full fortress; permanent if kept weekly."
+ },
+ {
+  "n": "Mass Polymorph",
+  "l": 9,
+  "cls": "Bard/Sor/Wiz",
+  "s": "Transmutation",
+  "t": "1 action",
+  "r": "120 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Up to 10 creatures become beasts of your choice."
+ },
+ {
+  "n": "Psychic Scream",
+  "l": 9,
+  "cls": "Bard/Sor/War/Wiz",
+  "s": "Enchantment",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Instant",
+  "src": "XGE",
+  "desc": "10 creatures: Int save 14d6 psychic + stun.",
+  "dx": [
+   6,
+   14
+  ]
+ },
+ {
+  "n": "Invulnerability",
+  "l": 9,
+  "cls": "Wiz",
+  "s": "Abjuration",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 10 min",
+  "conc": 1,
+  "src": "XGE",
+  "desc": "Immune to all damage."
+ },
+ {
+  "n": "Blade of Disaster",
+  "l": 9,
+  "cls": "Sor/War/Wiz",
+  "s": "Conjuration",
+  "t": "1 bonus action",
+  "r": "60 ft",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Force blade: spell attack 4d12 force, crits on 18+.",
+  "dx": [
+   12,
+   4
+  ],
+  "atk": 1
+ },
+ {
+  "n": "Dream of the Blue Veil",
+  "l": 7,
+  "cls": "Bard/Sor/War/Wiz",
+  "s": "Conjuration",
+  "t": "10 min",
+  "r": "20 ft",
+  "d": "6 hours",
+  "src": "TCE",
+  "desc": "Party travels to another world via dreams."
+ },
+ {
+  "n": "Intellect Fortress",
+  "l": 3,
+  "cls": "Bard/Sor/War/Wiz",
+  "s": "Abjuration",
+  "t": "1 action",
+  "r": "30 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Resistance to psychic + immune to charm/fear inside 30-ft fortress."
+ },
+ {
+  "n": "Spirit Shroud",
+  "l": 3,
+  "cls": "Clr/Pal/War/Wiz",
+  "s": "Necromancy",
+  "t": "1 bonus action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Aura: +1d8 damage on hits within 10 ft; slows foes.",
+  "dx": [
+   8,
+   0
+  ]
+ },
+ {
+  "n": "Summon Aberration",
+  "l": 4,
+  "cls": "War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Aberration spirit fights for you (beholderkin/slaad/star spawn)."
+ },
+ {
+  "n": "Summon Beast",
+  "l": 3,
+  "cls": "Dru/Ran",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Beast spirit (air/land/water) fights for you."
+ },
+ {
+  "n": "Summon Celestial",
+  "l": 5,
+  "cls": "Clr/Pal",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Celestial spirit (avenger/defender) fights for you."
+ },
+ {
+  "n": "Summon Construct",
+  "l": 4,
+  "cls": "Art/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Construct spirit fights for you."
+ },
+ {
+  "n": "Summon Elemental",
+  "l": 4,
+  "cls": "Dru/Ran/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Elemental spirit (air/earth/fire/water) fights for you."
+ },
+ {
+  "n": "Summon Fey",
+  "l": 3,
+  "cls": "Dru/Ran/War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Fey spirit fights for you; teleports and tricks."
+ },
+ {
+  "n": "Summon Fiend",
+  "l": 6,
+  "cls": "War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Fiend spirit (demon/devil/yugoloth) fights for you."
+ },
+ {
+  "n": "Summon Shadowspawn",
+  "l": 3,
+  "cls": "War/Wiz",
+  "s": "Conjuration",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Shadowy horror spirit fights for you; frightens on hit."
+ },
+ {
+  "n": "Summon Undead",
+  "l": 3,
+  "cls": "War/Wiz",
+  "s": "Necromancy",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "Conc, 1 hour",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "Undead spirit (ghostly/skeletal/putrid) fights for you."
+ },
+ {
+  "n": "Tasha's Caustic Brew",
+  "l": 1,
+  "cls": "Art/Sor/Wiz",
+  "s": "Evocation",
+  "t": "1 action",
+  "r": "Self",
+  "d": "Conc, 1 min",
+  "conc": 1,
+  "src": "TCE",
+  "desc": "30-ft line: Dex save or 2d4 acid + ongoing 2d4 until scraped off."
+ },
+ {
+  "n": "Tasha's Mind Whip",
+  "l": 2,
+  "cls": "Sor/Wiz",
+  "s": "Enchantment",
+  "t": "1 action",
+  "r": "90 ft",
+  "d": "1 round",
+  "src": "TCE",
+  "desc": "Int save or 3d6 psychic + only one action/move/bonus next turn.",
+  "dx": [
+   6,
+   3
+  ]
+ },
+ {
+  "n": "Tasha's Otherworldly Guise",
+  "l": 6,
+  "cls": "Sor/War/Wiz",
+  "s": "Transmutation",
+  "t": "1 bonus action",
+  "r": "Self",
+  "d": "1 min",
+  "src": "TCE",
+  "desc": "Gain spirit wings + fiend/celestial traits + 2d6 force or radiant on hits."
+ }
+]
