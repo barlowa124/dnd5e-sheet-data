@@ -56,7 +56,27 @@
   .invw { width:55px; }
   #newChar { border-color:var(--gold); }
   .save-note { color:var(--good); font-size:.8em; }
-  @media (max-width:900px){ .cols-6{grid-template-columns:repeat(3,1fr);} .cols-4,.cols-3,.cols-2{grid-template-columns:1fr;} }
+  .panel { min-width:0; overflow-x:auto; }
+  @media (min-width:1500px){ body{max-width:1700px;} }
+  @media (max-width:1100px){
+    .cols-6{grid-template-columns:repeat(3,1fr);}
+    .cols-4{grid-template-columns:repeat(2,1fr);}
+    .cols-3{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:700px){
+    body{padding:10px;}
+    .cols-6{grid-template-columns:repeat(2,1fr);}
+    .cols-4,.cols-3,.cols-2{grid-template-columns:1fr;}
+    h1{font-size:1.3em;}
+    .panel{padding:10px;}
+    table{font-size:.82em;}
+    .num-in{width:50px;padding:4px;}
+    .ability input{width:48px;font-size:1.1em;}
+    #log{height:110px;}
+    select{max-width:140px;}
+    #classRows span{white-space:normal;}
+  }
+  @media (max-width:420px){ .cols-6{grid-template-columns:repeat(2,1fr);} .ability input{width:42px;} }
 </style>
 </head>
 <body>
@@ -200,6 +220,8 @@
     <h2>Skills</h2>
     <table id="skills"></table>
     <div class="sub" style="margin-top:6px">Expertise (double prof): <input class="txt-in" id="expertise" style="width:180px;display:inline" placeholder="e.g. Stealth, Deception" onchange="recalc();saveState()"></div>
+    <div style="margin-top:6px"><button onclick="toggleSkillPick()">Class skills…</button> <span class="sub" id="skHint"></span></div>
+    <div id="skillPick" style="display:none;margin-top:6px"></div>
     <h2>Feats</h2>
     <div id="featsList"></div>
     <input class="txt-in" id="featPick" list="featList" style="width:170px;display:inline" placeholder="add feat…"><datalist id="featList"></datalist>
@@ -394,6 +416,7 @@ let SRD_SPELLS=[], EQUIPMENT=[], MONSTERS=[], ALLSPELLS=[];
 let compAtk=[{name:'Bite',hit:4,die:6,dv:4,n:1},{name:'Constrict',hit:4,die:8,dv:4,n:1}];
 let customAtk=[];   // [{n:name,h:hitOverrideOrEmpty,d:'2d6+3'}]
 let resources=[];   // [{name,max,used,reset:'S'|'L'|''}]
+let SUBFEATS={};    // subclass -> {level:[features]}
 
 function mod(s){return Math.floor((Number(document.querySelector(`[data-stat="${s}"]`).value)-10)/2);}
 function lvl(){return Math.min(20,Math.max(1,mclasses.reduce((t,m)=>t+(Number(m.l)||0),0)));}
@@ -555,7 +578,10 @@ function rebuild(){
  mclasses.forEach(m=>{
   const en=effName(m);
   html+=`<tr><td colspan="2" style="padding-top:6px"><b>${en}</b></td></tr>`;
-  for(let i=1;i<=20;i++){const u=i<=m.l;html+=`<tr class="${u?'':'locked'}"><td style="width:40px">L${i}</td><td class="${i===m.l?'newfeat':''}">${featuresFor(en,i).join(', ')||'—'}</td></tr>`;}
+  for(let i=1;i<=20;i++){const u=i<=m.l;
+   const sf=((SUBFEATS[m.c]||{})[m.s||'']||{})[i]||[];
+   const fl=featuresFor(en,i).concat(sf);
+   html+=`<tr class="${u?'':'locked'}"><td style="width:40px">L${i}</td><td class="${i===m.l?'newfeat':''}">${fl.join(', ')||'—'}</td></tr>`;}
  });
  el('features').innerHTML=html;
  const sl=slotTable();let sh='';
@@ -724,6 +750,37 @@ function checkMultiReq(c){
  if(!req.length)return;
  const met=req.some(r=>r.split('|').some(s=>Number(statEl(s).value)>=13));
  if(!met)log(`⚠ ${c} multiclass requires ${req.map(r=>r.split('|').map(s=>s.toUpperCase()+' 13').join(' or ')).join(' and ')}.`);
+}
+const SKILL_PICKS={
+'Barbarian':{n:2,list:['Animal Handling','Athletics','Intimidation','Nature','Perception','Survival']},
+'Bard':{n:3,list:['Acrobatics','Animal Handling','Arcana','Athletics','Deception','History','Insight','Intimidation','Investigation','Medicine','Nature','Perception','Performance','Persuasion','Religion','Sleight of Hand','Stealth','Survival']},
+'Cleric':{n:2,list:['History','Insight','Medicine','Persuasion','Religion']},
+'Druid':{n:2,list:['Arcana','Animal Handling','Insight','Medicine','Nature','Perception','Religion','Survival']},
+'Fighter':{n:2,list:['Acrobatics','Animal Handling','Athletics','History','Insight','Intimidation','Perception','Survival']},
+'Monk':{n:2,list:['Acrobatics','Athletics','History','Insight','Religion','Stealth']},
+'Paladin':{n:2,list:['Athletics','Insight','Intimidation','Medicine','Persuasion','Religion']},
+'Ranger':{n:3,list:['Animal Handling','Athletics','Insight','Investigation','Nature','Perception','Stealth','Survival']},
+'Rogue':{n:4,list:['Acrobatics','Athletics','Deception','Insight','Intimidation','Investigation','Perception','Performance','Persuasion','Sleight of Hand','Stealth']},
+'Sorcerer':{n:2,list:['Arcana','Deception','Insight','Intimidation','Persuasion','Religion']},
+'Warlock':{n:2,list:['Arcana','Deception','History','Intimidation','Investigation','Nature','Religion']},
+'Wizard':{n:2,list:['Arcana','History','Insight','Investigation','Medicine','Religion']},
+'Artificer':{n:2,list:['Arcana','History','Investigation','Medicine','Nature','Perception','Sleight of Hand']}};
+const BG_SKILLS={'Acolyte':['Insight','Religion'],'Charlatan':['Deception','Sleight of Hand'],'Criminal':['Deception','Stealth'],'Spy':['Deception','Stealth'],'Entertainer':['Acrobatics','Performance'],'Gladiator':['Acrobatics','Performance'],'Folk Hero':['Animal Handling','Survival'],'Guild Artisan':['Insight','Persuasion'],'Guild Merchant':['Insight','Persuasion'],'Hermit':['Medicine','Religion'],'Noble':['History','Persuasion'],'Knight':['History','Persuasion'],'Outlander':['Athletics','Survival'],'Sage':['Arcana','History'],'Sailor':['Athletics','Perception'],'Pirate':['Athletics','Perception'],'Soldier':['Athletics','Intimidation'],'Urchin':['Sleight of Hand','Stealth'],'Haunted One':['Investigation','Survival'],'Faction Agent':['Insight','Investigation']};
+function toggleSkillPick(){const d=el('skillPick');d.style.display=d.style.display==='none'?'block':'none';if(d.style.display==='block')renderSkillPick();}
+function renderSkillPick(){
+ const pk=SKILL_PICKS[baseCls()];
+ if(!pk){el('skillPick').innerHTML='<span class="sub">No class list for '+baseCls()+'.</span>';return;}
+ const bg=el('bgLabel').textContent,bgs=BG_SKILLS[bg]||[];
+ el('skillPick').innerHTML=`<div class="sub">Pick ${pk.n} from your class list${bgs.length?' · '+bg+' grants '+bgs.join(' + '):''}:</div>`+
+  pk.list.map(s=>{
+   const tr=[...document.querySelectorAll('#skills tr')].find(t=>t.children[1].textContent===s);
+   const on=tr&&tr.querySelector('.skillProf').checked;
+   return `<span class="tag ${on?'on':''}" onclick="pickSkill('${s}')">${s}</span>`;}).join('');
+}
+function pickSkill(name){
+ const tr=[...document.querySelectorAll('#skills tr')].find(t=>t.children[1].textContent===name);
+ if(!tr)return;const cb=tr.querySelector('.skillProf');cb.checked=!cb.checked;
+ recalc();saveState();renderSkillPick();
 }
 const ARMOR={none:[10,99],leather:[11,99],studded:[12,99],'chain shirt':[13,2],'scale mail':[14,2],breastplate:[14,2],'half plate':[15,2],'ring mail':[14,0],'chain mail':[16,0],splint:[17,0],plate:[18,0]};
 function autoAC(){
@@ -1005,7 +1062,7 @@ function createChar(){
   level:1,xp:0,ac:10+Math.floor((stats.dex-10)/2),hp:hd+conmod,hpmax:hd+conmod,temphp:0,
   _cls:c,_race:el('ncRace').value,_bg:el('ncBg').value,_align:el('ncAlign').value,
   _bio:'A soul newly arrived in the Nine Hells.',
-  _skills:[],_saves:[],_cond:[],_ds:[],_spent:{},_inv:[["Adventurer's pack",1,0],["Clothes",1,3]],_known:{},
+  _skills:skills.map(([n])=>(BG_SKILLS[el('ncBg').value]||[]).includes(n)),_saves:[],_cond:[],_ds:[],_spent:{},_inv:[["Adventurer's pack",1,0],["Clothes",1,3]],_known:{},
   _mclasses:[{c:c,l:1,v:''}],_hd:{},_feats:[],
   personality:'',backstory:'',planNotes:'',att1:'',att2:'',att3:'',spellbook:'',
   coin_gp:15
@@ -1054,7 +1111,7 @@ el('conds').innerHTML=CONDS.map(c=>`<span class="tag" onclick="this.classList.to
 const DATA_BASE='https://raw.githubusercontent.com/barlowa124/dnd5e-sheet-data/main/data/';
 async function loadRemote(){
  try{
-  const [eq,mo,co,sp,extra,opts,cf,rng,ua,cv]=await Promise.all([
+  const [eq,mo,co,sp,extra,opts,cf,rng,ua,cv,sf]=await Promise.all([
    fetch(DATA_BASE+'5e-SRD-Equipment.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Monsters.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Conditions.json').then(r=>r.json()),
@@ -1064,7 +1121,8 @@ async function loadRemote(){
    fetch(DATA_BASE+'class-features.json').then(r=>r.json()).catch(()=>null),
    fetch(DATA_BASE+'ranger-spells-full.json').then(r=>r.json()).catch(()=>[]),
    fetch(DATA_BASE+'ua.json').then(r=>r.json()).catch(()=>null),
-   fetch(DATA_BASE+'class-variants.json').then(r=>r.json()).catch(()=>null)
+   fetch(DATA_BASE+'class-variants.json').then(r=>r.json()).catch(()=>null),
+   fetch(DATA_BASE+'subclass-features.json').then(r=>r.json()).catch(()=>({}))
   ]);
   EQUIPMENT=eq;
   el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}"></option>`).join('');
@@ -1090,6 +1148,7 @@ async function loadRemote(){
    VARIANTS[base]=VARIANTS[base]||[];
    cv[base].forEach(v=>{if(!VARIANTS[base].find(x=>x.n===v.n))VARIANTS[base].push(v);});
   });
+  SUBFEATS=sf||{};
   registerVariants();renderClassRows();
   el('featList').innerHTML=(OPTIONS&&OPTIONS.feats||[]).map(f=>`<option value="${f.n||f}">`).join('');
   populateNC();
