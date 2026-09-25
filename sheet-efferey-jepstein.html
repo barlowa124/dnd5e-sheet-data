@@ -111,6 +111,15 @@
   <div class="panel ability"><div class="name">WIS</div><input type="number" class="stat" data-stat="wis" value="14"><div class="mod" id="mod-wis">+2</div></div>
   <div class="panel ability"><div class="name">CHA</div><input type="number" class="stat" data-stat="cha" value="12"><div class="mod" id="mod-cha">+1</div></div>
 </div>
+<div class="sub" style="margin:2px 0 8px">
+  <b>Charactermancer:</b>
+  <button onclick="genStandard()">Standard Array</button>
+  <button onclick="genRoll()">Roll 4d6 drop-lowest</button>
+  Point buy: <b id="pbLeft">27</b> pts
+  <span id="pbBtns"></span>
+  · Race <select id="raceSel"></select>
+  <button onclick="applyRacial()">Apply racial ASI + speed</button>
+</div>
 
 <div class="grid cols-4">
   <div class="panel">
@@ -126,7 +135,7 @@
       </select> <label class="sub">Shield <input type="checkbox" id="shieldChk" onchange="autoAC();saveState()"></label>
       <button onclick="autoAC();log('AC recalculated.')">Auto AC</button></td></tr>
       <tr><td>Initiative</td><td><span class="bonus" id="init">+2</span> <button onclick="roll('Initiative', mod('dex'))">Roll</button></td></tr>
-      <tr><td>Speed</td><td>30 ft</td></tr>
+      <tr><td>Speed</td><td><span id="speedCell">30 ft</span></td></tr>
       <tr><td>Hit Dice</td><td><span id="hitdice">1d10</span> <span class="sub" id="hdLeft"></span> <button onclick="spendHD()">Spend</button></td></tr>
     </table>
     <h2>Roll Mode</h2>
@@ -352,8 +361,9 @@ function baseCls(){return mclasses[0].c;}
 function renderClassRows(){
  const allCls=OPTIONS?OPTIONS.classes:Object.keys(HITDIE);
  el('classRows').innerHTML=mclasses.map((m,i)=>`<span style="white-space:nowrap">
-  <select onchange="mclasses[${i}].c=this.value;mclasses[${i}].v='';renderClassRows();rebuild();saveState()">${allCls.map(c=>`<option ${c===m.c?'selected':''}>${c}</option>`).join('')}</select>
+  <select onchange="mclasses[${i}].c=this.value;mclasses[${i}].v='';${i===0?'applyClassSaves();':''}checkMultiReq(this.value);renderClassRows();rebuild();saveState()">${allCls.map(c=>`<option ${c===m.c?'selected':''}>${c}</option>`).join('')}</select>
   <input class="num-in" type="number" min="1" max="20" value="${m.l}" style="width:44px" title="class level" onchange="mclasses[${i}].l=Math.min(20,Math.max(1,Number(this.value)||1));renderClassRows();rebuild();saveState()">
+  <input class="txt-in" list="subDL${i}" style="width:105px" value="${m.s||''}" placeholder="subclass" onchange="mclasses[${i}].s=this.value;saveState()"><datalist id="subDL${i}">${(OPTIONS&&OPTIONS.subclasses&&OPTIONS.subclasses[m.c]?OPTIONS.subclasses[m.c]:[]).map(x=>`<option value="${x}">`).join('')}</datalist>
   <select onchange="mclasses[${i}].v=this.value;rebuild();saveState()" title="ruleset"><option value="">std</option>${(VARIANTS[m.c]||[]).map(v=>`<option ${v.n===m.v?'selected':''}>${v.n}</option>`).join('')}</select>
   <button title="spend hit die" onclick="spendHD(${i})">HD</button>
   ${i>0?`<button onclick="mclasses.splice(${i},1);renderClassRows();rebuild();saveState()">×</button>`:''}</span>`).join('')
@@ -555,7 +565,7 @@ function rebuild(){
  for(let i=0;i<pt.length;i++){if(pt[i]>0){sh+=`<div>Lvl ${i+1} <b>pact</b>: `;
   for(let k=0;k<pt[i];k++)sh+=`<span class="slot-pip" data-pslot="${i}" onclick="this.classList.toggle('spent');saveState()"></span>`;sh+='</div>';}}
  el('slots').innerHTML=sh||'<span class="sub">No slots.</span>';
- renderSpells();recalc();renderInv();
+ renderSpells();recalc();renderInv();pbUpdate();
 }
 
 function recalc(){
@@ -648,6 +658,73 @@ function removeFeat(n){
  if(n==='Lucky'){const i=resources.findIndex(r=>r.name==='Luck points');if(i>=0){resources.splice(i,1);renderRes();}}
  renderFeats();recalc();saveState();
 }
+// ================= CHARACTERMANCER =================
+const STAT_ORDER=['str','dex','con','int','wis','cha'];
+const PBCOST={8:0,9:1,10:2,11:3,12:4,13:5,14:7,15:9};
+const PRIM={'Barbarian':'str','Bard':'cha','Cleric':'wis','Druid':'wis','Fighter':'str','Monk':'dex','Paladin':'str','Ranger':'dex','Rogue':'dex','Sorcerer':'cha','Warlock':'cha','Wizard':'int','Artificer':'int'};
+const SEC={'Barbarian':'con','Paladin':'cha','Ranger':'wis','Fighter':'con','Rogue':'int','Monk':'wis','Wizard':'con','Sorcerer':'con','Warlock':'con','Bard':'dex','Cleric':'con','Druid':'con','Artificer':'con'};
+const CLASS_SAVES={'Barbarian':['str','con'],'Bard':['dex','cha'],'Cleric':['wis','cha'],'Druid':['int','wis'],'Fighter':['str','con'],'Monk':['str','dex'],'Paladin':['wis','cha'],'Ranger':['str','dex'],'Rogue':['dex','int'],'Sorcerer':['con','cha'],'Warlock':['wis','cha'],'Wizard':['int','wis'],'Artificer':['con','int']};
+const MULTI_REQ={'Barbarian':['str'],'Bard':['cha'],'Cleric':['wis'],'Druid':['wis'],'Fighter':['str|dex'],'Monk':['dex','wis'],'Paladin':['str','cha'],'Ranger':['dex','wis'],'Rogue':['dex'],'Sorcerer':['cha'],'Warlock':['cha'],'Wizard':['int'],'Artificer':['int']};
+const RACE_ASI=[
+ ['yuan-ti',{int:2,cha:1}],['variant human',{dex:1,int:1}],['hill dwarf',{con:2,wis:1}],['mountain dwarf',{con:2,str:2}],['dwarf',{con:2}],
+ ['high elf',{dex:2,int:1}],['wood elf',{dex:2,wis:1}],['drow',{dex:2,cha:1}],['eladrin',{dex:2,cha:1}],['sea elf',{dex:2,con:1}],['shadar-kai',{dex:2,con:1}],['avariel',{dex:2,int:1}],['elf',{dex:2}],
+ ['lightfoot',{dex:2,cha:1}],['stout',{dex:2,con:1}],['ghostwise',{dex:2,wis:1}],['halfling',{dex:2}],
+ ['dragonborn',{str:2,cha:1}],['forest gnome',{dex:1,int:2}],['rock gnome',{con:1,int:2}],['deep gnome',{dex:1,int:2}],['gnome',{int:2}],
+ ['half-elf',{cha:2}],['half-orc',{str:2,con:1}],['tiefling',{cha:2,int:1}],['aasimar',{cha:2}],
+ ['tabaxi',{dex:2,cha:1}],['firbolg',{wis:2,str:1}],['goliath',{str:2,con:1}],['kenku',{dex:2,wis:1}],
+ ['lizardfolk',{con:2,wis:1}],['triton',{str:1,con:1,cha:1}],['bugbear',{str:2,dex:1}],['goblin',{dex:2,con:1}],
+ ['hobgoblin',{con:2,int:1}],['kobold',{dex:2}],['orc',{str:2,con:1}],['githyanki',{str:2,int:1}],['githzerai',{int:2,wis:1}],['gith',{int:1}],
+ ['human',{str:1,dex:1,con:1,int:1,wis:1,cha:1}],['minotaur',{str:2,con:1}],['centaur',{str:2,wis:1}],['revenant',{con:1}]
+];
+const RACE_SPEED=[['dwarf',25],['halfling',25],['gnome',25],['goblin',30],['kobold',30],['wood elf',35],['aarakocra',50]];
+function statEl(s){return document.querySelector(`[data-stat="${s}"]`);}
+function statOrder(){
+ const p=PRIM[baseCls()]||'dex',s=SEC[baseCls()]||'con';
+ return [p,s,'con','wis','dex','str','int','cha'].filter((v,i,a)=>a.indexOf(v)===i);
+}
+function pbUpdate(){
+ const spent=STAT_ORDER.reduce((t,s)=>t+(PBCOST[Math.min(15,Math.max(8,Number(statEl(s).value)||8))]||0),0);
+ const left=27-spent;el('pbLeft').textContent=left;
+ el('pbLeft').style.color=left<0?'#f66':'#8f8';
+}
+function pbBump(s,d){
+ const e=statEl(s),v=Math.min(15,Math.max(8,Number(e.value)||8)),nv=v+d;
+ if(nv<8||nv>15){log('Point buy range is 8–15.');return;}
+ e.value=nv;rebuild();
+ log(`${s.toUpperCase()} ${v}→${nv} (${(PBCOST[nv]-PBCOST[v])>0?'-':'+'}${Math.abs(PBCOST[nv]-PBCOST[v])} pts)`);saveState();
+}
+function genStandard(){
+ const arr=[15,14,13,12,10,8],o=statOrder();
+ o.forEach((s,i)=>statEl(s).value=arr[i]);
+ rebuild();saveState();log('Standard array → '+o.map((s,i)=>s.toUpperCase()+' '+arr[i]).join(', '));
+}
+function genRoll(){
+ const rs=[];
+ for(let i=0;i<6;i++){const d=[1,2,3,4].map(()=>1+Math.floor(Math.random()*6)).sort((a,b)=>a-b);rs.push(d[1]+d[2]+d[3]);}
+ rs.sort((a,b)=>b-a);const o=statOrder();
+ o.forEach((s,i)=>statEl(s).value=rs[i]);
+ rebuild();saveState();log('Rolled ['+rs.join(', ')+'] → '+o.map((s,i)=>s.toUpperCase()+' '+rs[i]).join(', '));
+}
+function applyRacial(){
+ const race=(el('raceSel').value||'').toLowerCase();
+ const hit=RACE_ASI.find(([k])=>race.includes(k));
+ if(!hit){log('No ASI data for "'+race+'" — adjust manually.');return;}
+ Object.keys(hit[1]).forEach(s=>statEl(s).value=Number(statEl(s).value)+hit[1][s]);
+ el('raceLabel').textContent=el('raceSel').value;
+ const sp=RACE_SPEED.find(([k])=>race.includes(k));
+ if(sp)el('speedCell').textContent=sp[1]+' ft';
+ rebuild();saveState();log('Racial ASI: '+Object.entries(hit[1]).map(([k,v])=>'+'+v+' '+k.toUpperCase()).join(', '));
+}
+function applyClassSaves(){
+ const sv=CLASS_SAVES[mclasses[0].c]||[];
+ document.querySelectorAll('.saveProf').forEach(c=>c.checked=sv.includes(c.dataset.stat));
+}
+function checkMultiReq(c){
+ const req=(MULTI_REQ[c]||[]);
+ if(!req.length)return;
+ const met=req.some(r=>r.split('|').some(s=>Number(statEl(s).value)>=13));
+ if(!met)log(`⚠ ${c} multiclass requires ${req.map(r=>r.split('|').map(s=>s.toUpperCase()+' 13').join(' or ')).join(' and ')}.`);
+}
 const ARMOR={none:[10,99],leather:[11,99],studded:[12,99],'chain shirt':[13,2],'scale mail':[14,2],breastplate:[14,2],'half plate':[15,2],'ring mail':[14,0],'chain mail':[16,0],splint:[17,0],plate:[18,0]};
 function autoAC(){
  const a=el('armorSel').value||'none',b=ARMOR[a]||ARMOR.none;
@@ -680,7 +757,11 @@ function levelUp(){
   i=Math.max(0,Math.min(mclasses.length-1,Number(prompt('Level up which class? '+q,'0'))||0));
  }
  const m=mclasses[i];m.l++;
- const gain=Math.ceil(((HITDIE[effName(m)]||10)+2)/2)+mod('con')+(feats.includes('Tough')?2:0);
+ const d=HITDIE[effName(m)]||10;
+ let gain;
+ if(confirm('Take average HP? Cancel = roll the die.'))gain=Math.ceil((d+2)/2)+mod('con');
+ else{const r=Math.ceil(Math.random()*d);gain=Math.max(1,r+mod('con'));log(`HP roll: [${r}]`);}
+ gain+=feats.includes('Tough')?2:0;
  el('hpmax').value=Number(el('hpmax').value)+gain;el('hp').value=el('hpmax').value;
  renderClassRows();rebuild();
  log(`LEVEL UP → ${effName(m)} ${m.l}. HP +${gain}. New: ${featuresFor(effName(m),m.l).join('; ')||'—'}`);
@@ -898,6 +979,8 @@ function populateNC(){
  r.innerHTML=(OPTIONS?OPTIONS.races.map(x=>x.n+' ('+x.src+')'):['Human']).map(x=>`<option>${x}</option>`).join('');
  b.innerHTML=(OPTIONS?OPTIONS.backgrounds:['Criminal']).map(x=>`<option>${x}</option>`).join('');
  a.innerHTML=(OPTIONS?OPTIONS.alignments:['Neutral Evil']).map(x=>`<option>${x}</option>`).join('');
+ const rl=(OPTIONS?OPTIONS.races.map(x=>x.n+' ('+x.src+')'):['Human']);
+ el('raceSel').innerHTML=rl.map(x=>`<option ${x.startsWith('Yuan-ti')?'selected':''}>${x}</option>`).join('');
  ncSub();
 }
 function createChar(){
@@ -1022,6 +1105,7 @@ renderClassRows();
 renderFeats();
 renderAtkCustom();
 renderRes();
+el('pbBtns').innerHTML=STAT_ORDER.map(s=>`${s.toUpperCase()} <button onclick="pbBump('${s}',-1)">−</button><button onclick="pbBump('${s}',1)">+</button>`).join(' ');
 if(store.chars[curChar])applyState(store.chars[curChar]);
 rebuild();renderCoins();loadRemote();
 if(GH_PAT)pullAll();
