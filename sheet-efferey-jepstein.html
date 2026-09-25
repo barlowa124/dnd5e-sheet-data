@@ -77,6 +77,18 @@
     #classRows span{white-space:normal;}
   }
   @media (max-width:420px){ .cols-6{grid-template-columns:repeat(2,1fr);} .ability input{width:42px;} }
+  @media print{
+    body{background:#fff;color:#000;padding:8px;max-width:none;}
+    .panel{background:#fff;border-color:#999;overflow:visible;}
+    button,select,.tag,.save-note{display:none;}
+    input,textarea{border:none;color:#000;background:transparent;}
+    h1,h2{color:#000;border-color:#000;}
+    .sub{color:#444;}
+    .bonus,.mod{color:#000;}
+    .locked{opacity:.25;}
+    #log,#newChar,#syncPanel,#classRows,#skillPick{display:none;}
+    .grid{gap:8px;margin-top:8px;}
+  }
 </style>
 </head>
 <body>
@@ -178,7 +190,7 @@
     <div>
       Pass: <span class="ds-pip" data-ds="s1"></span><span class="ds-pip" data-ds="s2"></span><span class="ds-pip" data-ds="s3"></span><br>
       Fail: <span class="ds-pip fail" data-ds="f1"></span><span class="ds-pip fail" data-ds="f2"></span><span class="ds-pip fail" data-ds="f3"></span>
-      <button onclick="roll('Death save',0)">Roll</button>
+      <button onclick="deathSave()">Roll</button>
     </div>
   </div>
 
@@ -260,6 +272,9 @@
       <button onclick="rollDie('d100',100,0)">d100</button>
       <button onclick="el('log').innerHTML=''">Clear</button>
     </div>
+    <h2>Initiative Order</h2>
+    <div id="initList"></div>
+    <div><input class="txt-in" id="initName" style="width:100px;display:inline" placeholder="name"> <input class="num-in" id="initVal" type="number" style="width:48px" placeholder="init"> <button onclick="addInit()">Add</button> <button onclick="rollInitFor()">Roll me</button> <button onclick="nextInit()">Next ▶</button></div>
     <h2>Attunement (3)</h2>
     <input class="txt-in" id="att1" placeholder="Attuned item 1"><input class="txt-in" id="att2" style="margin-top:4px" placeholder="Attuned item 2"><input class="txt-in" id="att3" style="margin-top:4px" placeholder="Attuned item 3">
   </div>
@@ -457,17 +472,20 @@ function spendSlot(l){
  for(const p of pips){if(!p.classList.contains('spent')){p.classList.add('spent');saveState();return true;}}
  return false;
 }
-function castSpell(name){
+function castSpell(name,ev){
  const sp=ALLSPELLS.find(s=>s.n===name);
  if(!sp){log(name+'? not found');return;}
  const owner=mclasses.find(m=>{const a=ABBREV[m.c];return a&&(sp.cls||'').split('/').includes(a);})||mclasses[0];
  if(!castUnlocked(owner)){log(`${name}: ${effName(owner)} hasn't unlocked spellcasting.`);return;}
  if(sp.rit&&confirm('Cast '+name+' as ritual (10 extra min, no slot)?')){log(`Ritual cast ${name} — ${sp.desc||''}`);saveState();return;}
- if(!spendSlot(sp.l)&&!spendPact(sp.l)){log(`${name}: no level-${sp.l} slots left.`);return;}
+ let useLvl=sp.l;
+ if(ev&&ev.shiftKey){const x=Number(prompt('Upcast at what slot level? (min '+sp.l+')',sp.l))||sp.l;if(x>sp.l)useLvl=x;}
+ if(!spendSlot(useLvl)&&!spendPact(useLvl)){log(`${name}: no level-${useLvl}+ slots left.`);return;}
  if(sp.conc)el('concSpell').value=name;
- log(`Cast ${name} (lvl ${sp.l}, via ${effName(owner)})${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
+ log(`Cast ${name} (slot ${useLvl}${useLvl>sp.l?' — upcast':''}, via ${effName(owner)})${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
  if(sp.atk)roll(name+' attack',prof()+mod(spellStatFor(sp)));
- if(sp.dx){const[sides,mo]=sp.dx;const n=typeof mo==='string'?mod(mo):0;const cnt=typeof mo==='number'&&mo>0?mo:1;
+ if(sp.dx){const[sides,mo]=sp.dx;const n=typeof mo==='string'?mod(mo):0;
+  const cnt=(typeof mo==='number'&&mo>0?mo:1)+(useLvl-sp.l);
   let t=0,rs=[];for(let i=0;i<cnt;i++){const r=Math.ceil(Math.random()*sides);rs.push(r);t+=r;}
   log(`${name} effect: [${rs.join(',')}] ${fmt(n)} = ${t+n}`);}
  saveState();
@@ -483,7 +501,7 @@ function renderSpells(){
    <td><button onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
    <td>${s.n}${s.xge||s.src?` <span class="tag-rit">(${s.src||'XGE'})</span>`:''}</td><td>${s.l}</td>
    <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}</td>
-   <td><button ${casting?'':'disabled'} onclick="event.stopPropagation();castSpell('${s.n}')">Cast</button></td></tr>`).join('');
+   <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button></td></tr>`).join('');
  el('spellCount').textContent=list.length+' entries';
 }
 
@@ -563,7 +581,9 @@ function rebuild(){
  el('spellAtk').textContent=fmt(p+mod(ss));
  el('innateDC').textContent=8+p+mod('cha');
  const rngL=clsLvl('Ranger');
- el('spellsKnown').textContent=rngL?(KNOWN[rngL]||0):'—';
+ const cat0=CASTER[cls()]||'none';
+ el('spellsKnown').textContent=cat0==='none'?'—':
+  (['Ranger','Sorcerer','Bard','Warlock'].includes(baseCls())?KNOWN[mclasses[0].l]||0:Math.max(1,mclasses[0].l+mod(SPELLSTAT[cls()]||'wis'))+' prep');
  const casting=mclasses.some(castUnlocked);
  el('spellLocked').style.display=casting?'none':'block';
  el('spellUnlocked').classList.toggle('locked',!casting);
@@ -665,6 +685,19 @@ function renderRes(){
   <button onclick="resources.splice(${i},1);renderRes();saveState()">×</button></div>`).join('');
 }
 function addRes(){resources.push({name:'Resource',max:1,used:0,reset:'L'});renderRes();saveState();}
+// ---- initiative tracker ----
+let initOrder=[],initIdx=0;
+function renderInit(){
+ el('initList').innerHTML=initOrder.map((e,i)=>`<div class="${i===initIdx?'newfeat':''}" style="padding:2px">${i===initIdx?'▶ ':''}${e.n} — <b>${e.v}</b> <a href="#" onclick="initOrder.splice(${i},1);renderInit();saveState();return false" style="color:#c00">×</a></div>`).join('')||'<span class="sub">Empty.</span>';
+}
+function addInit(){const n=el('initName').value.trim(),v=Number(el('initVal').value)||0;if(!n)return;
+ initOrder.push({n,v});initOrder.sort((a,b)=>b.v-a.v);initIdx=0;el('initName').value='';el('initVal').value='';renderInit();saveState();}
+function rollInitFor(){
+ const{r,txt}=d20(advMode);const v=r+mod('dex');
+ initOrder.push({n:curChar,v});initOrder.sort((a,b)=>b.v-a.v);initIdx=0;renderInit();
+ log(`Initiative: [${txt}] ${fmt(mod('dex'))} = ${v}`);saveState();
+}
+function nextInit(){if(!initOrder.length)return;initIdx=(initIdx+1)%initOrder.length;renderInit();log('Turn → '+initOrder[initIdx].n);saveState();}
 // ---- feats ----
 function featDesc(n){const f=(OPTIONS&&OPTIONS.feats||[]).find(x=>(x.n||x)===n);return f&&f.desc?f.desc:'';}
 function renderFeats(){
@@ -840,6 +873,8 @@ function dmgPrompt(){
 }
 function shortRest(){
  resources.forEach(r=>{if(r.reset==='S')r.used=0;});renderRes();
+ document.querySelectorAll('.slot-pip[data-pslot].spent').forEach(p=>p.classList.remove('spent'));
+ if(pactLvl())log('Pact slots recharged (pact magic recharges on short rests).');
  let idx=0;
  if(mclasses.length>1){
   const q=mclasses.map((m,i)=>`${i}: ${effName(m)}`).join('   ');
@@ -864,6 +899,26 @@ function longRest(){
  suggestionUsed=false;el('suggBtn').disabled=false;
  rebuild();
  log('Long rest — everything restored.');saveState();}
+function deathSave(){
+ const{r,txt}=d20(advMode);
+ if(r===20){
+  el('hp').value=1;
+  document.querySelectorAll('.ds-pip').forEach(p=>p.classList.remove('on'));
+  log(`DEATH SAVE [${txt}] = NAT 20 — conscious at 1 HP!`);
+ }else if(r===1){
+  let n=0;document.querySelectorAll('.ds-pip.fail').forEach(p=>{if(n<2&&!p.classList.contains('on')){p.classList.add('on');n++;}});
+  log(`DEATH SAVE [${txt}] = NAT 1 — two failures.`);
+ }else{
+  const ok=r>=10,sel=ok?'.ds-pip:not(.fail)':'.ds-pip.fail';
+  const pips=[...document.querySelectorAll(sel)].filter(p=>!p.classList.contains('on'));
+  if(pips.length)pips[0].classList.add('on');
+  log(`Death save: [${txt}] = ${r} — ${ok?'success':'failure'}.`);
+ }
+ const fails=[...document.querySelectorAll('.ds-pip.fail')].filter(p=>p.classList.contains('on')).length;
+ const pass=[...document.querySelectorAll('.ds-pip:not(.fail)')].filter(p=>p.classList.contains('on')).length;
+ if(fails>=3)log('DEAD. ☠');else if(pass>=3)log('STABILIZED at 0 HP.');
+ saveState();
+}
 function useSuggestion(){if(suggestionUsed)return;suggestionUsed=true;el('suggBtn').disabled=true;
  log('Suggestion cast — Wis save vs DC '+el('innateDC').textContent+'.');saveState();}
 
@@ -882,7 +937,7 @@ function collectState(){
  s._ds=[...document.querySelectorAll('.ds-pip')].map(p=>p.classList.contains('on'));
  s._spent={};document.querySelectorAll('.slot-pip.spent').forEach(p=>{const i=p.dataset.pslot!==undefined?'p'+p.dataset.pslot:p.dataset.slot;s._spent[i]=(s._spent[i]||0)+1;});
  s._inv=inv;s._known=knownSpells;s._res=resources;s._atk=customAtk;
- s._mclasses=mclasses;s._hd=hdSpent;s._feats=feats;
+ s._mclasses=mclasses;s._hd=hdSpent;s._feats=feats;s._init={o:initOrder,i:initIdx};
  s._cls=baseCls();s._variant=mclasses[0].v||'';
  s._race=el('raceLabel').textContent;s._bg=el('bgLabel').textContent;s._align=el('alignLabel').textContent;
  s._bio=el('bio').textContent;
@@ -901,6 +956,7 @@ function applyState(s){
  else if(s._cls)mclasses=[{c:s._cls,l:Number(s.level)||1,v:s._variant||''}];
  hdSpent=s._hd||{};feats=s._feats||feats;
  renderClassRows();renderFeats();
+ if(s._init){initOrder=s._init.o||[];initIdx=s._init.i||0;renderInit();}
  if(s._race)el('raceLabel').textContent=s._race;
  if(s._bg)el('bgLabel').textContent=s._bg;
  if(s._align)el('alignLabel').textContent=s._align;
@@ -1063,7 +1119,7 @@ function createChar(){
   _cls:c,_race:el('ncRace').value,_bg:el('ncBg').value,_align:el('ncAlign').value,
   _bio:'A soul newly arrived in the Nine Hells.',
   _skills:skills.map(([n])=>(BG_SKILLS[el('ncBg').value]||[]).includes(n)),_saves:[],_cond:[],_ds:[],_spent:{},_inv:[["Adventurer's pack",1,0],["Clothes",1,3]],_known:{},
-  _mclasses:[{c:c,l:1,v:''}],_hd:{},_feats:[],
+  _mclasses:[{c:c,l:1,v:'',s:el('ncSub').value==='—'?'':el('ncSub').value}],_hd:{},_feats:[],
   personality:'',backstory:'',planNotes:'',att1:'',att2:'',att3:'',spellbook:'',
   coin_gp:15
  };
