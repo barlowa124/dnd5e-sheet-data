@@ -1,0 +1,246 @@
+{
+ "note": "Unearthed Arcana (playtest) + unofficial/homebrew-friendly options. Mechanics summarized, not official text.",
+ "uaSubclasses": {
+  "Artificer": [
+   "Alchemist (UA)",
+   "Gunsmith (UA)"
+  ],
+  "Barbarian": [
+   "Ancestral Guardian (UA)",
+   "Storm Herald (UA)"
+  ],
+  "Bard": [
+   "Satire (UA)",
+   "Swords (UA)",
+   "Whispers (UA)"
+  ],
+  "Cleric": [
+   "Forge (UA)",
+   "Grave (UA)",
+   "Protection (UA)"
+  ],
+  "Druid": [
+   "Dreams (UA)",
+   "Shepherd (UA)",
+   "Spores (UA)",
+   "Twilight (UA)"
+  ],
+  "Fighter": [
+   "Arcane Archer (UA)",
+   "Brute (UA)",
+   "Knight (UA)",
+   "Samurai (UA)",
+   "Sharpshooter (UA)"
+  ],
+  "Monk": [
+   "Drunken Master (UA)",
+   "Kensei (UA)",
+   "Tranquility (UA)"
+  ],
+  "Paladin": [
+   "Conquest (UA)",
+   "Redemption (UA)",
+   "Treachery (UA)"
+  ],
+  "Ranger": [
+   "REVISED RANGER \u2014 Beast Conclave (UA)",
+   "REVISED RANGER \u2014 Hunter Conclave (UA)",
+   "REVISED RANGER \u2014 Deep Stalker (UA)"
+  ],
+  "Rogue": [
+   "Scout (UA)",
+   "Swashbuckler (UA)"
+  ],
+  "Sorcerer": [
+   "Favored Soul (UA)",
+   "Phoenix (UA)",
+   "Sea (UA)",
+   "Shadow (UA)",
+   "Stone (UA)"
+  ],
+  "Warlock": [
+   "Hexblade (UA)",
+   "Raven Queen (UA)",
+   "Seeker (UA)"
+  ],
+  "Wizard": [
+   "Lore Mastery (UA)",
+   "Theurgy (UA)",
+   "War Magic (UA)",
+   "Technomancy (UA)"
+  ]
+ },
+ "uaRaces": [
+  {
+   "n": "Tiefling (Abyssal/other variants)",
+   "src": "UA",
+   "note": "Devil-bloodline variants"
+  },
+  {
+   "n": "Elf (Eladrin UA)",
+   "src": "UA",
+   "note": "Seasonal teleport fey step"
+  },
+  {
+   "n": "Elf (Avariel)",
+   "src": "UA",
+   "note": "Winged elf \u2014 fly speed"
+  },
+  {
+   "n": "Elf (Shadar-kai UA)",
+   "src": "UA",
+   "note": "Shadow teleport"
+  },
+  {
+   "n": "Elf (Sea Elf UA)",
+   "src": "UA",
+   "note": "Aquatic"
+  },
+  {
+   "n": "Gith (UA)",
+   "src": "UA",
+   "note": "Githyanki/Githzerai playtest"
+  },
+  {
+   "n": "Aasimar (UA)",
+   "src": "UA",
+   "note": "DMG playtest celestial"
+  },
+  {
+   "n": "Centaur (UA)",
+   "src": "UA",
+   "note": "Playtest, later GGTR"
+  },
+  {
+   "n": "Minotaur (UA)",
+   "src": "UA",
+   "note": "Playtest version"
+  },
+  {
+   "n": "Revenant (UA)",
+   "src": "UA",
+   "note": "Undead-returned subrace \u2014 a little on the nose for him"
+  }
+ ],
+ "uaFeats": [
+  {
+   "n": "Blade Mastery",
+   "src": "UA",
+   "desc": "Adv opportunity-attack rolls with chosen blade; +1 AC when holding it"
+  },
+  {
+   "n": "Fell-Handed",
+   "src": "UA",
+   "desc": "Heavy weapons knock prone/shove on hit"
+  },
+  {
+   "n": "Flail Mastery",
+   "src": "UA",
+   "desc": "Ignore shield bonus; bonus shove/knockdown"
+  },
+  {
+   "n": "Spear Mastery",
+   "src": "UA",
+   "desc": "Spear/trident d8, reach charge, +1 AC"
+  },
+  {
+   "n": "Tool Mastery",
+   "src": "UA",
+   "desc": "Expertise with tools"
+  },
+  {
+   "n": "Alchemist (UA feat)",
+   "src": "UA",
+   "desc": "Craft alchemical items daily"
+  },
+  {
+   "n": "Burglar",
+   "src": "UA",
+   "desc": "Thieves' tools tricks, adv locks/traps"
+  },
+  {
+   "n": "Gourmand",
+   "src": "UA",
+   "desc": "Cook food granting buffs"
+  },
+  {
+   "n": "Master of Disguise",
+   "src": "UA",
+   "desc": "Adv deception with disguise kit"
+  },
+  {
+   "n": "Orienteer",
+   "src": "UA",
+   "desc": "Never lost, +5 init on exploration"
+  },
+  {
+   "n": "Stealthy",
+   "src": "UA",
+   "desc": "Hide as bonus in dim terrain"
+  },
+  {
+   "n": "Quicksmithing",
+   "src": "UA",
+   "desc": "Craft items at half price/time"
+  }
+ ],
+ "uaSpells": [
+  {
+   "n": "Guiding Hand",
+   "l": 1,
+   "cls": "Clr",
+   "s": "Divination",
+   "t": "1 action",
+   "r": "5 ft",
+   "d": "Conc, 8 hrs",
+   "conc": 1,
+   "rit": 1,
+   "src": "UA",
+   "desc": "Hand points toward a named target."
+  },
+  {
+   "n": "Hand of Radiance",
+   "l": 0,
+   "cls": "Clr",
+   "s": "Evocation",
+   "t": "1 action",
+   "r": "150 ft",
+   "d": "Instant",
+   "src": "UA",
+   "desc": "Dex save or 1d6 radiant each on clustered targets (scales)."
+  },
+  {
+   "n": "Puppet",
+   "l": 1,
+   "cls": "Bard",
+   "s": "Enchantment",
+   "t": "1 action",
+   "r": "120 ft",
+   "d": "Instant",
+   "src": "UA",
+   "desc": "Con save or creature forced to move."
+  },
+  {
+   "n": "Sudden Awakening",
+   "l": 1,
+   "cls": "Bard/Ran/Sor/Wiz",
+   "s": "Enchantment",
+   "t": "1 bonus action",
+   "r": "10 ft",
+   "d": "Instant",
+   "src": "UA",
+   "desc": "Wake all allies; they can stand and act."
+  },
+  {
+   "n": "Toll the Dead (UA orig.)",
+   "l": 0,
+   "cls": "Clr/War/Wiz",
+   "s": "Necromancy",
+   "t": "1 action",
+   "r": "60 ft",
+   "d": "Instant",
+   "src": "UA",
+   "desc": "Wis save or 1d8 necrotic."
+  }
+ ]
+}
