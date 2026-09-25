@@ -159,7 +159,7 @@
     <table>
       <tr><td>AC</td><td><input class="num-in" id="ac" type="number" value="13"></td></tr>
       <tr><td>Armor</td><td><select id="armorSel" onchange="autoAC();saveState()">
-        <option value="none">Unarmored (10+Dex)</option><option value="leather">Leather</option>
+        <option value="none">Unarmored (10+Dex)</option><option value="mage">Mage Armor (spell)</option><option value="leather">Leather</option>
         <option value="studded" selected>Studded Leather</option><option value="chain shirt">Chain Shirt</option>
         <option value="scale mail">Scale Mail</option><option value="breastplate">Breastplate</option>
         <option value="half plate">Half Plate</option><option value="ring mail">Ring Mail</option>
@@ -460,8 +460,10 @@ function spellStatFor(sp){
 function log(m){const d=document.createElement('div');d.textContent=m;el('log').prepend(d);}
 function d20(mode){const a=Math.ceil(Math.random()*20),b=Math.ceil(Math.random()*20);
  if(mode===1)return{r:Math.max(a,b),txt:`${a},${b}`};if(mode===-1)return{r:Math.min(a,b),txt:`${a},${b}`};return{r:a,txt:`${a}`};}
+function critRange(){let c=20;mclasses.forEach(m=>{if(m.c==='Fighter'&&m.s==='Champion')c=Math.min(c,m.l>=15?18:m.l>=3?19:20);});return c;}
 function roll(name,bonus){const{r,txt}=d20(advMode);const tag=advMode===1?' (adv)':advMode===-1?' (dis)':'';
- log(`${name}${tag}: [${txt}] ${fmt(bonus)} = ${r+bonus}${r===20&&advMode>=0?' — NAT 20':''}${r===1&&advMode<=0?' — NAT 1':''}`);}
+ const crit=r>=critRange()&&/(hit|attack)/i.test(name);
+ log(`${name}${tag}: [${txt}] ${fmt(bonus)} = ${r+bonus}${crit?' — CRIT!':r===20&&advMode>=0?' — NAT 20':''}${r===1&&advMode<=0?' — NAT 1':''}`);}
 function rollDie(name,sides,bonus){const r=Math.ceil(Math.random()*sides);log(`${name}: [${r}] ${fmt(bonus)} = ${r+bonus}`);}
 function cycleAdv(){advMode=(advMode+2)%3-1;const b=el('advBtn');
  b.textContent=advMode===1?'Advantage':advMode===-1?'Disadvantage':'Normal';b.classList.toggle('advOn',advMode!==0);}
@@ -571,7 +573,8 @@ function rebuild(){
  const p=prof(),l=lvl();
  el('profBonus').textContent=fmt(p);
  ['str','dex','con','int','wis','cha'].forEach(s=>el('mod-'+s).textContent=fmt(mod(s)));
- el('init').textContent=fmt(mod('dex')+(feats.includes('Alert')?5:0));
+ el('init').textContent=fmt(mod('dex')+(feats.includes('Alert')?5:0)
+  +(mclasses.some(m=>m.c==='Rogue'&&m.s==='Swashbuckler'&&m.l>=3)?mod('cha'):0));
  el('clsLabel').textContent=mclasses.map(m=>effName(m)+' '+m.l).join(' / ');
  el('level').value=l;
  el('hitdice').textContent=mclasses.map(m=>m.l+'d'+(HITDIE[effName(m)]||10)).join(' + ');
@@ -611,7 +614,7 @@ function rebuild(){
  for(let i=0;i<pt.length;i++){if(pt[i]>0){sh+=`<div>Lvl ${i+1} <b>pact</b>: `;
   for(let k=0;k<pt[i];k++)sh+=`<span class="slot-pip" data-pslot="${i}" onclick="this.classList.toggle('spent');saveState()"></span>`;sh+='</div>';}}
  el('slots').innerHTML=sh||'<span class="sub">No slots.</span>';
- renderSpells();recalc();renderInv();pbUpdate();
+ renderSpells();recalc();renderInv();pbUpdate();autoResources();
 }
 
 function recalc(){
@@ -685,6 +688,29 @@ function renderRes(){
   <button onclick="resources.splice(${i},1);renderRes();saveState()">×</button></div>`).join('');
 }
 function addRes(){resources.push({name:'Resource',max:1,used:0,reset:'L'});renderRes();saveState();}
+// ---- auto resources: class + subclass pools ----
+const CLASS_RES={
+ 'Barbarian':l=>l>=1?{name:'Rages',max:l<3?2:l<6?3:l<12?4:l<17?5:l<20?6:99,reset:'L'}:null,
+ 'Monk':l=>l>=2?{name:'Ki points',max:l,reset:'S'}:null,
+ 'Sorcerer':l=>l>=2?{name:'Sorcery points',max:l,reset:'L'}:null,
+ 'Fighter':l=>l>=2?{name:'Action Surge',max:l>=17?2:1,reset:'S'}:null,
+ 'Druid':l=>l>=2?{name:'Wild Shape',max:2,reset:'S'}:null,
+ 'Cleric':l=>l>=2?{name:'Channel Divinity',max:l>=18?3:l>=6?2:1,reset:'S'}:null,
+ 'Paladin':l=>l>=3?{name:'Channel Divinity',max:1,reset:'S'}:null,
+ 'Bard':l=>l>=1?{name:'Bardic Inspiration',max:Math.max(1,mod('cha')),reset:l>=5?'S':'L'}:null};
+const SUB_RES={
+ 'Battle Master':{min:3,res:l=>({name:'Superiority dice',max:l>=15?6:l>=7?5:4,reset:'S'})},
+ 'Divination':{min:2,res:l=>({name:'Portent dice',max:l>=14?3:2,reset:'L'})},
+ 'Spores':{min:2,res:l=>({name:'Symbiotic Entity',max:4,reset:'L'})}};
+function autoResources(){
+ let dirty=false;
+ const want=(w)=>{if(!w)return;let r=resources.find(x=>x.name===w.name);
+  if(!r){resources.push({name:w.name,max:w.max,used:0,reset:w.reset});dirty=true;}
+  else if(r.max!==w.max){r.max=w.max;dirty=true;}};
+ mclasses.forEach(m=>{if(CLASS_RES[m.c])want(CLASS_RES[m.c](m.l));
+  const sm=SUB_RES[m.s];if(sm&&m.l>=sm.min)want(sm.res(m.l));});
+ if(dirty)renderRes();
+}
 // ---- initiative tracker ----
 let initOrder=[],initIdx=0;
 function renderInit(){
@@ -815,12 +841,25 @@ function pickSkill(name){
  if(!tr)return;const cb=tr.querySelector('.skillProf');cb.checked=!cb.checked;
  recalc();saveState();renderSkillPick();
 }
-const ARMOR={none:[10,99],leather:[11,99],studded:[12,99],'chain shirt':[13,2],'scale mail':[14,2],breastplate:[14,2],'half plate':[15,2],'ring mail':[14,0],'chain mail':[16,0],splint:[17,0],plate:[18,0]};
+const ARMOR={none:[10,99],mage:[13,99],leather:[11,99],studded:[12,99],'chain shirt':[13,2],'scale mail':[14,2],breastplate:[14,2],'half plate':[15,2],'ring mail':[14,0],'chain mail':[16,0],splint:[17,0],plate:[18,0]};
+function unarmoredBase(){
+ let b=10;
+ mclasses.forEach(m=>{
+  if(m.c==='Monk')b=Math.max(b,10+mod('wis'));
+  if(m.c==='Barbarian')b=Math.max(b,10+mod('con'));
+  if(m.c==='Sorcerer'&&m.s==='Draconic Bloodline')b=Math.max(b,13);
+ });
+ if(el('raceLabel').textContent.toLowerCase().includes('lizardfolk'))b=Math.max(b,13);
+ return b;
+}
 function autoAC(){
- const a=el('armorSel').value||'none',b=ARMOR[a]||ARMOR.none;
- const dex=Math.min(mod('dex'),b[1]);
+ const a=el('armorSel').value||'none';
+ let ac;
+ if(a==='none')ac=unarmoredBase()+mod('dex');
+ else if(a==='mage')ac=13+mod('dex');
+ else{const b=ARMOR[a]||[10,99];ac=b[0]+Math.min(mod('dex'),b[1]);}
  const def=el('fightStyle').value==='defense'&&a!=='none'?1:0;
- el('ac').value=b[0]+dex+(el('shieldChk').checked?2:0)+def;
+ el('ac').value=ac+(el('shieldChk').checked?2:0)+def;
 }
 function spendHD(i){
  const m=mclasses[i]||mclasses[0],en=effName(m),d=HITDIE[en]||10,u=hdSpent[en]||0;
@@ -854,7 +893,8 @@ function levelUp(){
  gain+=feats.includes('Tough')?2:0;
  el('hpmax').value=Number(el('hpmax').value)+gain;el('hp').value=el('hpmax').value;
  renderClassRows();rebuild();
- log(`LEVEL UP → ${effName(m)} ${m.l}. HP +${gain}. New: ${featuresFor(effName(m),m.l).join('; ')||'—'}`);
+ const nf=featuresFor(effName(m),m.l).concat(((SUBFEATS[m.c]||{})[m.s||'']||{})[m.l]||[]);
+ log(`LEVEL UP → ${effName(m)} ${m.l}. HP +${gain}. New: ${nf.join('; ')||'—'}${nf.some(f=>f.includes('Ability Score'))?' — ASI: bump two stats or add a feat.':''}`);
  saveState();
 }
 function healPrompt(){const n=Number(prompt('Heal how much?','0'))||0;el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+n);saveState();}
