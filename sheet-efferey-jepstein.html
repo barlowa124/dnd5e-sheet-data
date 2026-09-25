@@ -91,7 +91,8 @@
 
 <h1 id="charName">Efferey Jepstein</h1>
 <div class="sub">
-  Level <input class="num-in" id="level" type="number" value="1" min="1" max="20" style="width:55px"> <span id="clsLabel">Ranger</span> ·
+  Level <input class="num-in" id="level" type="number" value="1" min="1" max="20" style="width:55px"> <span id="clsLabel">Ranger</span>
+  <select id="variantSel" style="display:none" onchange="setVariant()"></select> ·
   <span id="raceLabel">Yuan-ti Pureblood</span> · <span id="bgLabel">Criminal</span> · <span id="alignLabel">Neutral Evil</span> ·
   Prof Bonus <span class="bonus" id="profBonus">+2</span> ·
   XP <input class="num-in" id="xp" type="number" value="0" style="width:80px"> <span id="xpNext" class="sub"></span>
@@ -308,6 +309,39 @@ const RANGER_FEATURES={
 };
 let CLASS_FEATURES={'Ranger':RANGER_FEATURES};
 let OPTIONS=null;
+// Alternate class rules (UA etc.) — remote file can add more
+let VARIANTS={'Ranger':[
+ {n:'Ranger (Revised UA)',hitDie:10,caster:'half',spellStat:'wis',features:{
+  1:['Favored Enemy (adv. initiative & tracking vs. them; +2 dmg)','Natural Explorer — ANY terrain'],
+  2:['Fighting Style','Fleet of Foot','Primeval Awareness','Spellcasting'],
+  3:['Ranger Conclave — Beast Conclave: companion adds your prof to AC/attacks/dmg/saves; HP = max or 4×lvl'],
+  4:['Ability Score Improvement'],5:['Conclave feature','Extra Attack'],
+  6:['Greater Favored Enemy (+4 dmg)'],7:['Conclave feature'],
+  8:['Ability Score Improvement',"Land's Stride"],9:['— (slots improve)'],
+  10:['Conclave feature','Hide in Plain Sight'],11:['Conclave feature'],
+  12:['Ability Score Improvement'],13:['— (slots improve)'],14:['Vanish'],
+  15:['Conclave feature'],16:['Ability Score Improvement'],17:['— (slots improve)'],
+  18:['Feral Senses'],19:['Ability Score Improvement'],20:['Foe Slayer']}},
+ {n:'Ranger (Spell-less UA)',hitDie:10,caster:'none',features:(()=>{const f={...RANGER_FEATURES};f[2]=['Fighting Style','Poultices & Natural Remedies (UA — replaces Spellcasting)'];return f;})()}
+]};
+let baseClass='Ranger';
+function baseCls(){return baseClass;}
+function populateVariants(){
+ const vs=VARIANTS[baseClass]||[];
+ const sel=el('variantSel');
+ sel.innerHTML=`<option value="">${baseClass} (standard)</option>`+vs.map(v=>`<option>${v.n}</option>`).join('');
+ sel.style.display=vs.length?'inline':'none';
+}
+function setVariant(){el('clsLabel').textContent=el('variantSel').value||baseClass;rebuild();saveState();}
+function registerVariants(){
+ Object.keys(VARIANTS).forEach(base=>(VARIANTS[base]||[]).forEach(v=>{
+  HITDIE[v.n]=v.hitDie||HITDIE[base]||10;
+  CASTER[v.n]=v.caster||CASTER[base]||'none';
+  SPELLSTAT[v.n]=v.spellStat||SPELLSTAT[base]||'wis';
+  CLASS_FEATURES[v.n]=v.features||{};
+ }));
+}
+registerVariants();
 
 // Embedded ranger spell list (also in repo as ranger-spells-full.json)
 const SPELLS=[]; // populated by loadRemote + embedded fallback below
@@ -444,11 +478,11 @@ function rebuild(){
  el('spellDC').textContent=8+p+mod(ss);
  el('spellAtk').textContent=fmt(p+mod(ss));
  el('innateDC').textContent=8+p+mod('cha');
- el('spellsKnown').textContent=cls()==='Ranger'?(KNOWN[l]||0):'—';
+ el('spellsKnown').textContent=baseCls()==='Ranger'&&CASTER[cls()]!=='none'?(KNOWN[l]||0):'—';
  const casting=CASTER[cls()]!=='none'&&!(CASTER[cls()]==='half'&&l<2)&&!(CASTER[cls()]==='third'&&l<3);
  el('spellLocked').style.display=casting?'none':'block';
  el('spellUnlocked').classList.toggle('locked',!casting);
- const hasComp=cls()==='Ranger'&&l>=3;
+ const hasComp=baseCls()==='Ranger'&&l>=3;
  el('compLocked').style.display=hasComp?'none':'block';
  el('compUnlocked').classList.toggle('locked',!hasComp);
  pickCompanion(el('compPick')?el('compPick').value:'');
@@ -534,7 +568,8 @@ function collectState(){
  s._ds=[...document.querySelectorAll('.ds-pip')].map(p=>p.classList.contains('on'));
  s._spent={};document.querySelectorAll('.slot-pip.spent').forEach(p=>{const i=p.dataset.slot;s._spent[i]=(s._spent[i]||0)+1;});
  s._inv=inv;s._known=knownSpells;
- s._cls=cls();s._race=el('raceLabel').textContent;s._bg=el('bgLabel').textContent;s._align=el('alignLabel').textContent;
+ s._cls=baseClass;s._variant=el('variantSel').value||'';
+ s._race=el('raceLabel').textContent;s._bg=el('bgLabel').textContent;s._align=el('alignLabel').textContent;
  s._bio=el('bio').textContent;
  s._sugg=suggestionUsed;
  return s;
@@ -547,7 +582,7 @@ function applyState(s){
   const e=el(k);if(!e)return;
   if(e.type==='checkbox')e.checked=s[k];else e.value=s[k];
  });
- if(s._cls)el('clsLabel').textContent=s._cls;
+ if(s._cls){baseClass=s._cls;populateVariants();el('variantSel').value=s._variant||'';el('clsLabel').textContent=s._variant||s._cls;}
  if(s._race)el('raceLabel').textContent=s._race;
  if(s._bg)el('bgLabel').textContent=s._bg;
  if(s._align)el('alignLabel').textContent=s._align;
@@ -734,7 +769,7 @@ el('conds').innerHTML=CONDS.map(c=>`<span class="tag" onclick="this.classList.to
 const DATA_BASE='https://raw.githubusercontent.com/barlowa124/dnd5e-sheet-data/main/data/';
 async function loadRemote(){
  try{
-  const [eq,mo,co,sp,extra,opts,cf,rng,ua]=await Promise.all([
+  const [eq,mo,co,sp,extra,opts,cf,rng,ua,cv]=await Promise.all([
    fetch(DATA_BASE+'5e-SRD-Equipment.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Monsters.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Conditions.json').then(r=>r.json()),
@@ -743,7 +778,8 @@ async function loadRemote(){
    fetch(DATA_BASE+'options.json').then(r=>r.json()).catch(()=>null),
    fetch(DATA_BASE+'class-features.json').then(r=>r.json()).catch(()=>null),
    fetch(DATA_BASE+'ranger-spells-full.json').then(r=>r.json()).catch(()=>[]),
-   fetch(DATA_BASE+'ua.json').then(r=>r.json()).catch(()=>null)
+   fetch(DATA_BASE+'ua.json').then(r=>r.json()).catch(()=>null),
+   fetch(DATA_BASE+'class-variants.json').then(r=>r.json()).catch(()=>null)
   ]);
   EQUIPMENT=eq;
   el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}"></option>`).join('');
@@ -762,6 +798,13 @@ async function loadRemote(){
    }
    if(ua.uaSpells)ALLSPELLS=ua.uaSpells.concat(ALLSPELLS);
   }
+  if(cv)Object.keys(cv).forEach(base=>{
+   if(base==='note')return;
+   VARIANTS[base]=VARIANTS[base]||[];
+   cv[base].forEach(v=>{if(!VARIANTS[base].find(x=>x.n===v.n))VARIANTS[base].push(v);});
+  });
+  registerVariants();populateVariants();
+  el('variantSel').value=el('clsLabel').textContent===baseClass?'':el('clsLabel').textContent;
   populateNC();
   rebuild();
   log(`Repo content: ${eq.length} items · ${mo.length} monsters · ${srd.length}+${extra.length} spells · ${co.length} conditions`);
