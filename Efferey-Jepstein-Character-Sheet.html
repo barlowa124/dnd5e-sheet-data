@@ -40,6 +40,7 @@
   .tag.on { background:var(--accent); color:#fff; }
   .newfeat { color:var(--good); font-weight:bold; }
   [title] { cursor:help; }
+  .tipbox { position:fixed; background:#241a12; color:var(--text); border:1px solid var(--accent); padding:7px 10px; border-radius:6px; font:12px/1.5 Georgia,serif; max-width:330px; white-space:pre-line; z-index:9999; pointer-events:none; box-shadow:0 4px 14px rgba(0,0,0,.55); }
   .locked { opacity:.45; }
   .slot-pip { display:inline-block; width:16px; height:16px; border-radius:50%; border:2px solid var(--accent); margin:2px; cursor:pointer; }
   .slot-pip.spent { background:var(--accent); }
@@ -911,7 +912,7 @@ const SEC={'Barbarian':'con','Paladin':'cha','Ranger':'wis','Fighter':'con','Rog
 const CLASS_SAVES={'Barbarian':['str','con'],'Bard':['dex','cha'],'Cleric':['wis','cha'],'Druid':['int','wis'],'Fighter':['str','con'],'Monk':['str','dex'],'Paladin':['wis','cha'],'Ranger':['str','dex'],'Rogue':['dex','int'],'Sorcerer':['con','cha'],'Warlock':['wis','cha'],'Wizard':['int','wis'],'Artificer':['con','int']};
 const MULTI_REQ={'Barbarian':['str'],'Bard':['cha'],'Cleric':['wis'],'Druid':['wis'],'Fighter':['str|dex'],'Monk':['dex','wis'],'Paladin':['str','cha'],'Ranger':['dex','wis'],'Rogue':['dex'],'Sorcerer':['cha'],'Warlock':['cha'],'Wizard':['int'],'Artificer':['int']};
 const RACE_ASI=[
- ['yuan-ti',{int:2,cha:1}],['variant human',{dex:1,int:1}],['hill dwarf',{con:2,wis:1}],['mountain dwarf',{con:2,str:2}],['dwarf',{con:2}],
+ ['yuan-ti',{cha:2,int:1}],['variant human',{dex:1,int:1}],['hill dwarf',{con:2,wis:1}],['mountain dwarf',{con:2,str:2}],['dwarf',{con:2}],
  ['high elf',{dex:2,int:1}],['wood elf',{dex:2,wis:1}],['drow',{dex:2,cha:1}],['eladrin',{dex:2,cha:1}],['sea elf',{dex:2,con:1}],['shadar-kai',{dex:2,con:1}],['avariel',{dex:2,int:1}],['elf',{dex:2}],
  ['lightfoot',{dex:2,cha:1}],['stout',{dex:2,con:1}],['ghostwise',{dex:2,wis:1}],['halfling',{dex:2}],
  ['dragonborn',{str:2,cha:1}],['forest gnome',{dex:1,int:2}],['rock gnome',{con:1,int:2}],['deep gnome',{dex:1,int:2}],['gnome',{int:2}],
@@ -1634,6 +1635,25 @@ async function loadRemote(){
   log(`Repo content: ${eq.length} items · ${mo.length} monsters · ${srd.length}+${extra.length} spells · ${co.length} conditions`);
  }catch(e){log('Repo unreachable — running on built-in data.');populateNC();}
 }
+
+// custom tooltips — instant, styled (native title tooltips suppressed by moving title→data-tip on hover)
+let tipEl=null;
+document.addEventListener('mouseover',e=>{
+ const t=e.target.closest&&e.target.closest('[title]');
+ if(tipEl){tipEl.remove();tipEl=null;}
+ if(!t||!t.title)return;
+ t.dataset.tip=t.title;t.removeAttribute('title');
+ tipEl=document.createElement('div');tipEl.className='tipbox';tipEl.textContent=t.dataset.tip;
+ document.body.appendChild(tipEl);
+ const r=t.getBoundingClientRect(),w=tipEl.offsetWidth,h=tipEl.offsetHeight;
+ tipEl.style.left=Math.min(innerWidth-w-8,Math.max(4,r.left))+'px';
+ tipEl.style.top=(r.bottom+8+h>innerHeight?Math.max(4,r.top-h-8):r.bottom+8)+'px';
+});
+document.addEventListener('mouseout',e=>{
+ const t=e.target.closest&&e.target.closest('[data-tip]');
+ if(t&&t.dataset.tip!==undefined){t.title=t.dataset.tip;delete t.dataset.tip;}
+ if(tipEl){tipEl.remove();tipEl=null;}
+});
 
 // ================= BOOT =================
 populateCharSel();
