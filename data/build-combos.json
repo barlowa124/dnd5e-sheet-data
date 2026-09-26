@@ -52,7 +52,7 @@
 [
 "Hexblade 1",
 "warlock dip lvl:4",
-"One level: your attack stat becomes Cha (which yuan-ti already boosts), plus Hexblade's Curse for +prof damage on a chosen target. Turns a skill monkey into a duelist on the stat he already has."
+"One level: your attack stat becomes Cha (which yuan-ti already boosts), plus Hexblade's Curse for +prof damage on a chosen target. Turns a skill monkey into a duelist on the stat you already boost."
 ],
 [
 "Rogue 1-2",
@@ -276,7 +276,7 @@
 ],
 [
 "Subtle Suggestion (Metamagic Adept)",
-"feat lvl:4",
+"feat yuan-ti lvl:1",
 "The TCE feat: 2 sorcery points plus two metamagics. Take Subtle — no verbal or somatic components. On yuan-ti, the racial suggestion spell now leaves no evidence at all; on anyone it makes social spells unprovable."
 ],
 [

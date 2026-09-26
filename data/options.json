@@ -356,7 +356,7 @@
 "src": "VRGR",
 "asi": "+2 +1 any",
 "spd": 30,
-"note": "He already died once — meta"
+"note": "Undead-lite: no sleep/breath/aging, past-life knowledge"
 },
 {
 "n": "Owlin",
@@ -570,7 +570,7 @@
 {
 "n": "Dual Wielder",
 "src": "PHB",
-"desc": "+1 AC dual-wielding, bigger dice — two scimitars already"
+"desc": "+1 AC dual-wielding, allows non-light weapons"
 },
 {
 "n": "Dungeon Delver",
@@ -675,7 +675,7 @@
 {
 "n": "Observant",
 "src": "PHB",
-"desc": "+1 Int/Wis, +5 passive Perception — watch the prison guards"
+"desc": "+1 Int/Wis, +5 passive Perception/Investigation, read lips"
 },
 {
 "n": "Polearm Master",
