@@ -193,6 +193,8 @@
     <h2>Hit Points</h2>
     <div><input class="num-in hp-cur" id="hp" type="number" value="11"> / <input class="num-in" id="hpmax" type="number" value="11"></div>
     <div style="margin-top:6px">Temp: <input class="num-in" id="temphp" type="number" value="0" style="width:55px"></div>
+    <div class="sub" style="margin-top:4px">Drain: <select id="drainStat"><option value="maxhp">max HP</option><option>str</option><option>dex</option><option>con</option><option>int</option><option>wis</option><option>cha</option></select> <input class="num-in" id="drainAmt" type="number" style="width:42px" value="1"> <button onclick="applyDrain()">Apply</button> <button onclick="restoreDrains()">Restore</button></div>
+    <div class="sub" id="drainList">none</div>
     <div style="margin-top:8px"><button onclick="healPrompt()">Heal</button> <button onclick="dmgPrompt()">Damage</button> <button onclick="shortRest()">Short Rest</button> <button onclick="longRest()">Long Rest</button></div>
     <div class="sub" style="margin-top:6px">Concentrating: <input class="txt-in" id="concSpell" style="width:130px;display:inline" placeholder="—"> <button onclick="el('concSpell').value='';saveState();log('Concentration dropped.')">Drop</button></div>
     <h2>Death Saves</h2>
@@ -254,6 +256,10 @@
     <div id="featsList"></div>
     <input class="txt-in" id="featPick" list="featList" style="width:170px;display:inline" placeholder="add feat…"><datalist id="featList"></datalist>
     <button onclick="addFeat()">Add</button>
+    <h2>Epic Boons <span class="sub">(post-20)</span></h2>
+    <div id="boonList"></div>
+    <input class="txt-in" id="boonPick" list="boonDL" style="width:170px;display:inline" placeholder="add boon…"><datalist id="boonDL"></datalist>
+    <button onclick="addBoon()">Add</button>
   </div>
   <div class="panel" id="spellPanel">
     <h2>Spellcasting</h2>
@@ -1034,7 +1040,7 @@ function spendPact(l){
 
 // ================= LEVEL / REST =================
 function levelUp(){
- if(lvl()>=20){log('Max level.');return;}
+ if(lvl()>=20){log('Level cap — DMG rule: post-20 advances are Epic Boons or ASIs. Pick one in the Feats panel.');el('boonPick').focus();return;}
  const planLv=lvl()+1,bp=buildPlan[planLv]||{};
  let i=0;
  if(bp.c){
@@ -1102,6 +1108,9 @@ function longRest(){
  document.querySelectorAll('.ds-pip').forEach(s=>s.classList.remove('on'));
  resources.forEach(r=>r.used=0);renderRes();
  supplies.forEach(s=>{if(s.burn==='rest'&&s.q>0){s.q--;if(s.q===0)log('Out of '+s.n+'.');}});renderSup();
+ if(hpDrain||Object.keys(statDrain).length){
+  if(confirm('Restore HP/ability drains on this long rest? (Cancel = they persist — some need Greater Restoration.)'))restoreDrains();
+ }
  el('concSpell').value='';
  suggestionUsed=false;el('suggBtn').disabled=false;
  rebuild();
@@ -1267,6 +1276,22 @@ function renderPlan(){
  el('planTable').innerHTML=h;
 }
 
+// ================= DRAINS & EPIC =================
+let statDrain={},hpDrain=0,epicBoons=[];
+const EPIC_BOONS={'Boon of Combat Prowess':'once per turn, turn a missed attack into a hit','Boon of Dimensional Travel':'bonus action — teleport to a spot within 30 ft','Boon of Fate':'+/-2d4 to a roll within 60 ft, 1/short rest','Boon of Fortitude':'+40 max HP','Boon of High Magic':'gain a 9th-level slot','Boon of Immortality':'stop aging; immune to age effects','Boon of Invincibility':'reduce any damage to 0, 1/short rest','Boon of Irresistible Offense':'your attacks overcome resistances; treat immune as resistant','Boon of Luck':'+10 to one check/attack/save, 1/short rest','Boon of Magic Resistance':'advantage on all saves vs spells and magic','Boon of Peerless Aim':'+20 to one ranged attack, 1/short rest','Boon of Perfect Health':'immune to disease and poison','Boon of Quick Casting':'cast a 1st–3rd spell as a bonus action, 1/short rest','Boon of Recovery':'regain half your HP, 1/long rest','Boon of Resilience':'immune to one non-B/P/S damage type','Boon of Skill Proficiency':'proficient in all skills','Boon of Speed':'+30 ft speed','Boon of Spell Mastery':'one 1st–8th spell cast at will, lowest level','Boon of Spell Recall':'cast any spell you know without a slot, 1/short rest','Boon of the Fire Soul':'fire immunity; cast fireball at will (or similar)','Boon of the Night Spirit':'dim light/darkness = invisible; Hide as bonus action','Boon of the Stormborn':'lightning immunity; fly 60; storm flavor','Boon of the Unfettered':'can\u2019t be grappled/restrained; freedom of movement','Boon of Truesight':'truesight 60 ft','Boon of Undetectability':'can\u2019t be detected or seen unless you choose','Ability Score Improvement':'+2/+1 stats, or a feat'};
+function applyDrain(){
+ const s=el('drainStat').value,n=Math.max(1,+el('drainAmt').value||0);
+ if(s==='maxhp'){el('hpmax').value=Math.max(1,+el('hpmax').value-n);el('hp').value=Math.min(+el('hp').value,+el('hpmax').value);hpDrain+=n;log(`Max HP drained ${n} → max ${el('hpmax').value}.`);}
+ else{const e=statEl(s);e.value=Math.max(0,+e.value-n);statDrain[s]=(statDrain[s]||0)+n;
+  log(`${s.toUpperCase()} drained ${n} → ${e.value}${+e.value===0?' — 0: dead or unconscious per most drain effects':''}`);rebuild();}
+ renderDrains();saveState();}
+function restoreDrains(){Object.keys(statDrain).forEach(s=>{statEl(s).value=+statEl(s).value+statDrain[s];});
+ if(hpDrain)el('hpmax').value=+el('hpmax').value+hpDrain;
+ statDrain={};hpDrain=0;renderDrains();rebuild();saveState();log('All drains restored.');}
+function renderDrains(){const d=(hpDrain?`max HP −${hpDrain} · `:'')+Object.entries(statDrain).map(([s,v])=>`${s.toUpperCase()} −${v}`).join(' · ');el('drainList').innerHTML=d||'none';}
+function renderBoons(){if(!el('boonList'))return;el('boonList').innerHTML=epicBoons.map((b,i)=>`<span class="tag" title="${esc(EPIC_BOONS[b]||'')}">${b} <a href="#" onclick="epicBoons.splice(${i},1);renderBoons();saveState();return false" style="color:#c00">×</a></span>`).join('')||'<span class="sub">none yet — DMG epic boons replace levels past 20</span>';}
+function addBoon(){const n=el('boonPick').value.trim();if(!n)return;epicBoons.push(n);el('boonPick').value='';renderBoons();saveState();}
+
 // ================= PERSISTENCE =================
 const STORE_KEY='dnd5e-sheet-v2';
 let store=JSON.parse(localStorage.getItem(STORE_KEY)||'{"current":"Efferey Jepstein","chars":{}}');
@@ -1284,6 +1309,7 @@ function collectState(){
  s._inv=inv;s._known=knownSpells;s._res=resources;s._atk=customAtk;
  s._mclasses=mclasses;s._hd=hdSpent;s._feats=feats;s._init={o:initOrder,i:initIdx};s._mob=mobBook;
  s._macros=macros;s._sup=supplies;s._hb=hb;s._dstat=dstat;s._snaps=snaps;s._turn={u:turnUse,r:roundN};s._ws=wsSel;s._plan=buildPlan;
+ s._drain={s:statDrain,h:hpDrain};s._boons=epicBoons;
  s._cls=baseCls();s._variant=mclasses[0].v||'';
  s._race=el('raceLabel').textContent;s._bg=el('bgLabel').textContent;s._align=el('alignLabel').textContent;
  s._bio=el('bio').textContent;
@@ -1315,6 +1341,9 @@ function applyState(s){
  if(s._turn){turnUse=s._turn.u||{a:0,b:0,r:0};roundN=s._turn.r||0;}
  if(s._ws)wsSel=s._ws;
  buildPlan=s._plan||{};
+ if(s._drain){statDrain=s._drain.s||{};hpDrain=s._drain.h||0;}
+ epicBoons=s._boons||[];
+ renderDrains();renderBoons();
  renderRes();renderAtkCustom();renderMacros();renderSup();applyHB();renderHB();updateDiceStats();renderTurn();
  suggestionUsed=!!s._sugg;el('suggBtn').disabled=suggestionUsed;
  rebuild();
@@ -1615,6 +1644,7 @@ renderAtkCustom();
 renderRes();
 el('pbBtns').innerHTML=STAT_ORDER.map(s=>`${s.toUpperCase()} <button onclick="pbBump('${s}',-1)">−</button><button onclick="pbBump('${s}',1)">+</button>`).join(' ');
 el('sumSel').innerHTML=Object.keys(SUMMONS).map(n=>`<option>${n}</option>`).join('');
+el('boonDL').innerHTML=Object.keys(EPIC_BOONS).map(n=>`<option value="${n}">`).join('');
 renderSummon();renderRules();renderMacros();renderSup();updateDiceStats();renderTurn();renderProfs();
 if(store.chars[curChar])applyState(store.chars[curChar]);
 rebuild();renderCoins();loadRemote();
