@@ -12,7 +12,7 @@
 [
 "Gloom Stalker",
 "ranger sub lvl:3",
-"The power subclass. Turn one: an extra attack, +10 ft move, +1d8 on the bonus hit. Umbral Sight makes you invisible to darkvision — and in Hell EVERYTHING has darkvision. You are a ghost on the one plane built entirely on seeing in the dark."
+"The power subclass. Turn one: an extra attack, +10 ft move, +1d8 on the bonus hit. Umbral Sight makes you invisible to darkvision — which is how most monsters and the entire underdark see. In dark places you are a ghost."
 ],
 [
 "Gloom Stalker 3 / Assassin 3",
@@ -22,27 +22,27 @@
 [
 "Fey Wanderer",
 "ranger sub lvl:3",
-"The charmer chassis: +1d4 psychic on weapon hits, Wisdom feeds your face skills, free charm person by lvl 5. Mechanically solid and it is literally a snake charmer — the Cha-keyed tricks ride on the yuan-ti +2 Cha."
+"The charmer chassis: +1d4 psychic on weapon hits, Wisdom feeds your face skills, free charm person by lvl 5. Mechanically solid and the rare ranger that leans face instead of pure damage."
 ],
 [
 "Swarmkeeper",
 "ranger sub lvl:3",
-"A swarm that follows you and eats people — reflavor it as SNAKES and the theme writes itself. Per hit: +1d6 damage, or shove them 15 ft, or teleport yourself 5 ft. Level 8 adds flight."
+"A swarm that follows you and eats people — reflavor it as anything (bees, ravens, loose coins). Per hit: +1d6 damage, or shove them 15 ft, or move yourself. The utility pick with real damage underneath."
 ],
 [
 "Horizon Walker",
 "ranger sub lvl:3",
-"The fiend-hunter's fiend-hunter: +1d8 force damage, portal senses, banishing smite at 9 — it sends things back to their home plane. You are already on their home plane. It was written for this campaign."
+"The planar ranger: +1d8 force damage, portal senses, banishing smite at 9 — it sends extraplanar creatures back to their home plane whether they like it or not."
 ],
 [
 "Beast Master (TCE rewrite)",
 "ranger sub lvl:3",
-"Primal Companion — reflavor Beast of the Land as a giant constrictor and Acosta becomes a real stat block: HP scales with you, acts on your command as a bonus action, revives with a spell slot. The old PHB beast master is why the ranger had a bad rep; the TCE one is good."
+"Primal Companion — the TCE rewrite fixed the class. The beast's HP scales with you, it acts on your bonus action, and it re-summons free on a long rest. Reflavor Beast of the Land as whatever fits."
 ],
 [
 "Darkness + Devil's Sight",
 "warlock dip lvl:4",
-"Magical darkness beats normal darkvision — even fiends cannot see through it. Devil's Sight (warlock 2) can. You attack with advantage; they swing blind. In a plane where darkness is the weather, this is a siege engine."
+"Magical darkness beats normal darkvision — nearly everything in the game sees through dark but NOT through this. Devil's Sight (warlock 2) does. You attack with advantage; they swing blind."
 ],
 [
 "Eldritch Adept",
@@ -57,7 +57,7 @@
 [
 "Rogue 1-2",
 "rogue dip lvl:2",
-"Expertise x2 — double Stealth or Deception so the criminal resume is mechanically literal — plus Sneak Attack dice on a Sharpshooter shot. Rogue 2 adds Cunning Action: dash, disengage, or hide as a bonus action every turn."
+"Expertise x2 — double proficiency on your two best skills — plus Sneak Attack dice on any finesse/ranged hit, Cunning Action's mobility, and Swashbuckler-style free disengages at 9."
 ],
 [
 "Favored Foe (TCE)",
@@ -77,17 +77,17 @@
 [
 "Pass without Trace",
 "ranger spell lvl:5",
-"+10 to the whole party's stealth for an hour — the infiltration button. Criminal background written in spell slots: everyone walks in, nobody hears a thing."
+"+10 to the whole party's stealth for an hour — the infiltration button. Heavy armor, dump-stat dex, whatever: everyone walks in under this."
 ],
 [
 "Absorb Elements",
 "ranger spell lvl:1",
-"Reaction: halve fire/acid/etc damage and add 1d6 of that element to your next hit. In Avernus everything breathes fire; yuan-ti already has poison covered — this covers the plane's actual weather."
+"Reaction: halve fire/acid/cold/lightning/thunder damage and add 1d6 of it to your next hit. The single best defensive slot any half-caster owns — a 1st-level spell that scales forever."
 ],
 [
 "Conjure Animals",
 "ranger spell lvl:9",
-"One slot, up to eight poisonous snakes under your command — the snake charmer's graduation exam. Also just objectively the strongest 3rd-level summon in the game."
+"One slot, up to eight beasts under your command — eight wolves knocking things prone, eight snakes stacking poison saves. Objectively the strongest 3rd-level slot; the DM picks the animals, which is its only balance."
 ],
 [
 "Polearm Master",
@@ -107,22 +107,22 @@
 [
 "Alert",
 "ranger feat lvl:4",
-"+5 initiative and immune to surprise — stacks with Gloom Stalker's ambush math. In Hell, where everything ambushes, going first is a build feature."
+"+5 initiative and immune to surprise — stacks with Gloom Stalker's ambush math. Going first is a build feature: the alpha strike decides fights before they start."
 ],
 [
 "Inspiring Leader",
 "feat lvl:4",
-"After every rest: temp HP for the whole party equal to level+Cha. The yuan-ti +2 Cha makes it land, and a snake charmer rallying a room is on-brand."
+"After every rest: temp HP for the whole party equal to level+Cha. Any +Cha race makes it land — at mid levels that is a free life total for six people per short rest."
 ],
 [
 "Actor",
 "feat lvl:4",
-"+1 Cha, mimic voices perfectly, advantage on Deception when impersonating someone. It is literally the Epstein skillset printed as a feat. Criminal synergy is self-evident."
+"+1 Cha, mimic voices perfectly, advantage on Deception when impersonating someone. The infiltration feat — enter as anyone, sound like anyone."
 ],
 [
 "Lucky",
 "feat lvl:4",
-"Three free rerolls a day, yours or theirs. Narratively accurate — his whole existence is luck running out, and now it's a resource you manage."
+"Three free rerolls a day, yours or theirs — attacks, saves, or checks. The feat that is never wasted: it converts three disasters per day into fresh rolls."
 ],
 [
 "Magic Initiate (Warlock)",
@@ -277,7 +277,7 @@
 [
 "Subtle Suggestion (Metamagic Adept)",
 "feat lvl:4",
-"The TCE feat: 2 sorcery points plus two metamagics. Take Subtle — no verbal or somatic components. Yuan-ti's racial suggestion now leaves no trace: charm someone and nobody saw a spell happen. The criminal's feat."
+"The TCE feat: 2 sorcery points plus two metamagics. Take Subtle — no verbal or somatic components. On yuan-ti, the racial suggestion spell now leaves no evidence at all; on anyone it makes social spells unprovable."
 ],
 [
 "Fey Touched",
@@ -352,7 +352,7 @@
 [
 "Speak with Animals (ritual)",
 "ranger spell lvl:1",
-"Ritual-cast free — every snake in Hell is a witness. A snake charmer with ritual speak is the nosiest man in Avernus."
+"Ritual-cast free — every animal is a witness and most DMs play them honest. The cheapest intel network in the game; ten minutes of prep buys a dungeon's whole layout."
 ],
 [
 "Druidic Warrior + Shillelagh",
@@ -527,12 +527,12 @@
 [
 "Mask of Many Faces",
 "warlock lvl:2",
-"At-will disguise self, unlimited — infinite faces at will, no slot. The infiltration invocation; a criminal could not ask for a better cheat code."
+"At-will disguise self, unlimited — infinite identities, no slot. The infiltration invocation; pairs with every social encounter in the game."
 ],
 [
 "Fiend lock",
 "warlock sub lvl:1",
-"Temp HP every time something dies near you — and things die a lot. On-theme for Hell and quietly the sturdiest patron."
+"Temp HP every time something hostile dies near you — and things die a lot. Quietly the sturdiest patron; the temp HP never stops ticking."
 ],
 [
 "War Wizard 2",
@@ -650,44 +650,44 @@
 "Riposte turns enemy misses into your attacks — on a barb or monk the dip adds a whole reaction economy with three levels."
 ],
 [
-"Aberrant Sorc / criminal anything",
+"Aberrant Sorc + skill expertise",
 "sorcerer combo lvl:5",
 "Subtle psychic spells + Deception expertise: nobody ever sees the charm happen. The social-combat build — mind control with no witnesses."
 ],
 [
-"Silvered weapons — the devil loophole",
+"Silvered weapons vs fiends",
 "gear lvl:1",
-"Devils resist nonmagical weapon damage ONLY if it isn't silvered — a silvered arrow/bolt is 100 gp and bypasses the resistance on every fiend in the plane. In Hell this is the cheapest +damage in the game. Silver the bow."
+"Devils and similar fiends resist nonmagical weapon damage ONLY if it isn't silvered — a silvered weapon or arrow is 100 gp and bypasses the resistance outright. Against fiend-heavy foes, the cheapest +damage purchase in the game."
 ],
 [
 "Mace of Disruption",
 "gear lvl:8",
-"A fiend hit by it: DC 15 save or DESTROYED outright — a coin-flip delete button on every devil in existence. Even on a pass it takes radiant damage and glows. The anti-Hell item; worth a strength dip just to swing."
+"An undead or fiend hit by it: DC 15 save or DESTROYED outright — a coin-flip delete on two whole creature types. Even on a pass it takes extra radiant damage."
 ],
 [
 "Iron Flask",
 "gear lvl:10",
-"Throw it at a fiend: DC 17 or it's trapped, then it serves YOU for an hour when released. In Hell it's a pokeball for devils — legally dubious, mechanically magnificent."
+"Throw it: DC 17 or the creature is trapped — and a trapped outsider (fiend, celestial, elemental, fey) can be released to serve YOU for an hour. A pokeball with rules; expect the table to argue about it."
 ],
 [
 "Dimensional Shackles",
 "gear lvl:8",
-"Clamp them on a creature and it cannot teleport or plane-shift — a devil that can't go home. The devil-binder kit: summon or corner a fiend, shackle it, now you have a witness."
+"Clamp them on a creature and it cannot teleport or plane-shift — extraplanar creatures cannot flee home. The binder kit: capture it, shackle it, it stays."
 ],
 [
 "Lantern of Revealing",
 "gear lvl:5",
-"A hooded lantern that makes ALL invisible things visible in 30 ft — fiends go invisible constantly (imps especially). One 5-gp-once-trinket hard-counters half the ambush tactics in the plane."
+"A hooded lantern that makes ALL invisible things visible in 30 ft — hard-counters the standard imp/stalker/mage ambush tactic for the price of a lamp."
 ],
 [
-"Crystal Ball — the wife finder",
+"Crystal Ball",
 "gear lvl:8",
-"Scrying at will on a creature you know — the character's entire quest is find one woman in Hell, and this item is literally a find-one-person machine. Ask the DM very nicely."
+"Scrying at will on a creature you know or have met — one-attunement answer to 'find this specific person anywhere on any plane.' The locate-person item."
 ],
 [
 "Flame Tongue — the anti-pick",
 "gear lvl:5",
-"Honest warning: 2d6 fire on hit, in a plane where nearly everything is immune to fire. In the mortal realms it's a great sword; in Hell it's a +0 with a glow. Do not buy the shiny red sword."
+"Honest warning: 2d6 fire on hit is the most-resisted element in the game — whole creature types (fiends, fire elementals, red dragons) are flat immune. Check the campaign's enemies before buying the shiny sword; against the wrong foes it is a +0."
 ],
 [
 "Mantle of Spell Resistance — redundant",
@@ -702,32 +702,32 @@
 [
 "Frost Brand",
 "gear lvl:8",
-"Fire resistance while held plus extra cold damage — the sword built for this exact plane: fire resist vs every breath weapon and burn aura in Avernus."
+"Fire resistance while held plus cold damage — the sword whose passive resists the most common area element in the game. Wherever fire is common, this is the pick over flame tongue."
 ],
 [
 "Sun Blade",
 "gear lvl:8",
-"Radiant damage finesse longsword — fiends don't resist radiant, and the sun imagery reads well when you're negotiating with devils who really do fear light."
+"Radiant-damage finesse longsword — radiant is almost never resisted, and the sun imagery reads well at every table."
 ],
 [
 "Holy water — the cheap counter",
 "gear lvl:1",
-"25 gp a flask, thrown like a weapon: 2d6 radiant to fiends and undead on a hit. The peasant's anti-devil tech — keep three flasks bandoliered."
+"25 gp a flask, thrown like a weapon: 2d6 radiant to fiends and undead on a hit. The peasant's anti-outsider tech — stock it when the campaign turns planar."
 ],
 [
 "Arrows of Slaying",
 "gear lvl:5",
-"Arrows exist keyed to creature types — Fiend-Slaying arrows make the target save DC 17 or take +6d10. For the one devil that has to die this session."
+"Ammunition exists keyed to creature types — a type-matched arrow forces DC 17 or adds +6d10. Buy the type you keep fighting; one arrow decides one fight."
 ],
 [
 "Oathbow",
 "gear lvl:7",
-"Whisper the enemy's name: it becomes your sworn foe, you get advantage-ish accuracy and +3d6 to everything against it until it dies — the vendetta bow. Whisper a pit fiend's name and mean it."
+"Whisper the enemy's name: it becomes your sworn foe — accuracy and +3d6 against it until it dies. The single-target execution bow; name the boss."
 ],
 [
 "Ring of Mind Shielding",
 "gear lvl:3",
-"Immune to detect thoughts, zone of truth, magic reading your lies — the ring that makes you un-deposable. Criminal essential #1."
+"Immune to detect thoughts, zone of truth, and lie-detection magic — the ring that makes your story unverifiable. Pairs with every deception build."
 ],
 [
 "Amulet of Proof Against Detection",
@@ -742,17 +742,17 @@
 [
 "Medallion of Thoughts",
 "gear lvl:4",
-"Detect thoughts on a charge — the interrogator's locket. Paired with criminal deception work, it's a truth serum you wear."
+"Detect thoughts on a charge — the interrogator's locket. Paired with high Deception, conversations stop being fair."
 ],
 [
 "Forgery + disguise kits",
 "gear lvl:1",
-"The mundane version: the criminal background hands you the skills, and the kits make new identities and documents. In a plane run on contracts, forged paperwork is a weapon."
+"The mundane infiltration pair: new identities and documents made of paper. In any setting where authority runs on documents, the kit is a weapon."
 ],
 [
 "Thieves' tools — actual uses",
 "gear lvl:1",
-"Pick locks, disarm traps — and in a contract-law plane, the real theft is documents. The tools open the cabinet; the forgery kit closes the deal."
+"Pick locks, disarm traps — and where the valuable thing is information, the tools open the cabinet the documents live in."
 ],
 [
 "Bag of Holding + Portable Hole",
@@ -822,7 +822,7 @@
 [
 "Folding Boat",
 "gear lvl:4",
-"A boat that folds to a box — and the Styx has ferries, currents, and things you do not want to wade past. Owning a boat in Hell is unreasonably powerful."
+"A boat that folds to a box — every river, lake, and river-of-doom encounter has a 'do we own a boat' answer, and it is yes."
 ],
 [
 "Rod of Absorption",
@@ -832,7 +832,7 @@
 [
 "Staff of the Python",
 "gear lvl:5",
-"The staff BECOMES a giant constrictor snake — the snake-charmer endgame item. Caveat: attunement is cleric/druid/warlock only — you need the dip or a sympathetic DM."
+"The staff BECOMES a giant constrictor snake at will — snake-as-a-weapon, full stop. Caveat: attunement is cleric/druid/warlock only — you need the dip or a sympathetic DM."
 ],
 [
 "Figurines of Wondrous Power",
@@ -862,7 +862,7 @@
 [
 "Crafting consumables",
 "gear lvl:2",
-"Herbalism kit brews healing potions; alchemist supplies craft acid and alchemist's fire; poisoner's kit brews basic poison (worthless vs fiends — they're immune). Downtime that converts to resources."
+"Herbalism kit brews healing potions; alchemist supplies craft acid and alchemist's fire; poisoner's kit brews basic poison (check enemy immunities — whole creature types ignore it). Downtime that converts to resources."
 ],
 [
 "Arrow-catching / missile-attraction shield",
@@ -870,9 +870,9 @@
 "The shield that draws ranged attacks away from your allies to you — pair with Gloves of Missile Snaring for the gimmick build: you are the arrow vacuum."
 ],
 [
-"Armor of Resistance — fire",
+"Armor of Resistance",
 "gear lvl:6",
-"Fire resistance armor in the plane where everything burns — quietly the best armor upgrade available in Avernus, above any +1."
+"Resistance to one damage type chosen at creation — pick the element your campaign is full of. A resisted element is worth more than any +1."
 ],
 [
 "Moon Sickle",
