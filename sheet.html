@@ -1798,7 +1798,9 @@ function playTune(){
   t+=d;}
  setTimeout(()=>{if(tuneCtx){tuneCtx.close();tuneCtx=null;}},(t-tuneCtx.currentTime+0.3)*1000);
  log('Playing melody guide — approximation in the Arabian Nights register, for pitch reference. Click ▶ again to stop.');}
-let singing=false;
+let singing=false,singWd=null,singUs=[],spokenAny=false,lastSpeechEv=0;
+function singDone(){singing=false;if(singWd){clearInterval(singWd);singWd=null;}
+ if(tuneCtx){tuneCtx.close();tuneCtx=null;}singUs=[];}
 function lyricLines(){
  const skip=/^(SNAKES|DEVILS|ALL|ACOSTA|A DAMNED SOUL)/;
  return el('showtune').value.split('\n').map(l=>l.trim())
@@ -1807,48 +1809,52 @@ function lyricLines(){
   .filter(l=>l.length>2);}
 function singTune(){
  if(!window.speechSynthesis)return log('No speech synthesis in this browser.');
- if(singing){speechSynthesis.cancel();singing=false;
-  if(tuneCtx){tuneCtx.close();tuneCtx=null;}log('Stopped.');return;}
+ if(singing){speechSynthesis.cancel();singDone();log('Stopped.');return;}
  const lines=lyricLines();
  if(!lines.length)return log('No lyrics to sing.');
  const vs=speechSynthesis.getVoices();
  const novelty=vs.find(v=>/good news|cellos|bells/i.test(v.name));
  const any=vs.find(v=>/^en/i.test(v.lang))||vs[0];
- singing=true;
- if(novelty){
+ singing=true;spokenAny=false;lastSpeechEv=Date.now();
+ const noveltyMode=!!novelty;
+ if(noveltyMode){
   log('Singing via "'+novelty.name+'" — the OS novelty voice carries its own tune.');
-  lines.forEach((l,i)=>{const u=new SpeechSynthesisUtterance(l);
-   u.voice=novelty;u.rate=.95;
-   if(i===lines.length-1)u.onend=()=>{singing=false;};
-   speechSynthesis.speak(u);});
  }else{
-  log('Singing whole lines over the melody — phrase loops underneath, pitch follows each phrase.');
+  if(!window.AudioContext&&!window.webkitAudioContext){singing=false;return log('No Web Audio for the melody.');}
   tuneCtx=new (window.AudioContext||window.webkitAudioContext)();
-  let li=0;
-  const step=()=>{
-   if(li>=lines.length){singing=false;
-    if(tuneCtx){tuneCtx.close();tuneCtx=null;}return;}
-   const ph=TUNE_PHRASES[li%TUNE_PHRASES.length];
-   const notes=ph.filter(n=>n[0]).map(n=>n[0]);
-   const mean=notes.length?notes.reduce((a,b)=>a+b,0)/notes.length:62;
-   const u=new SpeechSynthesisUtterance(lines[li]);
-   u.voice=any;
-   u.pitch=Math.min(1.7,Math.max(.6,Math.pow(2,(mean-69)/12)*1.4));
-   u.rate=1.05;
-   let t=tuneCtx.currentTime+0.25;
-   for(const [m,d] of ph){
-    if(m){const f=440*Math.pow(2,(m-69)/12);
-     const o=tuneCtx.createOscillator(),g=tuneCtx.createGain();
-     o.type='triangle';o.frequency.value=f;
-     g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.15,t+0.02);
-     g.gain.setTargetAtTime(0,t+Math.max(0.03,d-0.05),0.03);
-     o.connect(g);g.connect(tuneCtx.destination);o.start(t);o.stop(t+d);}
-    t+=d;}
-   const wd=setTimeout(()=>{if(singing){li++;step();}},14000);
-   u.onend=()=>{clearTimeout(wd);if(singing){li++;step();}};
-   speechSynthesis.speak(u);};
-  step();
- }}
+  // melody track — the whole verse+chorus cycle, looped ~2.5min, fully pre-scheduled
+  let t=tuneCtx.currentTime+0.3;
+  for(let c=0;c<8;c++)for(const ph of TUNE_PHRASES)for(const [m,d] of ph){
+   if(m){const f=440*Math.pow(2,(m-69)/12);
+    const o=tuneCtx.createOscillator(),g=tuneCtx.createGain();
+    o.type='triangle';o.frequency.value=f;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.14,t+0.02);
+    g.gain.setTargetAtTime(0,t+Math.max(0.03,d-0.05),0.03);
+    o.connect(g);g.connect(tuneCtx.destination);o.start(t);o.stop(t+d);}
+   t+=d;}
+  log('Singing over the looping melody guide — hit 🎤 again to stop.');
+ }
+ // speech track — every line queued at once; the engine plays them back-to-back
+ lines.forEach((l,i)=>{
+  const u=new SpeechSynthesisUtterance(l);
+  u.voice=novelty||any;
+  u.rate=noveltyMode?0.95:1.02;
+  const ph=TUNE_PHRASES[i%TUNE_PHRASES.length];
+  const notes=ph.filter(n=>n[0]).map(n=>n[0]);
+  const mean=notes.length?notes.reduce((a,b)=>a+b,0)/notes.length:62;
+  u.pitch=noveltyMode?1:Math.min(1.7,Math.max(.6,Math.pow(2,(mean-69)/12)*1.4));
+  u.onstart=u.onend=u.onerror=()=>{spokenAny=true;lastSpeechEv=Date.now();};
+  singUs.push(u);speechSynthesis.speak(u);});
+ // watchdog — Chrome stalls remote voices ~15s in (poke it), and detects end of song
+ singWd=setInterval(()=>{
+  if(!singing){clearInterval(singWd);singWd=null;return;}
+  if(!speechSynthesis.speaking&&!speechSynthesis.pending){
+   if(!spokenAny)log('The speech engine produced nothing — try ▶ melody alone.');
+   singDone();return;}
+  if(speechSynthesis.speaking&&Date.now()-lastSpeechEv>12000){
+   speechSynthesis.pause();speechSynthesis.resume();lastSpeechEv=Date.now();}
+ },2000);
+}
 
 // ================= DISCORD EXPORT =================
 function exportDiscord(){
