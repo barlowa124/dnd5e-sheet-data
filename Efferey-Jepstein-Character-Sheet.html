@@ -41,6 +41,16 @@
   .newfeat { color:var(--good); font-weight:bold; }
   [title] { cursor:help; }
   .tipbox { position:fixed; background:#241a12; color:var(--text); border:1px solid var(--accent); padding:7px 10px; border-radius:6px; font:12px/1.5 Georgia,serif; max-width:330px; white-space:pre-line; z-index:9999; pointer-events:none; box-shadow:0 4px 14px rgba(0,0,0,.55); }
+  .race-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:8px; max-height:420px; overflow:auto; margin-top:8px; }
+  .race-card { background:var(--panel2); border:1px solid #3a2d1e; border-radius:8px; padding:9px 10px; cursor:pointer; transition:border-color .15s; }
+  .race-card:hover { border-color:var(--accent); }
+  .race-card.cur { border-color:var(--good); }
+  .race-icon { font-size:26px; line-height:1; display:inline-block; background:#1a120b; border:1px solid var(--accent); border-radius:50%; width:40px; height:40px; text-align:center; padding-top:7px; margin-right:8px; vertical-align:middle; }
+  .race-name { font-weight:bold; font-size:14px; }
+  .race-src { font-size:10px; color:var(--sub); border:1px solid #3a2d1e; border-radius:4px; padding:0 4px; margin-left:4px; }
+  .race-flavor { font-size:11.5px; color:var(--sub); font-style:italic; margin:5px 0 3px; }
+  .race-traits { font-size:11.5px; }
+  .race-asi { font-size:10.5px; color:var(--accent); }
   .locked { opacity:.45; }
   .slot-pip { display:inline-block; width:16px; height:16px; border-radius:50%; border:2px solid var(--accent); margin:2px; cursor:pointer; }
   .slot-pip.spent { background:var(--accent); }
@@ -105,6 +115,7 @@
   <button onclick="snapshot()">Snapshot</button>
   <button onclick="restoreSnap()">Restore</button>
   <button onclick="exportDiscord()">Discord</button>
+  <button onclick="el('raceGallery').style.display=el('raceGallery').style.display==='none'?'block':'none'">🧬 Races</button>
   <input type="file" id="impFile" accept=".json" style="display:none" onchange="importChar(this)">
   <button onclick="const p=el('syncPanel');p.style.display=p.style.display==='none'?'inline':'none'">⚙ Sync</button>
   <span id="syncPanel" style="display:none">
@@ -387,6 +398,11 @@ Flaw: Insists he's "this close" to a plea deal. The infernal courts do not plea 
 Flaw: Keeps referring to "his island." The island owns him.</textarea>
     <h2>Backstory</h2>
     <textarea class="txt-in" id="backstory">A man who spent a mortal lifetime cultivating the wrong talents, Efferey Jepstein awoke in the Nine Hells with nothing — no island, no jet, no black book. Just a flute he'd never learned, a suspiciously natural affinity for serpents (draw your own conclusions), and the sudden certainty that his true calling was always desert snake-charming. Now he wanders the scorched plains of Avernus asking every damned soul: "Have you seen Mhislane? Tall. Controlling. Kind of the whole problem, honestly."</textarea>
+  </div>
+  <div class="panel" id="raceGallery" style="display:none">
+    <h2>Race Gallery <span class="sub">— click a card to play that race</span></h2>
+    <input class="txt-in" id="raceQ" placeholder="search races…" oninput="renderRaceGrid()">
+    <div id="raceGrid" class="race-grid"></div>
   </div>
   <div class="panel">
     <h2>Homebrew</h2>
@@ -1293,6 +1309,31 @@ function renderDrains(){const d=(hpDrain?`max HP −${hpDrain} · `:'')+Object.e
 function renderBoons(){if(!el('boonList'))return;el('boonList').innerHTML=epicBoons.map((b,i)=>`<span class="tag" title="${esc(EPIC_BOONS[b]||'')}">${b} <a href="#" onclick="epicBoons.splice(${i},1);renderBoons();saveState();return false" style="color:#c00">×</a></span>`).join('')||'<span class="sub">none yet — DMG epic boons replace levels past 20</span>';}
 function addBoon(){const n=el('boonPick').value.trim();if(!n)return;epicBoons.push(n);el('boonPick').value='';renderBoons();saveState();}
 
+// ================= RACE GALLERY =================
+let RACES_RICH=[];
+function renderRaceGrid(){
+ if(!el('raceGrid'))return;
+ const q=(el('raceQ').value||'').toLowerCase();
+ const cur=el('raceLabel').textContent;
+ const src=RACES_RICH.length?RACES_RICH:(OPTIONS?OPTIONS.races.map(r=>({n:r.n||r,src:r.src||'',icon:'🧝',flavor:'',traits:'',asi:'',spd:'30'})):[]);
+ el('raceGrid').innerHTML=src.filter(r=>!q||r.n.toLowerCase().includes(q)||(r.traits||'').toLowerCase().includes(q)||(r.flavor||'').toLowerCase().includes(q)).map(r=>`
+  <div class="race-card${cur===r.n?' cur':''}" onclick="chooseRace('${r.n.replace(/'/g,"\\'")}')">
+   <div><span class="race-icon">${r.icon||'🧬'}</span><span class="race-name">${r.n}</span><span class="race-src">${r.src||''}</span></div>
+   ${r.traits||r.asi?`<div class="race-asi">${r.asi||''}${r.spd?' · '+r.spd+' ft':''}</div>`:''}
+   ${r.flavor?`<div class="race-flavor">${r.flavor}</div>`:''}
+   ${r.traits?`<div class="race-traits">${r.traits}</div>`:''}
+  </div>`).join('')||'<span class="sub">No races loaded yet…</span>';
+}
+function chooseRace(n){
+ el('raceLabel').textContent=n;
+ const r=RACES_RICH.find(x=>x.n===n);
+ if(r&&r.spd&&r.spd!=='TCE flexible')el('speedCell').textContent=r.spd+' ft';
+ const opt=[...el('raceSel').options].find(o=>o.value===n||o.text===n);
+ if(opt)el('raceSel').value=opt.value;
+ setMetaTips();renderRaceGrid();saveState();
+ log('Race → '+n+(r&&r.traits?': '+r.traits.slice(0,100):''));
+}
+
 // ================= PERSISTENCE =================
 const STORE_KEY='dnd5e-sheet-v2';
 let store=JSON.parse(localStorage.getItem(STORE_KEY)||'{"current":"Efferey Jepstein","chars":{}}');
@@ -1588,7 +1629,7 @@ el('conds').innerHTML=CONDS.map(c=>`<span class="tag" onclick="this.classList.to
 const DATA_BASE='https://raw.githubusercontent.com/barlowa124/dnd5e-sheet-data/main/data/';
 async function loadRemote(){
  try{
-  const [eq,mo,co,sp,extra,opts,cf,rng,ua,cv,sf]=await Promise.all([
+  const [eq,mo,co,sp,extra,opts,cf,rng,ua,cv,sf,rc]=await Promise.all([
    fetch(DATA_BASE+'5e-SRD-Equipment.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Monsters.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Conditions.json').then(r=>r.json()),
@@ -1599,7 +1640,8 @@ async function loadRemote(){
    fetch(DATA_BASE+'ranger-spells-full.json').then(r=>r.json()).catch(()=>[]),
    fetch(DATA_BASE+'ua.json').then(r=>r.json()).catch(()=>null),
    fetch(DATA_BASE+'class-variants.json').then(r=>r.json()).catch(()=>null),
-   fetch(DATA_BASE+'subclass-features.json').then(r=>r.json()).catch(()=>({}))
+   fetch(DATA_BASE+'subclass-features.json').then(r=>r.json()).catch(()=>({})),
+   fetch(DATA_BASE+'races.json').then(r=>r.json()).catch(()=>null)
   ]);
   EQUIPMENT=eq;
   el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}" label="${esc(equipTip(e,false)).slice(0,120)}"></option>`).join('');
@@ -1627,6 +1669,8 @@ async function loadRemote(){
    cv[base].forEach(v=>{if(!VARIANTS[base].find(x=>x.n===v.n))VARIANTS[base].push(v);});
   });
   SUBFEATS=sf||{};
+  if(rc)RACES_RICH=rc.map(([n,src,icon,asi,spd,flavor,traits])=>({n,src,icon,asi,spd,flavor,traits}));
+  renderRaceGrid();
   registerVariants();renderClassRows();
   if(wsSel)pickWS(wsSel);
   el('featList').innerHTML=(OPTIONS&&OPTIONS.feats||[]).map(f=>`<option value="${f.n||f}">`).join('');
