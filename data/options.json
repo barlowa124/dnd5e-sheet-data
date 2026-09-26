@@ -1,929 +1,929 @@
 {
- "classes": [
-  "Artificer",
-  "Barbarian",
-  "Bard",
-  "Cleric",
-  "Druid",
-  "Fighter",
-  "Monk",
-  "Paladin",
-  "Ranger",
-  "Rogue",
-  "Sorcerer",
-  "Warlock",
-  "Wizard"
- ],
- "races": [
-  {
-   "n": "Dragonborn",
-   "src": "PHB",
-   "asi": "+2 Str, +1 Cha",
-   "spd": 30,
-   "note": "Breath weapon, damage resistance"
-  },
-  {
-   "n": "Dwarf (Hill)",
-   "src": "PHB",
-   "asi": "+2 Con, +1 Wis",
-   "spd": 25,
-   "note": "Extra HP, poison resistance"
-  },
-  {
-   "n": "Dwarf (Mountain)",
-   "src": "PHB",
-   "asi": "+2 Con, +2 Str",
-   "spd": 25,
-   "note": "Armor proficiencies"
-  },
-  {
-   "n": "Elf (High)",
-   "src": "PHB",
-   "asi": "+2 Dex, +1 Int",
-   "spd": 30,
-   "note": "Wizard cantrip, keen senses"
-  },
-  {
-   "n": "Elf (Wood)",
-   "src": "PHB",
-   "asi": "+2 Dex, +1 Wis",
-   "spd": 35,
-   "note": "Mask of the wild, fleet"
-  },
-  {
-   "n": "Elf (Drow)",
-   "src": "PHB",
-   "asi": "+2 Dex, +1 Cha",
-   "spd": 30,
-   "note": "Superior darkvision, drow magic"
-  },
-  {
-   "n": "Gnome (Forest)",
-   "src": "PHB",
-   "asi": "+2 Int, +1 Dex",
-   "spd": 25,
-   "note": "Illusion cantrip, beast speech"
-  },
-  {
-   "n": "Gnome (Rock)",
-   "src": "PHB",
-   "asi": "+2 Int, +1 Con",
-   "spd": 25,
-   "note": "Tinker, artificer's lore"
-  },
-  {
-   "n": "Half-Elf",
-   "src": "PHB",
-   "asi": "+2 Cha, +1/+1",
-   "spd": 30,
-   "note": "Two skills, fey ancestry"
-  },
-  {
-   "n": "Half-Orc",
-   "src": "PHB",
-   "asi": "+2 Str, +1 Con",
-   "spd": 30,
-   "note": "Relentless endurance, savage attacks"
-  },
-  {
-   "n": "Halfling (Lightfoot)",
-   "src": "PHB",
-   "asi": "+2 Dex, +1 Cha",
-   "spd": 25,
-   "note": "Lucky, hide behind allies"
-  },
-  {
-   "n": "Halfling (Stout)",
-   "src": "PHB",
-   "asi": "+2 Dex, +1 Con",
-   "spd": 25,
-   "note": "Lucky, poison resistance"
-  },
-  {
-   "n": "Human",
-   "src": "PHB",
-   "asi": "+1 all",
-   "spd": 30,
-   "note": "Vanilla"
-  },
-  {
-   "n": "Human (Variant)",
-   "src": "PHB",
-   "asi": "+1/+1",
-   "spd": 30,
-   "note": "A feat + a skill"
-  },
-  {
-   "n": "Tiefling",
-   "src": "PHB",
-   "asi": "+2 Cha, +1 Int",
-   "spd": 30,
-   "note": "Infernal legacy, fire resistance \u2014 literally at home here"
-  },
-  {
-   "n": "Tiefling (variant bloodlines)",
-   "src": "SCAG",
-   "asi": "varies",
-   "spd": 30,
-   "note": "Dispater, Glasya, Mammon, etc. \u2014 pick your archdevil daddy issue"
-  },
-  {
-   "n": "Aasimar",
-   "src": "VGM/DMG",
-   "asi": "+2 Cha",
-   "spd": 30,
-   "note": "Healing hands, radiant forms \u2014 awkward in Hell"
-  },
-  {
-   "n": "Firbolg",
-   "src": "VGM",
-   "asi": "+2 Wis, +1 Str",
-   "spd": 30,
-   "note": "Hidden step, speech of beast & leaf"
-  },
-  {
-   "n": "Goliath",
-   "src": "VGM",
-   "asi": "+2 Str, +1 Con",
-   "spd": 30,
-   "note": "Stone's endurance, mountain born"
-  },
-  {
-   "n": "Kenku",
-   "src": "VGM",
-   "asi": "+2 Dex, +1 Wis",
-   "spd": 30,
-   "note": "Mimicry, expert forgery"
-  },
-  {
-   "n": "Lizardfolk",
-   "src": "VGM",
-   "asi": "+2 Con, +1 Wis",
-   "spd": 30,
-   "note": "Natural armor, bite"
-  },
-  {
-   "n": "Tabaxi",
-   "src": "VGM",
-   "asi": "+2 Dex, +1 Cha",
-   "spd": 30,
-   "note": "Feline agility, claws"
-  },
-  {
-   "n": "Triton",
-   "src": "VGM",
-   "asi": "+1 Str/Con/Cha",
-   "spd": 30,
-   "note": "Amphibious, elemental magic"
-  },
-  {
-   "n": "Bugbear",
-   "src": "VGM",
-   "asi": "+2 Str, +1 Dex",
-   "spd": 30,
-   "note": "Long-limbed reach, surprise attack"
-  },
-  {
-   "n": "Goblin",
-   "src": "VGM",
-   "asi": "+2 Dex, +1 Con",
-   "spd": 30,
-   "note": "Fury of the small, nimble escape"
-  },
-  {
-   "n": "Hobgoblin",
-   "src": "VGM",
-   "asi": "+2 Con, +1 Int",
-   "spd": 30,
-   "note": "Martial training, saving face"
-  },
-  {
-   "n": "Kobold",
-   "src": "VGM",
-   "asi": "+2 Dex, -2 Str",
-   "spd": 30,
-   "note": "Pack tactics, grovel"
-  },
-  {
-   "n": "Orc",
-   "src": "VGM",
-   "asi": "+2 Str, +1 Con",
-   "spd": 30,
-   "note": "Aggressive, powerful build"
-  },
-  {
-   "n": "Yuan-ti Pureblood",
-   "src": "VGM",
-   "asi": "+2 Cha, +1 Int",
-   "spd": 30,
-   "note": "Snake magic at will, magic resistance, poison immunity"
-  },
-  {
-   "n": "Gith (Githyanki)",
-   "src": "MTF",
-   "asi": "+2 Str, +1 Int",
-   "spd": 30,
-   "note": "Psionics, martial weapons"
-  },
-  {
-   "n": "Gith (Githzerai)",
-   "src": "MTF",
-   "asi": "+2 Wis, +1 Int",
-   "spd": 30,
-   "note": "Psionics, mental discipline"
-  },
-  {
-   "n": "Elf (Eladrin)",
-   "src": "MTF/DMG",
-   "asi": "+2 Dex, +1 Cha",
-   "spd": 30,
-   "note": "Fey step"
-  },
-  {
-   "n": "Elf (Shadar-kai)",
-   "src": "MTF",
-   "asi": "+2 Dex, +1 Con",
-   "spd": 30,
-   "note": "Teleport + resistance"
-  },
-  {
-   "n": "Elf (Sea Elf)",
-   "src": "MTF",
-   "asi": "+2 Dex, +1 Con",
-   "spd": 30,
-   "note": "Swim, aquatic"
-  },
-  {
-   "n": "Gnome (Deep/Svirfneblin)",
-   "src": "MTF",
-   "asi": "+2 Int, +1 Dex",
-   "spd": 25,
-   "note": "Superior darkvision, stone camouflage"
-  },
-  {
-   "n": "Changeling",
-   "src": "Eberron",
-   "asi": "+2 Cha, +1 any",
-   "spd": 30,
-   "note": "Shapeshift appearance"
-  },
-  {
-   "n": "Kalashtar",
-   "src": "Eberron",
-   "asi": "+1 Wis/+1 Cha",
-   "spd": 30,
-   "note": "Dream immunity, psychic resistance"
-  },
-  {
-   "n": "Shifter",
-   "src": "Eberron",
-   "asi": "+1 Dex +subrace",
-   "spd": 30,
-   "note": "Beasthide/longtooth/etc., shifting"
-  },
-  {
-   "n": "Warforged",
-   "src": "Eberron",
-   "asi": "+2 Con, +1 any",
-   "spd": 30,
-   "note": "Integrated armor, living construct"
-  },
-  {
-   "n": "Centaur",
-   "src": "GGTR",
-   "asi": "+2 Str, +1 Wis",
-   "spd": 40,
-   "note": "Charge, hooves"
-  },
-  {
-   "n": "Loxodon",
-   "src": "GGTR",
-   "asi": "+2 Con, +1 Wis",
-   "spd": 30,
-   "note": "Trunk, serenity"
-  },
-  {
-   "n": "Minotaur",
-   "src": "GGTR",
-   "asi": "+2 Str, +1 Con",
-   "spd": 30,
-   "note": "Horns, goring rush"
-  },
-  {
-   "n": "Simic Hybrid",
-   "src": "GGTR",
-   "asi": "+2 Con, +1 any",
-   "spd": 30,
-   "note": "Animal adaptations"
-  },
-  {
-   "n": "Vedalken",
-   "src": "GGTR",
-   "asi": "+2 Int, +1 Wis",
-   "spd": 30,
-   "note": "Dispassion, adv vs mental saves"
-  },
-  {
-   "n": "Leonin",
-   "src": "MOT",
-   "asi": "+2 Con, +1 Str",
-   "spd": 35,
-   "note": "Daunting roar, claws"
-  },
-  {
-   "n": "Satyr",
-   "src": "MOT",
-   "asi": "+2 Cha, +1 Dex",
-   "spd": 35,
-   "note": "Magic resistance, mirthful leaps \u2014 the other snake-adjacent pick"
-  },
-  {
-   "n": "Dhampir",
-   "src": "VRGR",
-   "asi": "+2 +1 any",
-   "spd": 35,
-   "note": "Vampiric bite, spider climb"
-  },
-  {
-   "n": "Hexblood",
-   "src": "VRGR",
-   "asi": "+2 +1 any",
-   "spd": 30,
-   "note": "Hex magic, magic token"
-  },
-  {
-   "n": "Reborn",
-   "src": "VRGR",
-   "asi": "+2 +1 any",
-   "spd": 30,
-   "note": "He already died once \u2014 meta"
-  },
-  {
-   "n": "Owlin",
-   "src": "SCC",
-   "asi": "+2 +1 any",
-   "spd": 30,
-   "note": "Fly speed, stealth"
-  },
-  {
-   "n": "Fairy",
-   "src": "WBtW",
-   "asi": "+2 +1 any",
-   "spd": 30,
-   "note": "Fly, fairy magic"
-  },
-  {
-   "n": "Harengon",
-   "src": "WBtW",
-   "asi": "+2 +1 any",
-   "spd": 30,
-   "note": "Initiative boost, rabbit hop"
-  },
-  {
-   "n": "Dragonborn (Chromatic/Metallic/Gem)",
-   "src": "FToD",
-   "asi": "+2 +1",
-   "spd": 30,
-   "note": "Updated breath + traits"
-  },
-  {
-   "n": "Verdan",
-   "src": "AI",
-   "asi": "+2 Con, +1 Cha",
-   "spd": 30,
-   "note": "Grows over time, persuasion edge"
-  },
-  {
-   "n": "Locathah",
-   "src": "Locathah Rising",
-   "asi": "+2 Str, +1 Dex",
-   "spd": 30,
-   "note": "Amphibious fish people"
-  }
- ],
- "subclasses": {
-  "Artificer": [
-   "Alchemist",
-   "Artillerist",
-   "Battle Smith",
-   "Armorer (TCE)"
-  ],
-  "Barbarian": [
-   "Berserker (PHB)",
-   "Totem Warrior (PHB)",
-   "Ancestral Guardian (XGE)",
-   "Storm Herald (XGE)",
-   "Zealot (XGE)",
-   "Beast (TCE)",
-   "Wild Magic (TCE)"
-  ],
-  "Bard": [
-   "Lore (PHB)",
-   "Valor (PHB)",
-   "Glamour (XGE)",
-   "Swords (XGE)",
-   "Whispers (XGE)",
-   "Eloquence (TCE)",
-   "Creation (TCE)"
-  ],
-  "Cleric": [
-   "Knowledge (PHB)",
-   "Life (PHB)",
-   "Light (PHB)",
-   "Nature (PHB)",
-   "Tempest (PHB)",
-   "Trickery (PHB)",
-   "War (PHB)",
-   "Arcana (SCAG)",
-   "Forge (XGE)",
-   "Grave (XGE)",
-   "Order (TCE)",
-   "Peace (TCE)",
-   "Twilight (TCE)"
-  ],
-  "Druid": [
-   "Land (PHB)",
-   "Moon (PHB)",
-   "Dreams (XGE)",
-   "Shepherd (XGE)",
-   "Spores (TCE)",
-   "Stars (TCE)",
-   "Wildfire (TCE)"
-  ],
-  "Fighter": [
-   "Champion (PHB)",
-   "Battle Master (PHB)",
-   "Eldritch Knight (PHB)",
-   "Arcane Archer (XGE)",
-   "Cavalier (XGE)",
-   "Samurai (XGE)",
-   "Psi Warrior (TCE)",
-   "Rune Knight (TCE)",
-   "Echo Knight (EGW)"
-  ],
-  "Monk": [
-   "Open Hand (PHB)",
-   "Shadow (PHB)",
-   "Four Elements (PHB)",
-   "Drunken Master (XGE)",
-   "Kensei (XGE)",
-   "Sun Soul (XGE)",
-   "Long Death (SCAG)",
-   "Astral Self (TCE)",
-   "Mercy (TCE)"
-  ],
-  "Paladin": [
-   "Devotion (PHB)",
-   "Ancients (PHB)",
-   "Vengeance (PHB)",
-   "Crown (SCAG)",
-   "Conquest (XGE)",
-   "Redemption (XGE)",
-   "Glory (TCE)",
-   "Watchers (TCE)"
-  ],
-  "Ranger": [
-   "Hunter (PHB)",
-   "Beast Master (PHB)",
-   "Gloom Stalker (XGE)",
-   "Horizon Walker (XGE)",
-   "Monster Slayer (XGE)",
-   "Fey Wanderer (TCE)",
-   "Swarmkeeper (TCE)",
-   "Drakewarden (FToD)"
-  ],
-  "Rogue": [
-   "Thief (PHB)",
-   "Assassin (PHB)",
-   "Arcane Trickster (PHB)",
-   "Inquisitive (XGE)",
-   "Mastermind (XGE)",
-   "Scout (XGE)",
-   "Swashbuckler (XGE)",
-   "Phantom (TCE)",
-   "Soulknife (TCE)"
-  ],
-  "Sorcerer": [
-   "Draconic (PHB)",
-   "Wild Magic (PHB)",
-   "Divine Soul (XGE)",
-   "Shadow Magic (XGE)",
-   "Storm Sorcery (XGE)",
-   "Aberrant Mind (TCE)",
-   "Clockwork Soul (TCE)"
-  ],
-  "Warlock": [
-   "Archfey (PHB)",
-   "Fiend (PHB)",
-   "Great Old One (PHB)",
-   "Hexblade (XGE)",
-   "Celestial (XGE)",
-   "Fathomless (TCE)",
-   "Genie (TCE)",
-   "Undead (VRGR)"
-  ],
-  "Wizard": [
-   "Abjuration (PHB)",
-   "Conjuration (PHB)",
-   "Divination (PHB)",
-   "Enchantment (PHB)",
-   "Evocation (PHB)",
-   "Illusion (PHB)",
-   "Necromancy (PHB)",
-   "Transmutation (PHB)",
-   "Bladesinging (SCAG/TCE)",
-   "War Magic (XGE)",
-   "Order of Scribes (TCE)"
-  ]
- },
- "feats": [
-  {
-   "n": "Alert",
-   "src": "PHB",
-   "desc": "+5 init, can't be surprised"
-  },
-  {
-   "n": "Athlete",
-   "src": "PHB",
-   "desc": "+1 Str/Dex, climb/jump benefits"
-  },
-  {
-   "n": "Actor",
-   "src": "PHB",
-   "desc": "+1 Cha, mimic voices, impersonate"
-  },
-  {
-   "n": "Charger",
-   "src": "PHB",
-   "desc": "Bonus shove/attack after dash"
-  },
-  {
-   "n": "Crossbow Expert",
-   "src": "PHB",
-   "desc": "Ignore loading, no close dis, bonus shot"
-  },
-  {
-   "n": "Defensive Duelist",
-   "src": "PHB",
-   "desc": "React +prof to AC vs melee"
-  },
-  {
-   "n": "Dual Wielder",
-   "src": "PHB",
-   "desc": "+1 AC dual-wielding, bigger dice \u2014 two scimitars already"
-  },
-  {
-   "n": "Dungeon Delver",
-   "src": "PHB",
-   "desc": "Trap/secret resistance"
-  },
-  {
-   "n": "Durable",
-   "src": "PHB",
-   "desc": "+1 Con, min healing on hit dice"
-  },
-  {
-   "n": "Elemental Adept",
-   "src": "PHB",
-   "desc": "Ignore resistance to one element"
-  },
-  {
-   "n": "Grappler",
-   "src": "PHB",
-   "desc": "Better grappling"
-  },
-  {
-   "n": "Great Weapon Master",
-   "src": "PHB",
-   "desc": "-5/+10 power attacks"
-  },
-  {
-   "n": "Healer",
-   "src": "PHB",
-   "desc": "Healer's kit heals real HP"
-  },
-  {
-   "n": "Heavily Armored",
-   "src": "PHB",
-   "desc": "+1 Str, heavy armor prof"
-  },
-  {
-   "n": "Heavy Armor Master",
-   "src": "PHB",
-   "desc": "+1 Str, -3 damage from mundane hits"
-  },
-  {
-   "n": "Inspiring Leader",
-   "src": "PHB",
-   "desc": "Speech grants temp HP"
-  },
-  {
-   "n": "Keen Mind",
-   "src": "PHB",
-   "desc": "+1 Int, memory, time, direction"
-  },
-  {
-   "n": "Lightly Armored",
-   "src": "PHB",
-   "desc": "+1 Str/Dex, light armor prof"
-  },
-  {
-   "n": "Linguist",
-   "src": "PHB",
-   "desc": "+1 Int, 3 languages, ciphers"
-  },
-  {
-   "n": "Lucky",
-   "src": "PHB",
-   "desc": "3 luck points/day to reroll"
-  },
-  {
-   "n": "Mage Slayer",
-   "src": "PHB",
-   "desc": "Punish casters, adv vs spells close"
-  },
-  {
-   "n": "Magic Initiate",
-   "src": "PHB",
-   "desc": "2 cantrips + 1st-level spell 1/day"
-  },
-  {
-   "n": "Martial Adept",
-   "src": "PHB",
-   "desc": "2 maneuvers + superiority die"
-  },
-  {
-   "n": "Medium Armor Master",
-   "src": "PHB",
-   "desc": "+3 Dex cap on med armor, no dis stealth"
-  },
-  {
-   "n": "Mobile",
-   "src": "PHB",
-   "desc": "+10 speed, no opportunity attacks on hit"
-  },
-  {
-   "n": "Moderately Armored",
-   "src": "PHB",
-   "desc": "Medium armor + shields"
-  },
-  {
-   "n": "Mounted Combatant",
-   "src": "PHB",
-   "desc": "Mounted combat benefits"
-  },
-  {
-   "n": "Observant",
-   "src": "PHB",
-   "desc": "+1 Int/Wis, +5 passive Perception \u2014 watch the prison guards"
-  },
-  {
-   "n": "Polearm Master",
-   "src": "PHB",
-   "desc": "Bonus butt-strike + opportunity attack on approach"
-  },
-  {
-   "n": "Resilient",
-   "src": "PHB",
-   "desc": "+1 to a stat + its save prof"
-  },
-  {
-   "n": "Ritual Caster",
-   "src": "PHB",
-   "desc": "Ritual spellbook"
-  },
-  {
-   "n": "Savage Attacker",
-   "src": "PHB",
-   "desc": "Reroll weapon damage dice once/turn"
-  },
-  {
-   "n": "Sentinel",
-   "src": "PHB",
-   "desc": "Lockdown melee: punish disengage/moving past"
-  },
-  {
-   "n": "Sharpshooter",
-   "src": "PHB",
-   "desc": "-5/+10 ranged, ignore cover"
-  },
-  {
-   "n": "Shield Master",
-   "src": "PHB",
-   "desc": "Bonus shove, shield protects vs Dex saves"
-  },
-  {
-   "n": "Skilled",
-   "src": "PHB",
-   "desc": "3 new skills/tools"
-  },
-  {
-   "n": "Skulker",
-   "src": "PHB",
-   "desc": "Hide better, dim light no dis"
-  },
-  {
-   "n": "Spell Sniper",
-   "src": "PHB",
-   "desc": "Double spell range, a cantrip"
-  },
-  {
-   "n": "Tavern Brawler",
-   "src": "PHB",
-   "desc": "Improvised weapons, bonus grapple \u2014 Hell has bars"
-  },
-  {
-   "n": "Tough",
-   "src": "PHB",
-   "desc": "+2 HP per level"
-  },
-  {
-   "n": "War Caster",
-   "src": "PHB",
-   "desc": "Adv concentration, somatic with hands full, spells as opportunity attacks"
-  },
-  {
-   "n": "Weapon Master",
-   "src": "PHB",
-   "desc": "+1 Str/Dex, 4 weapon profs"
-  },
-  {
-   "n": "Fey Touched",
-   "src": "TCE",
-   "desc": "+1 Int/Wis/Cha, misty step + 1st enchantment/divination 1/day"
-  },
-  {
-   "n": "Shadow Touched",
-   "src": "TCE",
-   "desc": "+1 Int/Wis/Cha, invisibility + 1st illusion/necromancy 1/day \u2014 hell-appropriate"
-  },
-  {
-   "n": "Eldritch Adept",
-   "src": "TCE",
-   "desc": "One eldritch invocation"
-  },
-  {
-   "n": "Metamagic Adept",
-   "src": "TCE",
-   "desc": "2 metamagic + 2 sorcery points"
-  },
-  {
-   "n": "Crusher",
-   "src": "TCE",
-   "desc": "+1 Str/Con, move on hit, adv on crits"
-  },
-  {
-   "n": "Piercer",
-   "src": "TCE",
-   "desc": "+1 Str/Dex, reroll pierce die, extra die on crit"
-  },
-  {
-   "n": "Slasher",
-   "src": "TCE",
-   "desc": "+1 Str/Dex, slow on hit, crit dis adv"
-  },
-  {
-   "n": "Poisoner",
-   "src": "TCE",
-   "desc": "Poisons ignore resistance, poisoned on hit, apply as bonus"
-  },
-  {
-   "n": "Telekinetic",
-   "src": "TCE",
-   "desc": "+1 Int/Wis/Cha, mage hand + shove"
-  },
-  {
-   "n": "Telepathic",
-   "src": "TCE",
-   "desc": "+1 Int/Wis/Cha, telepathy + detect thoughts 1/day"
-  },
-  {
-   "n": "Chef",
-   "src": "TCE",
-   "desc": "+1 Con/Wis, cook food that heals"
-  },
-  {
-   "n": "Gunner",
-   "src": "TCE",
-   "desc": "Firearm prof + bonuses \u2014 if your DM allows guns in Hell"
-  },
-  {
-   "n": "Artificer Initiate",
-   "src": "TCE",
-   "desc": "Artificer cantrip + 1st spell + tool"
-  },
-  {
-   "n": "Bountiful Luck",
-   "src": "XGE",
-   "desc": "Halfling: share luck with allies"
-  },
-  {
-   "n": "Dragon Fear",
-   "src": "XGE",
-   "desc": "Dragonborn: Cha breath roar frightens"
-  },
-  {
-   "n": "Dragon Hide",
-   "src": "XGE",
-   "desc": "Dragonborn: +1, scales AC, claws"
-  },
-  {
-   "n": "Drow High Magic",
-   "src": "XGE",
-   "desc": "Drow: more innate spells"
-  },
-  {
-   "n": "Dwarven Fortitude",
-   "src": "XGE",
-   "desc": "Dwarf: dodge = heal with hit die"
-  },
-  {
-   "n": "Elven Accuracy",
-   "src": "XGE",
-   "desc": "Elf/half-elf: +1 Dex/Int/Wis/Cha, super-advantage on attack"
-  },
-  {
-   "n": "Fade Away",
-   "src": "XGE",
-   "desc": "Gnome: turn invisible on damage once/rest"
-  },
-  {
-   "n": "Fey Teleportation",
-   "src": "XGE",
-   "desc": "High elf: misty step 1/rest"
-  },
-  {
-   "n": "Flames of Phlegethos",
-   "src": "XGE",
-   "desc": "Tiefling: fire spells protect + damage aura"
-  },
-  {
-   "n": "Infernal Constitution",
-   "src": "XGE",
-   "desc": "Tiefling: resist cold/poison, adv vs poisoned"
-  },
-  {
-   "n": "Orcish Fury",
-   "src": "XGE",
-   "desc": "Half-orc: extra damage die once/rest"
-  },
-  {
-   "n": "Prodigy",
-   "src": "XGE",
-   "desc": "Human/half: skill + tool + expertise + language"
-  },
-  {
-   "n": "Second Chance",
-   "src": "XGE",
-   "desc": "Halfling: force enemy reroll on your hit"
-  },
-  {
-   "n": "Squat Nimbleness",
-   "src": "XGE",
-   "desc": "Small race: +1 Str/Dex, adv escape grapple"
-  },
-  {
-   "n": "Wood Elf Magic",
-   "src": "XGE",
-   "desc": "Wood elf: druid cantrip + longstrider/pass w/o trace"
-  }
- ],
- "backgrounds": [
-  "Acolyte",
-  "Charlatan",
-  "Criminal",
-  "Entertainer",
-  "Folk Hero",
-  "Gladiator",
-  "Guild Artisan",
-  "Hermit",
-  "Noble",
-  "Outlander",
-  "Sage",
-  "Sailor",
-  "Soldier",
-  "Urchin",
-  "Courtier (SCAG)",
-  "Faction Agent (SCAG)",
-  "Far Traveler (SCAG)",
-  "Inheritor (SCAG)",
-  "Knight of the Order (SCAG)",
-  "Mercenary Veteran (SCAG)",
-  "Urban Bounty Hunter (SCAG)",
-  "Haunted One (CoS)",
-  "Investigator (VRGR)",
-  "Sage/Archivist (TCE var.)",
-  "Faceless (BGoA)"
- ],
- "alignments": [
-  "Lawful Good",
-  "Neutral Good",
-  "Chaotic Good",
-  "Lawful Neutral",
-  "Neutral",
-  "Chaotic Neutral",
-  "Lawful Evil",
-  "Neutral Evil",
-  "Chaotic Evil"
- ]
+"classes": [
+"Artificer",
+"Barbarian",
+"Bard",
+"Cleric",
+"Druid",
+"Fighter",
+"Monk",
+"Paladin",
+"Ranger",
+"Rogue",
+"Sorcerer",
+"Warlock",
+"Wizard"
+],
+"races": [
+{
+"n": "Dragonborn",
+"src": "PHB",
+"asi": "+2 Str, +1 Cha",
+"spd": 30,
+"note": "Breath weapon, damage resistance"
+},
+{
+"n": "Dwarf (Hill)",
+"src": "PHB",
+"asi": "+2 Con, +1 Wis",
+"spd": 25,
+"note": "Extra HP, poison resistance"
+},
+{
+"n": "Dwarf (Mountain)",
+"src": "PHB",
+"asi": "+2 Con, +2 Str",
+"spd": 25,
+"note": "Armor proficiencies"
+},
+{
+"n": "Elf (High)",
+"src": "PHB",
+"asi": "+2 Dex, +1 Int",
+"spd": 30,
+"note": "Wizard cantrip, keen senses"
+},
+{
+"n": "Elf (Wood)",
+"src": "PHB",
+"asi": "+2 Dex, +1 Wis",
+"spd": 35,
+"note": "Mask of the wild, fleet"
+},
+{
+"n": "Elf (Drow)",
+"src": "PHB",
+"asi": "+2 Dex, +1 Cha",
+"spd": 30,
+"note": "Superior darkvision, drow magic"
+},
+{
+"n": "Gnome (Forest)",
+"src": "PHB",
+"asi": "+2 Int, +1 Dex",
+"spd": 25,
+"note": "Illusion cantrip, beast speech"
+},
+{
+"n": "Gnome (Rock)",
+"src": "PHB",
+"asi": "+2 Int, +1 Con",
+"spd": 25,
+"note": "Tinker, artificer's lore"
+},
+{
+"n": "Half-Elf",
+"src": "PHB",
+"asi": "+2 Cha, +1/+1",
+"spd": 30,
+"note": "Two skills, fey ancestry"
+},
+{
+"n": "Half-Orc",
+"src": "PHB",
+"asi": "+2 Str, +1 Con",
+"spd": 30,
+"note": "Relentless endurance, savage attacks"
+},
+{
+"n": "Halfling (Lightfoot)",
+"src": "PHB",
+"asi": "+2 Dex, +1 Cha",
+"spd": 25,
+"note": "Lucky, hide behind allies"
+},
+{
+"n": "Halfling (Stout)",
+"src": "PHB",
+"asi": "+2 Dex, +1 Con",
+"spd": 25,
+"note": "Lucky, poison resistance"
+},
+{
+"n": "Human",
+"src": "PHB",
+"asi": "+1 all",
+"spd": 30,
+"note": "Vanilla"
+},
+{
+"n": "Human (Variant)",
+"src": "PHB",
+"asi": "+1/+1",
+"spd": 30,
+"note": "A feat + a skill"
+},
+{
+"n": "Tiefling",
+"src": "PHB",
+"asi": "+2 Cha, +1 Int",
+"spd": 30,
+"note": "Infernal legacy, fire resistance, innate spells"
+},
+{
+"n": "Tiefling (variant bloodlines)",
+"src": "SCAG",
+"asi": "varies",
+"spd": 30,
+"note": "Dispater, Glasya, Mammon, etc. — pick your archdevil bloodline"
+},
+{
+"n": "Aasimar",
+"src": "VGM/DMG",
+"asi": "+2 Cha",
+"spd": 30,
+"note": "Healing hands, radiant forms — the celestial pick"
+},
+{
+"n": "Firbolg",
+"src": "VGM",
+"asi": "+2 Wis, +1 Str",
+"spd": 30,
+"note": "Hidden step, speech of beast & leaf"
+},
+{
+"n": "Goliath",
+"src": "VGM",
+"asi": "+2 Str, +1 Con",
+"spd": 30,
+"note": "Stone's endurance, mountain born"
+},
+{
+"n": "Kenku",
+"src": "VGM",
+"asi": "+2 Dex, +1 Wis",
+"spd": 30,
+"note": "Mimicry, expert forgery"
+},
+{
+"n": "Lizardfolk",
+"src": "VGM",
+"asi": "+2 Con, +1 Wis",
+"spd": 30,
+"note": "Natural armor, bite"
+},
+{
+"n": "Tabaxi",
+"src": "VGM",
+"asi": "+2 Dex, +1 Cha",
+"spd": 30,
+"note": "Feline agility, claws"
+},
+{
+"n": "Triton",
+"src": "VGM",
+"asi": "+1 Str/Con/Cha",
+"spd": 30,
+"note": "Amphibious, elemental magic"
+},
+{
+"n": "Bugbear",
+"src": "VGM",
+"asi": "+2 Str, +1 Dex",
+"spd": 30,
+"note": "Long-limbed reach, surprise attack"
+},
+{
+"n": "Goblin",
+"src": "VGM",
+"asi": "+2 Dex, +1 Con",
+"spd": 30,
+"note": "Fury of the small, nimble escape"
+},
+{
+"n": "Hobgoblin",
+"src": "VGM",
+"asi": "+2 Con, +1 Int",
+"spd": 30,
+"note": "Martial training, saving face"
+},
+{
+"n": "Kobold",
+"src": "VGM",
+"asi": "+2 Dex, -2 Str",
+"spd": 30,
+"note": "Pack tactics, grovel"
+},
+{
+"n": "Orc",
+"src": "VGM",
+"asi": "+2 Str, +1 Con",
+"spd": 30,
+"note": "Aggressive, powerful build"
+},
+{
+"n": "Yuan-ti Pureblood",
+"src": "VGM",
+"asi": "+2 Cha, +1 Int",
+"spd": 30,
+"note": "Snake magic at will, magic resistance, poison immunity"
+},
+{
+"n": "Gith (Githyanki)",
+"src": "MTF",
+"asi": "+2 Str, +1 Int",
+"spd": 30,
+"note": "Psionics, martial weapons"
+},
+{
+"n": "Gith (Githzerai)",
+"src": "MTF",
+"asi": "+2 Wis, +1 Int",
+"spd": 30,
+"note": "Psionics, mental discipline"
+},
+{
+"n": "Elf (Eladrin)",
+"src": "MTF/DMG",
+"asi": "+2 Dex, +1 Cha",
+"spd": 30,
+"note": "Fey step"
+},
+{
+"n": "Elf (Shadar-kai)",
+"src": "MTF",
+"asi": "+2 Dex, +1 Con",
+"spd": 30,
+"note": "Teleport + resistance"
+},
+{
+"n": "Elf (Sea Elf)",
+"src": "MTF",
+"asi": "+2 Dex, +1 Con",
+"spd": 30,
+"note": "Swim, aquatic"
+},
+{
+"n": "Gnome (Deep/Svirfneblin)",
+"src": "MTF",
+"asi": "+2 Int, +1 Dex",
+"spd": 25,
+"note": "Superior darkvision, stone camouflage"
+},
+{
+"n": "Changeling",
+"src": "Eberron",
+"asi": "+2 Cha, +1 any",
+"spd": 30,
+"note": "Shapeshift appearance"
+},
+{
+"n": "Kalashtar",
+"src": "Eberron",
+"asi": "+1 Wis/+1 Cha",
+"spd": 30,
+"note": "Dream immunity, psychic resistance"
+},
+{
+"n": "Shifter",
+"src": "Eberron",
+"asi": "+1 Dex +subrace",
+"spd": 30,
+"note": "Beasthide/longtooth/etc., shifting"
+},
+{
+"n": "Warforged",
+"src": "Eberron",
+"asi": "+2 Con, +1 any",
+"spd": 30,
+"note": "Integrated armor, living construct"
+},
+{
+"n": "Centaur",
+"src": "GGTR",
+"asi": "+2 Str, +1 Wis",
+"spd": 40,
+"note": "Charge, hooves"
+},
+{
+"n": "Loxodon",
+"src": "GGTR",
+"asi": "+2 Con, +1 Wis",
+"spd": 30,
+"note": "Trunk, serenity"
+},
+{
+"n": "Minotaur",
+"src": "GGTR",
+"asi": "+2 Str, +1 Con",
+"spd": 30,
+"note": "Horns, goring rush"
+},
+{
+"n": "Simic Hybrid",
+"src": "GGTR",
+"asi": "+2 Con, +1 any",
+"spd": 30,
+"note": "Animal adaptations"
+},
+{
+"n": "Vedalken",
+"src": "GGTR",
+"asi": "+2 Int, +1 Wis",
+"spd": 30,
+"note": "Dispassion, adv vs mental saves"
+},
+{
+"n": "Leonin",
+"src": "MOT",
+"asi": "+2 Con, +1 Str",
+"spd": 35,
+"note": "Daunting roar, claws"
+},
+{
+"n": "Satyr",
+"src": "MOT",
+"asi": "+2 Cha, +1 Dex",
+"spd": 35,
+"note": "Magic resistance, mirthful leaps — the other magic-resistance race"
+},
+{
+"n": "Dhampir",
+"src": "VRGR",
+"asi": "+2 +1 any",
+"spd": 35,
+"note": "Vampiric bite, spider climb"
+},
+{
+"n": "Hexblood",
+"src": "VRGR",
+"asi": "+2 +1 any",
+"spd": 30,
+"note": "Hex magic, magic token"
+},
+{
+"n": "Reborn",
+"src": "VRGR",
+"asi": "+2 +1 any",
+"spd": 30,
+"note": "He already died once — meta"
+},
+{
+"n": "Owlin",
+"src": "SCC",
+"asi": "+2 +1 any",
+"spd": 30,
+"note": "Fly speed, stealth"
+},
+{
+"n": "Fairy",
+"src": "WBtW",
+"asi": "+2 +1 any",
+"spd": 30,
+"note": "Fly, fairy magic"
+},
+{
+"n": "Harengon",
+"src": "WBtW",
+"asi": "+2 +1 any",
+"spd": 30,
+"note": "Initiative boost, rabbit hop"
+},
+{
+"n": "Dragonborn (Chromatic/Metallic/Gem)",
+"src": "FToD",
+"asi": "+2 +1",
+"spd": 30,
+"note": "Updated breath + traits"
+},
+{
+"n": "Verdan",
+"src": "AI",
+"asi": "+2 Con, +1 Cha",
+"spd": 30,
+"note": "Grows over time, persuasion edge"
+},
+{
+"n": "Locathah",
+"src": "Locathah Rising",
+"asi": "+2 Str, +1 Dex",
+"spd": 30,
+"note": "Amphibious fish people"
+}
+],
+"subclasses": {
+"Artificer": [
+"Alchemist",
+"Artillerist",
+"Battle Smith",
+"Armorer (TCE)"
+],
+"Barbarian": [
+"Berserker (PHB)",
+"Totem Warrior (PHB)",
+"Ancestral Guardian (XGE)",
+"Storm Herald (XGE)",
+"Zealot (XGE)",
+"Beast (TCE)",
+"Wild Magic (TCE)"
+],
+"Bard": [
+"Lore (PHB)",
+"Valor (PHB)",
+"Glamour (XGE)",
+"Swords (XGE)",
+"Whispers (XGE)",
+"Eloquence (TCE)",
+"Creation (TCE)"
+],
+"Cleric": [
+"Knowledge (PHB)",
+"Life (PHB)",
+"Light (PHB)",
+"Nature (PHB)",
+"Tempest (PHB)",
+"Trickery (PHB)",
+"War (PHB)",
+"Arcana (SCAG)",
+"Forge (XGE)",
+"Grave (XGE)",
+"Order (TCE)",
+"Peace (TCE)",
+"Twilight (TCE)"
+],
+"Druid": [
+"Land (PHB)",
+"Moon (PHB)",
+"Dreams (XGE)",
+"Shepherd (XGE)",
+"Spores (TCE)",
+"Stars (TCE)",
+"Wildfire (TCE)"
+],
+"Fighter": [
+"Champion (PHB)",
+"Battle Master (PHB)",
+"Eldritch Knight (PHB)",
+"Arcane Archer (XGE)",
+"Cavalier (XGE)",
+"Samurai (XGE)",
+"Psi Warrior (TCE)",
+"Rune Knight (TCE)",
+"Echo Knight (EGW)"
+],
+"Monk": [
+"Open Hand (PHB)",
+"Shadow (PHB)",
+"Four Elements (PHB)",
+"Drunken Master (XGE)",
+"Kensei (XGE)",
+"Sun Soul (XGE)",
+"Long Death (SCAG)",
+"Astral Self (TCE)",
+"Mercy (TCE)"
+],
+"Paladin": [
+"Devotion (PHB)",
+"Ancients (PHB)",
+"Vengeance (PHB)",
+"Crown (SCAG)",
+"Conquest (XGE)",
+"Redemption (XGE)",
+"Glory (TCE)",
+"Watchers (TCE)"
+],
+"Ranger": [
+"Hunter (PHB)",
+"Beast Master (PHB)",
+"Gloom Stalker (XGE)",
+"Horizon Walker (XGE)",
+"Monster Slayer (XGE)",
+"Fey Wanderer (TCE)",
+"Swarmkeeper (TCE)",
+"Drakewarden (FToD)"
+],
+"Rogue": [
+"Thief (PHB)",
+"Assassin (PHB)",
+"Arcane Trickster (PHB)",
+"Inquisitive (XGE)",
+"Mastermind (XGE)",
+"Scout (XGE)",
+"Swashbuckler (XGE)",
+"Phantom (TCE)",
+"Soulknife (TCE)"
+],
+"Sorcerer": [
+"Draconic (PHB)",
+"Wild Magic (PHB)",
+"Divine Soul (XGE)",
+"Shadow Magic (XGE)",
+"Storm Sorcery (XGE)",
+"Aberrant Mind (TCE)",
+"Clockwork Soul (TCE)"
+],
+"Warlock": [
+"Archfey (PHB)",
+"Fiend (PHB)",
+"Great Old One (PHB)",
+"Hexblade (XGE)",
+"Celestial (XGE)",
+"Fathomless (TCE)",
+"Genie (TCE)",
+"Undead (VRGR)"
+],
+"Wizard": [
+"Abjuration (PHB)",
+"Conjuration (PHB)",
+"Divination (PHB)",
+"Enchantment (PHB)",
+"Evocation (PHB)",
+"Illusion (PHB)",
+"Necromancy (PHB)",
+"Transmutation (PHB)",
+"Bladesinging (SCAG/TCE)",
+"War Magic (XGE)",
+"Order of Scribes (TCE)"
+]
+},
+"feats": [
+{
+"n": "Alert",
+"src": "PHB",
+"desc": "+5 init, can't be surprised"
+},
+{
+"n": "Athlete",
+"src": "PHB",
+"desc": "+1 Str/Dex, climb/jump benefits"
+},
+{
+"n": "Actor",
+"src": "PHB",
+"desc": "+1 Cha, mimic voices, impersonate"
+},
+{
+"n": "Charger",
+"src": "PHB",
+"desc": "Bonus shove/attack after dash"
+},
+{
+"n": "Crossbow Expert",
+"src": "PHB",
+"desc": "Ignore loading, no close dis, bonus shot"
+},
+{
+"n": "Defensive Duelist",
+"src": "PHB",
+"desc": "React +prof to AC vs melee"
+},
+{
+"n": "Dual Wielder",
+"src": "PHB",
+"desc": "+1 AC dual-wielding, bigger dice — two scimitars already"
+},
+{
+"n": "Dungeon Delver",
+"src": "PHB",
+"desc": "Trap/secret resistance"
+},
+{
+"n": "Durable",
+"src": "PHB",
+"desc": "+1 Con, min healing on hit dice"
+},
+{
+"n": "Elemental Adept",
+"src": "PHB",
+"desc": "Ignore resistance to one element"
+},
+{
+"n": "Grappler",
+"src": "PHB",
+"desc": "Better grappling"
+},
+{
+"n": "Great Weapon Master",
+"src": "PHB",
+"desc": "-5/+10 power attacks"
+},
+{
+"n": "Healer",
+"src": "PHB",
+"desc": "Healer's kit heals real HP"
+},
+{
+"n": "Heavily Armored",
+"src": "PHB",
+"desc": "+1 Str, heavy armor prof"
+},
+{
+"n": "Heavy Armor Master",
+"src": "PHB",
+"desc": "+1 Str, -3 damage from mundane hits"
+},
+{
+"n": "Inspiring Leader",
+"src": "PHB",
+"desc": "Speech grants temp HP"
+},
+{
+"n": "Keen Mind",
+"src": "PHB",
+"desc": "+1 Int, memory, time, direction"
+},
+{
+"n": "Lightly Armored",
+"src": "PHB",
+"desc": "+1 Str/Dex, light armor prof"
+},
+{
+"n": "Linguist",
+"src": "PHB",
+"desc": "+1 Int, 3 languages, ciphers"
+},
+{
+"n": "Lucky",
+"src": "PHB",
+"desc": "3 luck points/day to reroll"
+},
+{
+"n": "Mage Slayer",
+"src": "PHB",
+"desc": "Punish casters, adv vs spells close"
+},
+{
+"n": "Magic Initiate",
+"src": "PHB",
+"desc": "2 cantrips + 1st-level spell 1/day"
+},
+{
+"n": "Martial Adept",
+"src": "PHB",
+"desc": "2 maneuvers + superiority die"
+},
+{
+"n": "Medium Armor Master",
+"src": "PHB",
+"desc": "+3 Dex cap on med armor, no dis stealth"
+},
+{
+"n": "Mobile",
+"src": "PHB",
+"desc": "+10 speed, no opportunity attacks on hit"
+},
+{
+"n": "Moderately Armored",
+"src": "PHB",
+"desc": "Medium armor + shields"
+},
+{
+"n": "Mounted Combatant",
+"src": "PHB",
+"desc": "Mounted combat benefits"
+},
+{
+"n": "Observant",
+"src": "PHB",
+"desc": "+1 Int/Wis, +5 passive Perception — watch the prison guards"
+},
+{
+"n": "Polearm Master",
+"src": "PHB",
+"desc": "Bonus butt-strike + opportunity attack on approach"
+},
+{
+"n": "Resilient",
+"src": "PHB",
+"desc": "+1 to a stat + its save prof"
+},
+{
+"n": "Ritual Caster",
+"src": "PHB",
+"desc": "Ritual spellbook"
+},
+{
+"n": "Savage Attacker",
+"src": "PHB",
+"desc": "Reroll weapon damage dice once/turn"
+},
+{
+"n": "Sentinel",
+"src": "PHB",
+"desc": "Lockdown melee: punish disengage/moving past"
+},
+{
+"n": "Sharpshooter",
+"src": "PHB",
+"desc": "-5/+10 ranged, ignore cover"
+},
+{
+"n": "Shield Master",
+"src": "PHB",
+"desc": "Bonus shove, shield protects vs Dex saves"
+},
+{
+"n": "Skilled",
+"src": "PHB",
+"desc": "3 new skills/tools"
+},
+{
+"n": "Skulker",
+"src": "PHB",
+"desc": "Hide better, dim light no dis"
+},
+{
+"n": "Spell Sniper",
+"src": "PHB",
+"desc": "Double spell range, a cantrip"
+},
+{
+"n": "Tavern Brawler",
+"src": "PHB",
+"desc": "Improvised weapons, bonus grapple — turns anything into a weapon fight"
+},
+{
+"n": "Tough",
+"src": "PHB",
+"desc": "+2 HP per level"
+},
+{
+"n": "War Caster",
+"src": "PHB",
+"desc": "Adv concentration, somatic with hands full, spells as opportunity attacks"
+},
+{
+"n": "Weapon Master",
+"src": "PHB",
+"desc": "+1 Str/Dex, 4 weapon profs"
+},
+{
+"n": "Fey Touched",
+"src": "TCE",
+"desc": "+1 Int/Wis/Cha, misty step + 1st enchantment/divination 1/day"
+},
+{
+"n": "Shadow Touched",
+"src": "TCE",
+"desc": "+1 Int/Wis/Cha, invisibility + 1st illusion/necromancy 1/day"
+},
+{
+"n": "Eldritch Adept",
+"src": "TCE",
+"desc": "One eldritch invocation"
+},
+{
+"n": "Metamagic Adept",
+"src": "TCE",
+"desc": "2 metamagic + 2 sorcery points"
+},
+{
+"n": "Crusher",
+"src": "TCE",
+"desc": "+1 Str/Con, move on hit, adv on crits"
+},
+{
+"n": "Piercer",
+"src": "TCE",
+"desc": "+1 Str/Dex, reroll pierce die, extra die on crit"
+},
+{
+"n": "Slasher",
+"src": "TCE",
+"desc": "+1 Str/Dex, slow on hit, crit dis adv"
+},
+{
+"n": "Poisoner",
+"src": "TCE",
+"desc": "Poisons ignore resistance, poisoned on hit, apply as bonus"
+},
+{
+"n": "Telekinetic",
+"src": "TCE",
+"desc": "+1 Int/Wis/Cha, mage hand + shove"
+},
+{
+"n": "Telepathic",
+"src": "TCE",
+"desc": "+1 Int/Wis/Cha, telepathy + detect thoughts 1/day"
+},
+{
+"n": "Chef",
+"src": "TCE",
+"desc": "+1 Con/Wis, cook food that heals"
+},
+{
+"n": "Gunner",
+"src": "TCE",
+"desc": "Firearm prof + bonuses — if your DM allows firearms"
+},
+{
+"n": "Artificer Initiate",
+"src": "TCE",
+"desc": "Artificer cantrip + 1st spell + tool"
+},
+{
+"n": "Bountiful Luck",
+"src": "XGE",
+"desc": "Halfling: share luck with allies"
+},
+{
+"n": "Dragon Fear",
+"src": "XGE",
+"desc": "Dragonborn: Cha breath roar frightens"
+},
+{
+"n": "Dragon Hide",
+"src": "XGE",
+"desc": "Dragonborn: +1, scales AC, claws"
+},
+{
+"n": "Drow High Magic",
+"src": "XGE",
+"desc": "Drow: more innate spells"
+},
+{
+"n": "Dwarven Fortitude",
+"src": "XGE",
+"desc": "Dwarf: dodge = heal with hit die"
+},
+{
+"n": "Elven Accuracy",
+"src": "XGE",
+"desc": "Elf/half-elf: +1 Dex/Int/Wis/Cha, super-advantage on attack"
+},
+{
+"n": "Fade Away",
+"src": "XGE",
+"desc": "Gnome: turn invisible on damage once/rest"
+},
+{
+"n": "Fey Teleportation",
+"src": "XGE",
+"desc": "High elf: misty step 1/rest"
+},
+{
+"n": "Flames of Phlegethos",
+"src": "XGE",
+"desc": "Tiefling: fire spells protect + damage aura"
+},
+{
+"n": "Infernal Constitution",
+"src": "XGE",
+"desc": "Tiefling: resist cold/poison, adv vs poisoned"
+},
+{
+"n": "Orcish Fury",
+"src": "XGE",
+"desc": "Half-orc: extra damage die once/rest"
+},
+{
+"n": "Prodigy",
+"src": "XGE",
+"desc": "Human/half: skill + tool + expertise + language"
+},
+{
+"n": "Second Chance",
+"src": "XGE",
+"desc": "Halfling: force enemy reroll on your hit"
+},
+{
+"n": "Squat Nimbleness",
+"src": "XGE",
+"desc": "Small race: +1 Str/Dex, adv escape grapple"
+},
+{
+"n": "Wood Elf Magic",
+"src": "XGE",
+"desc": "Wood elf: druid cantrip + longstrider/pass w/o trace"
+}
+],
+"backgrounds": [
+"Acolyte",
+"Charlatan",
+"Criminal",
+"Entertainer",
+"Folk Hero",
+"Gladiator",
+"Guild Artisan",
+"Hermit",
+"Noble",
+"Outlander",
+"Sage",
+"Sailor",
+"Soldier",
+"Urchin",
+"Courtier (SCAG)",
+"Faction Agent (SCAG)",
+"Far Traveler (SCAG)",
+"Inheritor (SCAG)",
+"Knight of the Order (SCAG)",
+"Mercenary Veteran (SCAG)",
+"Urban Bounty Hunter (SCAG)",
+"Haunted One (CoS)",
+"Investigator (VRGR)",
+"Sage/Archivist (TCE var.)",
+"Faceless (BGoA)"
+],
+"alignments": [
+"Lawful Good",
+"Neutral Good",
+"Chaotic Good",
+"Lawful Neutral",
+"Neutral",
+"Chaotic Neutral",
+"Lawful Evil",
+"Neutral Evil",
+"Chaotic Evil"
+]
 }
