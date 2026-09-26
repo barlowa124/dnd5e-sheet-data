@@ -354,7 +354,7 @@
     <table id="planTable" style="margin-top:4px"></table>
     <textarea class="txt-in" id="planNotes" placeholder="Long-term notes — RP arc, items you're hunting, DM asks…"></textarea>
     <h2>Power Combos <label class="sub" style="font-weight:normal"><input type="checkbox" id="comboOnly" onchange="renderCombos()"> only what fits</label></h2>
-    <div class="sub">Strong builds, tagged by class/race/level — ★ qualifies now, ◐ unlocks next level.</div>
+    <div class="sub">Strong feats, dips, and multiclass combos, tagged by class/race/level — ★ qualifies now, ◐ unlocks next level. Two-class combos fit if you already have one of the classes.</div>
     <div id="comboGrid"></div>
     <h2>Stat Assessment</h2>
     <div class="sub">Infer monster stats from observed rolls.</div>
@@ -1685,9 +1685,11 @@ function renderCombos(){
   const need=lvlTag?+lvlTag.slice(4):0;
   const clsTags=t.filter(x=>CLS_TAGS.includes(x));
   const raceTags=t.filter(x=>RACE_TAGS.includes(x));
-  const dip=t.includes('dip');
-  const clsOK=dip?clsTags.some(ct=>!myCls.some(m=>m.includes(ct)))
-   :(!clsTags.length||clsTags.some(ct=>myCls.some(m=>m.includes(ct))));
+  let clsOK;
+  if(!clsTags.length)clsOK=true;
+  else if(t.includes('combo'))clsOK=clsTags.some(ct=>myCls.some(m=>m.includes(ct)));
+  else if(t.includes('dip'))clsOK=clsTags.some(ct=>!myCls.some(m=>m.includes(ct)));
+  else clsOK=clsTags.some(ct=>myCls.some(m=>m.includes(ct)));
   const raceOK=!raceTags.length||raceTags.some(r=>r==='halfline'?/half-(elf|orc)/.test(race):race.includes(r));
   const fit=clsOK&&raceOK;
   const now=fit&&lvl()>=need,soon=fit&&need===lvl()+1;

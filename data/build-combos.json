@@ -1,32 +1,242 @@
 [
-["Sharpshooter + Archery style","ranger feat lvl:4","Take -5 to hit for +10 damage — the biggest damage line a ranger can take, and Archery style (lvl 2, +2 to hit) buys back most of the penalty. Everything else on a ranged ranger is commentary on this feat."],
-["Crossbow Expert","ranger feat lvl:4","Bonus-action hand-crossbow shot plus no disadvantage in melee — a third -5/+10 attack every round once Sharpshooter is online. The two feats are one build."],
-["Gloom Stalker","ranger sub lvl:3","The power subclass. Turn one: an extra attack, +10 ft move, +1d8 on the bonus hit. Umbral Sight makes you invisible to darkvision — and in Hell EVERYTHING has darkvision. You are a ghost on the one plane built entirely on seeing in the dark."],
-["Gloom Stalker 3 / Assassin 3","ranger rogue dip lvl:6","The nova opener: surprise gives assassin autocrits, Dread Ambusher gives the extra first-turn attack, Sharpshooter stacks -5/+10 on every swing. Round one deletes a lieutenant before initiative settles."],
-["Fey Wanderer","ranger sub lvl:3","The charmer chassis: +1d4 psychic on weapon hits, Wisdom feeds your face skills, free charm person by lvl 5. Mechanically solid and it is literally a snake charmer — the Cha-keyed tricks ride on the yuan-ti +2 Cha."],
-["Swarmkeeper","ranger sub lvl:3","A swarm that follows you and eats people — reflavor it as SNAKES and the theme writes itself. Per hit: +1d6 damage, or shove them 15 ft, or teleport yourself 5 ft. Level 8 adds flight."],
-["Horizon Walker","ranger sub lvl:3","The fiend-hunter's fiend-hunter: +1d8 force damage, portal senses, banishing smite at 9 — it sends things back to their home plane. You are already on their home plane. It was written for this campaign."],
-["Beast Master (TCE rewrite)","ranger sub lvl:3","Primal Companion — reflavor Beast of the Land as a giant constrictor and Acosta becomes a real stat block: HP scales with you, acts on your command as a bonus action, revives with a spell slot. The old PHB beast master is why the ranger had a bad rep; the TCE one is good."],
-["Darkness + Devil's Sight","warlock dip lvl:4","Magical darkness beats normal darkvision — even fiends cannot see through it. Devil's Sight (warlock 2) can. You attack with advantage; they swing blind. In a plane where darkness is the weather, this is a siege engine."],
-["Eldritch Adept","feat lvl:4","Do not want the warlock dip? One feat buys Devil's Sight outright — same darkness combo, zero multiclass levels. Pick it at any ASI."],
-["Hexblade 1","warlock dip lvl:4","One level: your attack stat becomes Cha (which yuan-ti already boosts), plus Hexblade's Curse for +prof damage on a chosen target. Turns a skill monkey into a duelist on the stat he already has."],
-["Rogue 1-2","rogue dip lvl:2","Expertise x2 — double Stealth or Deception so the criminal resume is mechanically literal — plus Sneak Attack dice on a Sharpshooter shot. Rogue 2 adds Cunning Action: dash, disengage, or hide as a bonus action every turn."],
-["Favored Foe (TCE)","ranger lvl:1","The TCE fix for Favored Enemy: mark a target for +1d4 damage per hit (d6 at 6, d8 at 14), free, no slot, but it eats concentration — meaning it competes with Hunter's Mark, not complements it. Pick one."],
-["Zephyr Strike","ranger spell lvl:1","The best 1st-level damage button a ranger owns: bonus action, advantage on one hit, +1d8, and you stop provoking opportunity attacks. Use it to land the Sharpshooter shot that matters."],
-["Hunter's Mark","ranger spell lvl:1","+1d6 on every hit against the mark — Sharpshooter hits included — for an hour, movable between kills. The real cost is concentration: do not double-book it with another concentration trick."],
-["Pass without Trace","ranger spell lvl:5","+10 to the whole party's stealth for an hour — the infiltration button. Criminal background written in spell slots: everyone walks in, nobody hears a thing."],
-["Absorb Elements","ranger spell lvl:1","Reaction: halve fire/acid/etc damage and add 1d6 of that element to your next hit. In Avernus everything breathes fire; yuan-ti already has poison covered — this covers the plane's actual weather."],
-["Conjure Animals","ranger spell lvl:9","One slot, up to eight poisonous snakes under your command — the snake charmer's graduation exam. Also just objectively the strongest 3rd-level summon in the game."],
-["Polearm Master","any feat lvl:4","Reach weapon plus a d4 butt-strike as a bonus action, and things that enter your reach eat a reaction attack. The melee counterpart of the Crossbow Expert play."],
-["Sentinel + Polearm Master","any melee combo lvl:4","The lockdown pair: stop-on-hit (Sentinel) triggers off the reach attack (PAM), so things that walk up to you freeze in place at 10 ft out. Turns a melee build into area denial."],
-["Resilient (Wisdom)","ranger feat lvl:8","Rangers fail Wisdom saves constantly and there is no class feature covering it. +1 Wis and save proficiency patches the biggest hole in the chassis."],
-["Alert","ranger feat lvl:4","+5 initiative and immune to surprise — stacks with Gloom Stalker's ambush math. In Hell, where everything ambushes, going first is a build feature."],
-["Inspiring Leader","feat lvl:4","After every rest: temp HP for the whole party equal to level+Cha. The yuan-ti +2 Cha makes it land, and a snake charmer rallying a room is on-brand."],
-["Actor","feat lvl:4","+1 Cha, mimic voices perfectly, advantage on Deception when impersonating someone. It is literally the Epstein skillset printed as a feat. Criminal synergy is self-evident."],
-["Lucky","feat lvl:4","Three free rerolls a day, yours or theirs. Narratively accurate — his whole existence is luck running out, and now it's a resource you manage."],
-["Magic Initiate (Warlock)","feat lvl:4","Eldritch blast for a real ranged option plus Hex once a day — a warlock dip with no multiclass level spent. Pairs with the yuan-ti Cha."],
-["Elven Accuracy","elf feat lvl:4","Half-elves and elves only: when you have advantage on a Dex attack, reroll one die — triple-advantage. Sharpshooter crit-fishing goes from good to absurd."],
-["Squat Nimbleness","halfling gnome feat lvl:4","Small races only: +1 Str or Dex, extra speed, advantage to escape grapples — turns a halfling into a slippery skirmisher."],
-["Prodigy","human halfline feat lvl:4","Humans, half-elves, half-orcs: +1 skill, +1 tool, and one expertise. Cheap, quiet, and the single most efficient skill-monkey feat."],
-["Second-Work Dwarven Fortitude","dwarf feat lvl:4","Dwarves only: spend a hit die as a bonus action to heal. Your hit dice become a combat resource instead of a rest resource."]
+[
+"Sharpshooter + Archery style",
+"ranger feat lvl:4",
+"Take -5 to hit for +10 damage — the biggest damage line a ranger can take, and Archery style (lvl 2, +2 to hit) buys back most of the penalty. Everything else on a ranged ranger is commentary on this feat."
+],
+[
+"Crossbow Expert",
+"ranger feat lvl:4",
+"Bonus-action hand-crossbow shot plus no disadvantage in melee — a third -5/+10 attack every round once Sharpshooter is online. The two feats are one build."
+],
+[
+"Gloom Stalker",
+"ranger sub lvl:3",
+"The power subclass. Turn one: an extra attack, +10 ft move, +1d8 on the bonus hit. Umbral Sight makes you invisible to darkvision — and in Hell EVERYTHING has darkvision. You are a ghost on the one plane built entirely on seeing in the dark."
+],
+[
+"Gloom Stalker 3 / Assassin 3",
+"ranger rogue combo lvl:6",
+"The nova opener: surprise gives assassin autocrits, Dread Ambusher gives the extra first-turn attack, Sharpshooter stacks -5/+10 on every swing. Round one deletes a lieutenant before initiative settles."
+],
+[
+"Fey Wanderer",
+"ranger sub lvl:3",
+"The charmer chassis: +1d4 psychic on weapon hits, Wisdom feeds your face skills, free charm person by lvl 5. Mechanically solid and it is literally a snake charmer — the Cha-keyed tricks ride on the yuan-ti +2 Cha."
+],
+[
+"Swarmkeeper",
+"ranger sub lvl:3",
+"A swarm that follows you and eats people — reflavor it as SNAKES and the theme writes itself. Per hit: +1d6 damage, or shove them 15 ft, or teleport yourself 5 ft. Level 8 adds flight."
+],
+[
+"Horizon Walker",
+"ranger sub lvl:3",
+"The fiend-hunter's fiend-hunter: +1d8 force damage, portal senses, banishing smite at 9 — it sends things back to their home plane. You are already on their home plane. It was written for this campaign."
+],
+[
+"Beast Master (TCE rewrite)",
+"ranger sub lvl:3",
+"Primal Companion — reflavor Beast of the Land as a giant constrictor and Acosta becomes a real stat block: HP scales with you, acts on your command as a bonus action, revives with a spell slot. The old PHB beast master is why the ranger had a bad rep; the TCE one is good."
+],
+[
+"Darkness + Devil's Sight",
+"warlock dip lvl:4",
+"Magical darkness beats normal darkvision — even fiends cannot see through it. Devil's Sight (warlock 2) can. You attack with advantage; they swing blind. In a plane where darkness is the weather, this is a siege engine."
+],
+[
+"Eldritch Adept",
+"feat lvl:4",
+"Do not want the warlock dip? One feat buys Devil's Sight outright — same darkness combo, zero multiclass levels. Pick it at any ASI."
+],
+[
+"Hexblade 1",
+"warlock dip lvl:4",
+"One level: your attack stat becomes Cha (which yuan-ti already boosts), plus Hexblade's Curse for +prof damage on a chosen target. Turns a skill monkey into a duelist on the stat he already has."
+],
+[
+"Rogue 1-2",
+"rogue dip lvl:2",
+"Expertise x2 — double Stealth or Deception so the criminal resume is mechanically literal — plus Sneak Attack dice on a Sharpshooter shot. Rogue 2 adds Cunning Action: dash, disengage, or hide as a bonus action every turn."
+],
+[
+"Favored Foe (TCE)",
+"ranger lvl:1",
+"The TCE fix for Favored Enemy: mark a target for +1d4 damage per hit (d6 at 6, d8 at 14), free, no slot, but it eats concentration — meaning it competes with Hunter's Mark, not complements it. Pick one."
+],
+[
+"Zephyr Strike",
+"ranger spell lvl:1",
+"The best 1st-level damage button a ranger owns: bonus action, advantage on one hit, +1d8, and you stop provoking opportunity attacks. Use it to land the Sharpshooter shot that matters."
+],
+[
+"Hunter's Mark",
+"ranger spell lvl:1",
+"+1d6 on every hit against the mark — Sharpshooter hits included — for an hour, movable between kills. The real cost is concentration: do not double-book it with another concentration trick."
+],
+[
+"Pass without Trace",
+"ranger spell lvl:5",
+"+10 to the whole party's stealth for an hour — the infiltration button. Criminal background written in spell slots: everyone walks in, nobody hears a thing."
+],
+[
+"Absorb Elements",
+"ranger spell lvl:1",
+"Reaction: halve fire/acid/etc damage and add 1d6 of that element to your next hit. In Avernus everything breathes fire; yuan-ti already has poison covered — this covers the plane's actual weather."
+],
+[
+"Conjure Animals",
+"ranger spell lvl:9",
+"One slot, up to eight poisonous snakes under your command — the snake charmer's graduation exam. Also just objectively the strongest 3rd-level summon in the game."
+],
+[
+"Polearm Master",
+"any feat lvl:4",
+"Reach weapon plus a d4 butt-strike as a bonus action, and things that enter your reach eat a reaction attack. The melee counterpart of the Crossbow Expert play."
+],
+[
+"Sentinel + Polearm Master",
+"any melee combo lvl:4",
+"The lockdown pair: stop-on-hit (Sentinel) triggers off the reach attack (PAM), so things that walk up to you freeze in place at 10 ft out. Turns a melee build into area denial."
+],
+[
+"Resilient (Wisdom)",
+"ranger feat lvl:8",
+"Rangers fail Wisdom saves constantly and there is no class feature covering it. +1 Wis and save proficiency patches the biggest hole in the chassis."
+],
+[
+"Alert",
+"ranger feat lvl:4",
+"+5 initiative and immune to surprise — stacks with Gloom Stalker's ambush math. In Hell, where everything ambushes, going first is a build feature."
+],
+[
+"Inspiring Leader",
+"feat lvl:4",
+"After every rest: temp HP for the whole party equal to level+Cha. The yuan-ti +2 Cha makes it land, and a snake charmer rallying a room is on-brand."
+],
+[
+"Actor",
+"feat lvl:4",
+"+1 Cha, mimic voices perfectly, advantage on Deception when impersonating someone. It is literally the Epstein skillset printed as a feat. Criminal synergy is self-evident."
+],
+[
+"Lucky",
+"feat lvl:4",
+"Three free rerolls a day, yours or theirs. Narratively accurate — his whole existence is luck running out, and now it's a resource you manage."
+],
+[
+"Magic Initiate (Warlock)",
+"feat lvl:4",
+"Eldritch blast for a real ranged option plus Hex once a day — a warlock dip with no multiclass level spent. Pairs with the yuan-ti Cha."
+],
+[
+"Elven Accuracy",
+"elf feat lvl:4",
+"Half-elves and elves only: when you have advantage on a Dex attack, reroll one die — triple-advantage. Sharpshooter crit-fishing goes from good to absurd."
+],
+[
+"Squat Nimbleness",
+"halfling gnome feat lvl:4",
+"Small races only: +1 Str or Dex, extra speed, advantage to escape grapples — turns a halfling into a slippery skirmisher."
+],
+[
+"Prodigy",
+"human halfline feat lvl:4",
+"Humans, half-elves, half-orcs: +1 skill, +1 tool, and one expertise. Cheap, quiet, and the single most efficient skill-monkey feat."
+],
+[
+"Second-Work Dwarven Fortitude",
+"dwarf feat lvl:4",
+"Dwarves only: spend a hit die as a bonus action to heal. Your hit dice become a combat resource instead of a rest resource."
+],
+[
+"Reckless Sneak (Barb / Rogue)",
+"barbarian rogue combo lvl:2",
+"The assassin-bruiser classic: Reckless Attack gives YOURSELF advantage on Str attacks — finesse weapons still count — so Sneak Attack fires every turn with no flanking and no setup. Barb 5 for Extra Attack and Bear Totem 3 resists everything coming back. Rage is just gravy."
+],
+[
+"Sorcadin (Paladin 2 / Sorcerer X)",
+"paladin sorcerer combo lvl:8",
+"Smite spends any slot, and sorcerer levels pile up slots — plus Quickened Spell means spell AND full smite-attack routine in the same turn. The dedicated nova machine: one boss round, triple-digit damage, everyone at the table goes quiet."
+],
+[
+"Padlock (Hexblade 1 / Paladin X)",
+"warlock paladin combo lvl:7",
+"One hexblade level: attacks run on Cha (drop Str entirely), and pact slots recharge on a SHORT rest — your smite economy refills at lunch. Widely considered the strongest paladin chassis in 2014."
+],
+[
+"Hexblade / Swords Bard",
+"warlock bard combo lvl:7",
+"The gish that loses nothing: Cha to attacks, medium armor and shield proficiency from the dip, full bard casting underneath, flourishes on top. All the swordplay, none of the stat split."
+],
+[
+"Coffeelock (Warlock / Sorcerer)",
+"warlock sorcerer combo lvl:6",
+"Pact slots convert to sorcery points, pact magic recharges on short rest — with enough short rests the loop has no ceiling. The famous infinite-slot exploit. Most DMs cap it; everyone knows it; nobody's proud. Knowing it exists is the point."
+],
+[
+"Bearbarian (Moon Druid 2 / Bear Totem 3)",
+"druid barbarian combo lvl:5",
+"Wild shape into a 34-HP bear, rage inside the bear — resistance to nearly everything on top of a disposable HP pool that resets per short rest. The cheapest tank math in the game: you ARE the hit points."
+],
+[
+"Fighter 2 — Action Surge",
+"fighter dip lvl:2",
+"Two levels of fighter in anything: a whole extra action once per rest. On a caster that's two fireballs in one turn; on a martial it's the whole attack routine twice. The most stapled-on dip in the game."
+],
+[
+"Cleric 1 — the plate wizard",
+"cleric dip lvl:1",
+"One cleric level grants heavy armor and shields on a full caster — wizard in plate, hit points keep pace with level, and Life/Nature/Tempest each add a real feature. One level slows your spell table by exactly one level."
+],
+[
+"Peace 1 — Emboldening Bond",
+"cleric dip lvl:1",
+"Bond allies get +1d4 to attacks, checks, AND saves between each other, reaction-free — and it STACKS with bless. Arguably the strongest single level printed in 2014; a lot of tables ban it outright."
+],
+[
+"Conquest Lock",
+"paladin warlock combo lvl:8",
+"Aura of Conquest drops feared creatures to zero movement; wrathful smite or an undead/GOO warlock applies the fear. Frightened AND speed 0 AND they can't approach — the lockdown loop: they can't move, can't fight, can't leave."
+],
+[
+"Path to the Grave (Grave Cleric 6)",
+"cleric sub lvl:6",
+"Channel: the target's next hit takes DOUBLE damage — vulnerability on command. Feed it to a paladin's smite crit or an assassin's autocrit and a boss loses half its health bar to a single swing. The support pick that makes novas nuclear."
+],
+[
+"Divination 2 — Portent",
+"wizard sub lvl:2",
+"Two d20s rolled at dawn, replace any roll you can see — enemy saves, ally death saves, your own everything. Two stored dice is a whole build feature; the rest of divination wizard is gravy."
+],
+[
+"Echo Knight 3",
+"fighter sub lvl:3",
+"A free-standing echo doubles your board presence: attack from its square, take reaction attacks from two positions, teleport-swap with it. The strongest straight-fighter pick — no multiclass required."
+],
+[
+"Rune Knight 3",
+"fighter sub lvl:3",
+"Giant's Might goes Large +1d6 damage, and the runes are basically free spells on a fighter chassis — the martial that came with a utility belt."
+],
+[
+"Samurai + Sharpshooter",
+"fighter sub lvl:3",
+"Samurai's Fighting Spirit is advantage on ALL attacks as a bonus action, 3/rest — Sharpshooter's -5/+10 pays for itself on every swing it covers. Self-sufficient advantage is the rarest resource in the game."
+],
+[
+"Swashbuckler 3",
+"rogue sub lvl:3",
+"Rakish Audacity: Sneak Attack any duel target without needing advantage — plus Cha to initiative and free retreat. The duelist rogue that never has to beg for flanking."
+],
+[
+"Moon Druid 2",
+"druid sub lvl:2",
+"Bonus-action wild shape plus the CR1 forms table at level 2 — the level 2-5 window where druid is the best class in the game, period. Bonus-action giant spiders while everyone else is swinging swords."
+],
+[
+"Twilight Cleric",
+"cleric sub lvl:1",
+"The domain that got errata'd for being too strong: 300-ft darkvision shared with the party, a channel that hands out temp HP every round like a warlock aura — and flight at 6. The safest 'strong' pick in the book."
+]
 ]
