@@ -383,5 +383,275 @@
 "Necklace of Fireballs",
 "gear lvl:1",
 "Free fireballs for the martial — the DM's gift to characters who don't cast. Ranged AoE with zero levels spent."
+],
+[
+"Bear Totem 3",
+"barbarian sub lvl:3",
+"Resistance to every damage type except psychic while raging — at level 3. The single best defensive feature any martial owns, and the reason barb frontliners stop dying."
+],
+[
+"Zealot",
+"barbarian sub lvl:3",
+"Free revives — resurrection spells cost zero components on you. Dying becomes a resource decision: rage past 0 HP (damage does not drop you) and the party resurrects you for free after."
+],
+[
+"Reckless + Great Weapon Master",
+"barbarian feat lvl:4",
+"The melee version of Sharpshooter: GWM's -5/+10 on a greataxe, and Reckless Attack's self-granted advantage pays the accuracy tax every turn. Plus GWM's bonus-action swing on a crit/kill."
+],
+[
+"Barbarian — the honest math",
+"barbarian lvl:1",
+"Honest barb math: damage resistance IS the damage feature. Take Bear 3, GWM at 4, polearm at 8, and stop theorycrafting nova routes — the class wins by refusing to die while swinging -5/+10."
+],
+[
+"Eloquence 3",
+"bard sub lvl:3",
+"Unsettling Words: subtract a die from enemy saves as a reaction, and your Persuasion/Deception floor is absurdly high. The save-or-suck enabler — nothing in the game makes banishment more reliable."
+],
+[
+"College of Lore 3",
+"bard sub lvl:3",
+"Cutting Words protects allies as a reaction AND Magical Secrets arrives at 6 — two levels early. Steal counterspell, revivify, or whatever the party lacks. The original 'steal the best spells' chassis."
+],
+[
+"Magical Secrets picks",
+"bard lvl:10",
+"The famous theft list: Find Greater Steed (flying mount that shares self-spells), Aura of Vitality (30d6 healing one slot), conjure animals, swift quiver — bard 10+ is legally everything at once."
+],
+[
+"Jack of All Trades",
+"bard lvl:2",
+"Half proficiency on EVERYTHING including initiative and counterspell checks — the quiet bard feature. Stacks with expertise picks; bards are never bad at anything."
+],
+[
+"Battle Master 3 — Precision",
+"fighter sub lvl:3",
+"Riposte (attack back when they miss) and Precision Attack (add the die to a roll — literally pays the -5 on a GWM or SS swing). The maneuvers ARE the fighter build."
+],
+[
+"Eldritch Knight 3",
+"fighter sub lvl:3",
+"Shield and booming blade on a full-attack chassis — +5 AC reaction at level 3 with more attacks than anyone. The defensive caster-fighter hybrid that actually functions."
+],
+[
+"Cavalier",
+"fighter sub lvl:3",
+"Mark targets — attack anyone but you and they swing at disadvantage while you punish with bonus attacks. The old-school 'the wall comes to you' tank."
+],
+[
+"Open Hand 3",
+"monk sub lvl:3",
+"Flurry of Blows riders at 3: knock prone (free advantage for the party), push 15 ft (off the cliff, out of melee), or block their reactions. Control stapled onto your attacks for free."
+],
+[
+"Stunning Strike math",
+"monk lvl:5",
+"The honest version: you are not fishing the stun, you are eating legendary resistances — 3-4 flurry stuns a turn forces the boss to burn its saves. Volume IS the monk feature."
+],
+[
+"Mercy (TCE)",
+"monk sub lvl:3",
+"Hand of Harm adds martial-arts die necrotic to hits, Hands of Healing heals for the same — a monk that poisons AND revives between punches. The TCE monk that fixed the class."
+],
+[
+"Shadow 3",
+"monk sub lvl:3",
+"Pass without trace self-cast, darkness you can see through via blindsight-ish tricks, teleport between shadows — the ninja package, and in a dark plane it's a movement cheat code."
+],
+[
+"Aura of Protection (Pal 6)",
+"paladin lvl:6",
+"+Cha to EVERY save for allies within 10 ft — the feature that makes whole parties unkillable and the reason 'stand near the paladin' is a real tactic."
+],
+[
+"Smite crit-fishing",
+"paladin lvl:2",
+"Declare the smite AFTER the crit: every smite die doubles on a crit — a 2nd-level smite crit is 8d8 bonus. The tech that makes paladins the nova class: wait for the 20, then unload."
+],
+[
+"Ancients aura",
+"paladin sub lvl:3",
+"Resistance to spell damage in a radius — half damage from every fireball forever. The oath that makes the whole party hard to magic."
+],
+[
+"Vengeance — Vow of Enmity",
+"paladin sub lvl:3",
+"Bonus action: advantage vs one creature for a minute — self-granted advantage covering every -5/+10 you take on the boss. The duelist oath."
+],
+[
+"Divine Soul",
+"sorcerer sub lvl:1",
+"The whole cleric list on a sorcerer chassis — heal AND blast AND metamagic, plus a free 2d4 reroll on failures. The strongest sorcerer subclass."
+],
+[
+"Aberrant Mind",
+"sorcerer sub lvl:1",
+"Sorcerer spells cast SUBTLE for free at level 1 — psychic spellcasting with zero components. Charm, suggestion, detect thoughts, all invisible. The mind-control chassis nobody notices using."
+],
+[
+"Clockwork Soul",
+"sorcerer sub lvl:1",
+"Cancel advantage/disadvantage as a reaction, restore-order spells free, and a straight Trance of Order 'no 1-9 on d20s' at 14 — the mathematician's sorcerer."
+],
+[
+"Quickened + Twinned",
+"sorcerer metamagic lvl:3",
+"Quickened: bonus-action spell then a cantrip = double casts. Twinned: one haste or polymorph covers two targets. The two metamagics that broke the edition — take both."
+],
+[
+"Heightened + save-or-suck",
+"sorcerer metamagic lvl:3",
+"Three sorcery points: the target takes disadvantage on your spell's save. On banishment or hold monster, disadvantage is usually the whole fight."
+],
+[
+"Agonizing Blast",
+"warlock lvl:2",
+"+Cha to every eldritch blast ray — at 17 that's +5 four times, force damage, 120 ft. THE warlock invocation; the class is balanced around you taking it."
+],
+[
+"Repelling Blast",
+"warlock lvl:2",
+"Each blast ray pushes 10 ft — four rays at 17 is 40 ft of forced movement per turn. Off cliffs, into hazards, through spike growth — the blast that plays the battlefield."
+],
+[
+"Devil's Sight on locks",
+"warlock lvl:2",
+"See through magical darkness — cast darkness on yourself and it stops being a hindrance, it becomes cover. See the full Darkness + Devil's Sight combo entry."
+],
+[
+"Investment of the Chain Master",
+"warlock lvl:3",
+"TCE pact-boon buff: your familiar gets real attacks, poison saves use your DC, command it as a bonus action — the imp/chain lock went from flavor to a second attacker."
+],
+[
+"Mask of Many Faces",
+"warlock lvl:2",
+"At-will disguise self, unlimited — infinite faces at will, no slot. The infiltration invocation; a criminal could not ask for a better cheat code."
+],
+[
+"Fiend lock",
+"warlock sub lvl:1",
+"Temp HP every time something dies near you — and things die a lot. On-theme for Hell and quietly the sturdiest patron."
+],
+[
+"War Wizard 2",
+"wizard sub lvl:2",
+"+2 to ALL saves passively and +4 AC as a reaction — the 'wizards stop dying' pick. The power isn't damage, it's that you never drop concentration."
+],
+[
+"Chronurgy 2",
+"wizard sub lvl:2",
+"Dunamancy: +Int to initiative and a reaction that forces any creature to reroll — the temporal wizard. If the table allows Wildemount, it's the strongest wizard school."
+],
+[
+"Abjuration ward tank",
+"wizard sub lvl:2",
+"The Arcane Ward is a regenerating HP shield that eats hits FOR you — cast abjuration spells to recharge it. The wizard that tanks, literally."
+],
+[
+"Bladesinger",
+"wizard sub lvl:2",
+"Song adds Int to AC, concentration saves, and your sword fights — the highest-AC caster chassis in 2014. Elves only RAW; most tables let anyone."
+],
+[
+"Enchantment — twin saves",
+"wizard sub lvl:10",
+"Split Enchantment: single-target enchantments hit two targets — twin hold person, twin dominate. Doubling control spells at 10 is campaign-breaking."
+],
+[
+"Shepherd 5 — summon engine",
+"druid sub lvl:2",
+"Mighty Summoner gives conjured beasts +HP and magical attacks — combined with conjure animals/wolves, your summoned pack actually kills things. THE summon chassis."
+],
+[
+"Stars Druid",
+"druid sub lvl:2",
+"Starry form dragon: min-10s on Int/Wis checks and a free attack each turn — wild shape becomes a combat form instead of a scout gimmick. The best non-moon druid."
+],
+[
+"Wildfire",
+"druid sub lvl:2",
+"Summon a fire spirit that teleports your allies and deals damage — a pet with its own turn that also repositions the party."
+],
+[
+"Archdruid 20",
+"druid lvl:20",
+"Unlimited wild shape at 20 — the capstone that turns a moon druid into an effectively unkillable elementalist. The rare level-20 feature worth planning toward."
+],
+[
+"Tempest channel",
+"cleric sub lvl:2",
+"Destructive Wrath: max damage on one lightning/thunder roll — a maximized shatter or lightning bolt out of a mid caster. The heavy-armor storm tank."
+],
+[
+"Forge cleric",
+"cleric sub lvl:1",
+"+1 to armor free at 1, fire immunity at 17, artisan blesses the crafting — the sturdy utility cleric that also hits fine."
+],
+[
+"Order domain",
+"cleric sub lvl:1",
+"When you cast an enchantment spell an ally gets a free reaction attack — command/hold person become attack engines. The enabler domain."
+],
+[
+"Reliable Talent 11",
+"rogue lvl:11",
+"Floor of 10 on every proficient check — expertise doubles prof so stealth/deception checks land in the 20s minimum. The rogue literally cannot fail skill checks."
+],
+[
+"Scout",
+"rogue sub lvl:3",
+"Free half-speed reaction movement when a foe ends its turn next to you — they physically cannot pin you down. The skirmisher package plus free nature/survival."
+],
+[
+"Phantom",
+"rogue sub lvl:3",
+"Sneak attack a second target, soul trinkets, speak with dead vibe — the TCE rogue that turned utility dice into ghost powers."
+],
+[
+"Soulknife",
+"rogue sub lvl:3",
+"Psi dice create psychic blades — you never need to carry a weapon, and the dice fund telekinetic movement and telepathy. The psychic rogue."
+],
+[
+"Artificer 1 — the caster dip",
+"artificer dip lvl:1",
+"The CONSTITUTION save proficiency dip — one level gives casters Con save prof plus healing word/armor slots. Paired with War Caster your concentration is nearly unbreakable."
+],
+[
+"Battlesmith",
+"artificer sub lvl:3",
+"Attack with INT on magic weapons plus a steel defender pet — the artificer that plays like a martial with a robot dog."
+],
+[
+"Artillerist",
+"artificer sub lvl:3",
+"A turret on legs: force ballista damage, protector shield for ally temp HP — the artillerist's cannon is a free standing damage+support action."
+],
+[
+"Infusions — the picks",
+"artificer lvl:2",
+"Enhanced Defense/Weapon scale with level, Mind Sharpener fixes concentration (reaction converts failed conc to success), Replicate Bag of Holding. The infusion list IS the class."
+],
+[
+"Armorer — infiltrator",
+"artificer sub lvl:3",
+"Lightning launcher is a ranged Int attack plus advantage-on-dex-checks stealth armor — the artificer that's basically a ranger with better armor."
+],
+[
+"Shadow Monk / Gloom Ranger",
+"monk ranger combo lvl:8",
+"Both stack darkness tech: monk teleports shadow-to-shadow while Umbral Sight hides you from everyone else's darkvision — a stealth build that owns the dark plane's physics."
+],
+[
+"Battle Master / anything melee",
+"fighter dip lvl:3",
+"Riposte turns enemy misses into your attacks — on a barb or monk the dip adds a whole reaction economy with three levels."
+],
+[
+"Aberrant Sorc / criminal anything",
+"sorcerer combo lvl:5",
+"Subtle psychic spells + Deception expertise: nobody ever sees the charm happen. The social-combat build — mind control with no witnesses."
 ]
 ]
