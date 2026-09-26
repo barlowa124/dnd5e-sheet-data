@@ -1169,7 +1169,7 @@ function genStandard(){
 }
 function genRoll(){
  const rs=[];
- for(let i=0;i<6;i++){const d=[1,2,3,4].map(()=>1+Math.floor(Math.random()*6)).sort((a,b)=>a-b);rs.push(d[1]+d[2]+d[3]);}
+ for(let i=0;i<STAT_ORDER.length;i++){const d=[1,2,3,4].map(()=>1+Math.floor(Math.random()*6)).sort((a,b)=>a-b);rs.push(d[1]+d[2]+d[3]);}
  rs.sort((a,b)=>b-a);const o=statOrder();
  o.forEach((s,i)=>statEl(s).value=rs[i]);
  rebuild();saveState();log('Rolled ['+rs.join(', ')+'] → '+o.map((s,i)=>s.toUpperCase()+' '+rs[i]).join(', '));
@@ -1227,13 +1227,14 @@ function pickSkill(name){
 }
 const ARMOR={none:[10,99],mage:[13,99],leather:[11,99],studded:[12,99],'chain shirt':[13,2],'scale mail':[14,2],breastplate:[14,2],'half plate':[15,2],'ring mail':[14,0],'chain mail':[16,0],splint:[17,0],plate:[18,0]};
 function unarmoredBase(){
+ const NATURAL_ARMOR_BASE=13;// draconic resilience, lizardfolk natural armor
  let b=10;
  mclasses.forEach(m=>{
   if(m.c==='Monk')b=Math.max(b,10+mod('wis'));
   if(m.c==='Barbarian')b=Math.max(b,10+mod('con'));
-  if(m.c==='Sorcerer'&&m.s==='Draconic Bloodline')b=Math.max(b,13);
+  if(m.c==='Sorcerer'&&m.s==='Draconic Bloodline')b=Math.max(b,NATURAL_ARMOR_BASE);
  });
- if(el('raceLabel').textContent.toLowerCase().includes('lizardfolk'))b=Math.max(b,13);
+ if(el('raceLabel').textContent.toLowerCase().includes('lizardfolk'))b=Math.max(b,NATURAL_ARMOR_BASE);
  return b;
 }
 function autoAC(){
@@ -1735,7 +1736,7 @@ function saveState(){
   localStorage.setItem(STORE_KEY,JSON.stringify(store));
   el('saveNote').textContent='saved '+new Date().toLocaleTimeString();
   if(GH_PAT)pushChar(curChar).catch(e=>log('Sync: '+e.message));
- },600);
+ },TIMING.saveDebounceMs);
 }
 
 // ================= SHOWTUNE =================
@@ -1781,22 +1782,27 @@ const TUNE_PHRASES=[ // ≈ melody guide, D harmonic minor — winding snake-cha
   [[69,.26],[69,.26],[70,.26],[72,.26],[74,.26],[72,.26],[70,.52]],
   [[67,.26],[65,.26],[64,.26],[62,.39],[61,.13],[62,.26],[65,.26],[64,.26],[62,.78]]];
 const TUNE=TUNE_PHRASES.flat();
+const TIMING={saveDebounceMs:600,singWatchdogMs:2000,ttsStallMs:12000,msPerSec:1000};
+const SND={refHz:440,refMidi:69,semiPerOct:12,playLeadS:.15,singLeadS:.3,melodyTailS:.3,
+ melodyGain:.22,underlayGain:.14,attackS:.02,noteGapS:.05,minDurS:.03,releaseS:.03,
+ melodyLoops:8,rateSpeak:1.02,rateNovelty:.95,pitchBase:1.4,pitchMin:.6,pitchMax:1.7,
+ meanFallbackMidi:62};
 let tuneCtx=null;
 function playTune(){
  if(tuneCtx){tuneCtx.close();tuneCtx=null;log('Melody stopped.');return;}
  if(!/arabian/i.test(el('songBase').value)){
   log('Melody guide only exists for Arabian Nights right now — that is the one Efferey filks.');return;}
  tuneCtx=new (window.AudioContext||window.webkitAudioContext)();
- let t=tuneCtx.currentTime+0.15;
+ let t=tuneCtx.currentTime+SND.playLeadS;
  for(const [m,d] of TUNE){
-  if(m){const f=440*Math.pow(2,(m-69)/12);
+  if(m){const f=SND.refHz*Math.pow(2,(m-SND.refMidi)/SND.semiPerOct);
    const o=tuneCtx.createOscillator(),g=tuneCtx.createGain();
    o.type='triangle';o.frequency.value=f;
-   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.22,t+0.02);
-   g.gain.setTargetAtTime(0,t+Math.max(0.03,d-0.05),0.03);
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(SND.melodyGain,t+SND.attackS);
+   g.gain.setTargetAtTime(0,t+Math.max(SND.minDurS,d-SND.noteGapS),SND.releaseS);
    o.connect(g);g.connect(tuneCtx.destination);o.start(t);o.stop(t+d);}
   t+=d;}
- setTimeout(()=>{if(tuneCtx){tuneCtx.close();tuneCtx=null;}},(t-tuneCtx.currentTime+0.3)*1000);
+ setTimeout(()=>{if(tuneCtx){tuneCtx.close();tuneCtx=null;}},(t-tuneCtx.currentTime+TIMING.melodyTailS)*TIMING.msPerSec);
  log('Playing melody guide — approximation in the Arabian Nights register, for pitch reference. Click ▶ again to stop.');}
 let singing=false,singWd=null,singUs=[],spokenAny=false,lastSpeechEv=0;
 function singDone(){singing=false;if(singWd){clearInterval(singWd);singWd=null;}
@@ -1823,13 +1829,13 @@ function singTune(){
   if(!window.AudioContext&&!window.webkitAudioContext){singing=false;return log('No Web Audio for the melody.');}
   tuneCtx=new (window.AudioContext||window.webkitAudioContext)();
   // melody track — the whole verse+chorus cycle, looped ~2.5min, fully pre-scheduled
-  let t=tuneCtx.currentTime+0.3;
-  for(let c=0;c<8;c++)for(const ph of TUNE_PHRASES)for(const [m,d] of ph){
-   if(m){const f=440*Math.pow(2,(m-69)/12);
+  let t=tuneCtx.currentTime+SND.singLeadS;
+  for(let c=0;c<SND.melodyLoops;c++)for(const ph of TUNE_PHRASES)for(const [m,d] of ph){
+   if(m){const f=SND.refHz*Math.pow(2,(m-SND.refMidi)/SND.semiPerOct);
     const o=tuneCtx.createOscillator(),g=tuneCtx.createGain();
     o.type='triangle';o.frequency.value=f;
-    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.14,t+0.02);
-    g.gain.setTargetAtTime(0,t+Math.max(0.03,d-0.05),0.03);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(SND.underlayGain,t+SND.attackS);
+    g.gain.setTargetAtTime(0,t+Math.max(SND.minDurS,d-SND.noteGapS),SND.releaseS);
     o.connect(g);g.connect(tuneCtx.destination);o.start(t);o.stop(t+d);}
    t+=d;}
   log('Singing over the looping melody guide — hit 🎤 again to stop.');
@@ -1838,11 +1844,11 @@ function singTune(){
  lines.forEach((l,i)=>{
   const u=new SpeechSynthesisUtterance(l);
   u.voice=novelty||any;
-  u.rate=noveltyMode?0.95:1.02;
+  u.rate=noveltyMode?SND.rateNovelty:SND.rateSpeak;
   const ph=TUNE_PHRASES[i%TUNE_PHRASES.length];
   const notes=ph.filter(n=>n[0]).map(n=>n[0]);
-  const mean=notes.length?notes.reduce((a,b)=>a+b,0)/notes.length:62;
-  u.pitch=noveltyMode?1:Math.min(1.7,Math.max(.6,Math.pow(2,(mean-69)/12)*1.4));
+  const mean=notes.length?notes.reduce((a,b)=>a+b,0)/notes.length:SND.meanFallbackMidi;
+  u.pitch=noveltyMode?1:Math.min(SND.pitchMax,Math.max(SND.pitchMin,Math.pow(2,(mean-SND.refMidi)/SND.semiPerOct)*SND.pitchBase));
   u.onstart=u.onend=u.onerror=()=>{spokenAny=true;lastSpeechEv=Date.now();};
   singUs.push(u);speechSynthesis.speak(u);});
  // watchdog — Chrome stalls remote voices ~15s in (poke it), and detects end of song
@@ -1851,9 +1857,9 @@ function singTune(){
   if(!speechSynthesis.speaking&&!speechSynthesis.pending){
    if(!spokenAny)log('The speech engine produced nothing — try ▶ melody alone.');
    singDone();return;}
-  if(speechSynthesis.speaking&&Date.now()-lastSpeechEv>12000){
+  if(speechSynthesis.speaking&&Date.now()-lastSpeechEv>TIMING.ttsStallMs){
    speechSynthesis.pause();speechSynthesis.resume();lastSpeechEv=Date.now();}
- },2000);
+ },TIMING.singWatchdogMs);
 }
 
 // ================= DISCORD EXPORT =================
