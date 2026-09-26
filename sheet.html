@@ -1685,7 +1685,9 @@ function renderCombos(){
   const need=lvlTag?+lvlTag.slice(4):0;
   const clsTags=t.filter(x=>CLS_TAGS.includes(x));
   const raceTags=t.filter(x=>RACE_TAGS.includes(x));
-  const clsOK=!clsTags.length||clsTags.some(ct=>myCls.some(m=>m.includes(ct)));
+  const dip=t.includes('dip');
+  const clsOK=dip?clsTags.some(ct=>!myCls.some(m=>m.includes(ct)))
+   :(!clsTags.length||clsTags.some(ct=>myCls.some(m=>m.includes(ct))));
   const raceOK=!raceTags.length||raceTags.some(r=>r==='halfline'?/half-(elf|orc)/.test(race):race.includes(r));
   const fit=clsOK&&raceOK;
   const now=fit&&lvl()>=need,soon=fit&&need===lvl()+1;
