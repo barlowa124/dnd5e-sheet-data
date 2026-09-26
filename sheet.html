@@ -398,6 +398,86 @@ Flaw: Insists he's "this close" to a plea deal. The infernal courts do not plea 
 Flaw: Keeps referring to "his island." The island owns him.</textarea>
     <h2>Backstory</h2>
     <textarea class="txt-in" id="backstory">A man who spent a mortal lifetime cultivating the wrong talents, Efferey Jepstein awoke in the Nine Hells with nothing — no island, no jet, no black book. Just a flute he'd never learned, a suspiciously natural affinity for serpents (draw your own conclusions), and the sudden certainty that his true calling was always desert snake-charming. Now he wanders the scorched plains of Avernus asking every damned soul: "Have you seen Mhislane? Tall. Controlling. Kind of the whole problem, honestly."</textarea>
+    <div class="sub" style="margin-top:6px">🎵 Introductory showtune — a filk of
+      <input class="txt-in" id="songBase" list="songlist" value="Arabian Nights (Aladdin, 1992)" style="width:230px">
+      <datalist id="songlist">
+        <option value="Arabian Nights (Aladdin)">
+        <option value="Prince Ali (Aladdin)"><option value="Friend Like Me (Aladdin)"><option value="One Jump Ahead (Aladdin)">
+        <option value="Belle (Beauty and the Beast)"><option value="Gaston (Beauty and the Beast)">
+        <option value="Be Prepared (Lion King)"><option value="I Just Can't Wait to Be King (Lion King)">
+        <option value="Poor Unfortunate Souls (Little Mermaid)"><option value="Part of Your World (Little Mermaid)"><option value="Under the Sea (Little Mermaid)">
+        <option value="Hellfire (Hunchback)"><option value="Out There (Hunchback)">
+        <option value="Zero to Hero (Hercules)"><option value="I Won't Say I'm in Love (Hercules)"><option value="Go the Distance (Hercules)">
+        <option value="Alexander Hamilton (Hamilton)"><option value="My Shot (Hamilton)"><option value="Wait For It (Hamilton)"><option value="You'll Be Back (Hamilton)"><option value="The Room Where It Happens (Hamilton)">
+        <option value="Hello! (Book of Mormon)"><option value="I Believe (Book of Mormon)"><option value="You and Me (But Mostly Me) (Book of Mormon)">
+        <option value="Tradition (Fiddler on the Roof)"><option value="If I Were a Rich Man (Fiddler on the Roof)">
+        <option value="Magic to Do (Pippin)"><option value="Corner of the Sky (Pippin)"><option value="Morning Glow (Pippin)">
+        <option value="All That Jazz (Chicago)"><option value="Cell Block Tango (Chicago)"><option value="Mister Cellophane (Chicago)">
+        <option value="Food, Glorious Food (Oliver!)"><option value="You've Got to Pick a Pocket or Two (Oliver!)">
+        <option value="The Impossible Dream (Man of La Mancha)">
+        <option value="Master of the House (Les Misérables)"><option value="I Dreamed a Dream (Les Misérables)"><option value="Stars (Les Misérables)"><option value="One Day More (Les Misérables)">
+        <option value="Luck Be a Lady (Guys and Dolls)"><option value="Sit Down, You're Rockin' the Boat (Guys and Dolls)">
+        <option value="The Music of the Night (Phantom of the Opera)">
+        <option value="Defying Gravity (Wicked)"><option value="The Wizard and I (Wicked)"><option value="Popular (Wicked)">
+        <option value="Prologue / Into the Woods (Into the Woods)"><option value="Agony (Into the Woods)">
+        <option value="King Herod's Song (Jesus Christ Superstar)"><option value="Gethsemane (Jesus Christ Superstar)"><option value="Heaven on Their Minds (Jesus Christ Superstar)">
+        <option value="Skid Row (Little Shop of Horrors)"><option value="Dentist! (Little Shop of Horrors)"><option value="Suddenly, Seymour (Little Shop of Horrors)"><option value="Suppertime (Little Shop of Horrors)">
+        <option value="Prologue / The Ballad of Sweeney Todd (Sweeney Todd)"><option value="Epiphany (Sweeney Todd)"><option value="A Little Priest (Sweeney Todd)"><option value="My Friends (Sweeney Todd)">
+        <option value="Freeze Ray (Dr. Horrible)"><option value="A Man's Gotta Do (Dr. Horrible)"><option value="Brand New Day (Dr. Horrible)">
+      </datalist>
+      <button onclick="songTemplate()">draft skeleton</button>
+      <button onclick="copyTune()">copy lyrics</button>
+    </div>
+    <textarea class="txt-in" id="showtune" rows="18" spellcheck="false" style="font-style:italic">EFFEREY JEPSTEIN'S INTRODUCTORY SHOWTUNE
+"Avernian Nights" — to the tune of "Arabian Nights"
+
+(Verse 1 — where he's from)
+Oh, I come from a land of brownstones and islands,
+Where the favored friends flew free —
+Where the wealth was immense and the crimes were intense —
+It's barbaric — but hey, so was I.
+Then the favors ran dry and the warrants came calling,
+And I died as I lived — out of sight.
+So it's down through the dark to a pit with no bottom —
+To another Avernian night.
+
+(Chorus)
+Avernian nights, like Avernian days —
+More often than not we are hotter than hot,
+And not in good ways.
+Avernian nights, 'neath a blood-rust moon —
+A fool off his guard will get filleted, charred,
+Then flung on the dunes.
+
+(Verse 2 — the dream)
+So I bought me a flute from a carrion peddler,
+And a basket of vipers to raise —
+'Cause the mortal dream's all that the afterlife can't take —
+I'm a charmer at last. In the blaze.
+When the pitch hits it right and the cobra starts swaying,
+When the serpents all dance to my croon —
+It's barbaric — but hey, it's a living, more or less —
+On another Avernian noon.
+
+(Chorus)
+
+(Verse 3 — what he wants, and what he fears)
+There's a dame in this wasteland I married and schemed with —
+Mhislane — you might know the name.
+She arranged the whole show, then she died, so it goes:
+If she's damned, then we're damned just the same.
+If she don't want be found — I'll file that for later.
+I've got serpents to sway, tunes to ply —
+And a fool off his guard could fall and fall hard
+For a redhead who croons. So am I.
+
+(Final chorus — torch held aloft)
+Avernian nights, like Avernian days —
+I'll charm me a snake, find my redheaded mate —
+Come sulfur or blaze!
+Avernian nights — keep your guard up, you fool —
+She'll fall for you hard, then you fall twice as hard —
+Out there on the dunes.</textarea>
   </div>
   <div class="panel" id="raceGallery" style="display:none">
     <h2>Race Gallery <span class="sub">— click a card to play that race</span></h2>
@@ -1531,6 +1611,39 @@ function saveState(){
  },600);
 }
 
+// ================= SHOWTUNE =================
+function songTemplate(){
+ const name=el('charName').textContent.trim(),race=el('raceLabel').textContent.trim();
+ const cls=mclasses.map(effName).join('/')||'adventurer';
+ const ideal=(el('pIdeal').value||'').toLowerCase(),bond=(el('pBond').value||'').toLowerCase(),flaw=(el('pFlaw').value||'').toLowerCase();
+ el('showtune').value=
+`${name.toUpperCase()}'S INTRODUCTORY SHOWTUNE
+— filk of "${el('songBase').value||'a song you know'}". Write it to the melody: hum each line and match the syllable count.
+
+(Verse 1 — WHERE THEY'RE FROM)
+[Two lines: ${name}'s old life before adventuring.]
+[Two lines: what changed — death, calling, exile — that put them here.]
+
+(Chorus — THE REFRAIN)
+[Name the campaign setting and rhyme it with something clever.]
+[A fool off his guard / could fall and fall hard — adapt the hook.]
+
+(Verse 2 — WHAT THEY WANT)
+[The dream a ${race} ${cls} would sing out loud about${ideal?' — hint: '+ideal:''}.]
+[What do they tell people they want vs. what they actually want?]
+
+(Chorus)
+
+(Verse 3 — WHAT THEY'RE AFRAID OF)
+[The person, secret, or debt that haunts them${bond?' — hint: '+bond:''}${flaw?'. And the flaw: '+flaw:''}.]
+
+(Final chorus — bigger, faster, torch held aloft)`;
+ saveState();log('Showtune skeleton drafted — hum the melody and fill the brackets.');}
+function copyTune(){
+ const t=el('showtune').value;if(!t.trim())return log('No showtune written yet.');
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>log('Showtune copied — paste it in chat.')).catch(()=>dlMD(t));}
+ else dlMD(t);}
+
 // ================= DISCORD EXPORT =================
 function exportDiscord(){
  const S=id=>el(id)?el(id).textContent.trim():'',V=id=>el(id)?el(id).value:'';
@@ -1543,6 +1656,11 @@ function exportDiscord(){
  const featsLine=feats.length?'Feats: '+feats.join(', '):'';
  const comp=el('compUnlocked')&&el('compUnlocked').classList.contains('locked')?'':`Companion: ${el('compPick').options[el('compPick').selectedIndex]?.text||'Acosta'} — HP ${V('compHP')}/${S('compHPMax')} AC ${S('compAC')}`;
  const conds=[...document.querySelectorAll('#conds .tag.on')].map(t=>t.textContent).join(', ');
+ const tune=V('showtune').trim();
+ let tuneLine='';
+ if(tune){const ls=tune.split('\n').map(x=>x.trim()).filter(Boolean);
+  const tt=ls.find(x=>x.includes('"'))||ls.find(x=>!x.startsWith('('))||ls[0];
+  tuneLine=`♪ Theme: ${tt}${V('songBase')?` — filk of ${V('songBase')}`:''}`;}
  const lines=[
   `**${S('charName')}** — L${V('level')} ${mclasses.map(effName).join('/')}, ${S('raceLabel')} · ${S('bgLabel')} · ${S('alignLabel')}`,
   `**HP** ${V('hp')}/${V('hpmax')}${V('temphp')>0?' +'+V('temphp')+' temp':''} · **AC** ${V('ac')} · **Spd** ${S('speedCell')} · **Init** ${S('init')} · **Prof** ${S('profBonus')}`,
@@ -1554,6 +1672,7 @@ function exportDiscord(){
   featsLine,
   comp,
   conds?`Conditions: ${conds}`:'',
+  tuneLine,
   `Gold: ${S('coinTotal')} · ${S('bio').slice(0,140)}`
  ].filter(Boolean).join('\n');
  let out=lines;
