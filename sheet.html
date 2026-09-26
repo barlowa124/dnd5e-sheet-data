@@ -52,6 +52,15 @@
   .race-gim { font-size:11.5px; color:var(--gold); margin:3px 0; }
   .race-gim::before { content:'★ '; font-size:10px; }
   .race-traits { font-size:11.5px; }
+  .combo-card { border:1px solid var(--border); border-radius:6px; padding:6px 8px; margin:6px 0; }
+  .combo-card.fit { border-color:#5a5; }
+  .combo-card.dim { opacity:.55; }
+  .combo-name { font-weight:bold; color:var(--gold); font-size:12.5px; }
+  .combo-now { color:#6d6; font-size:11px; }
+  .combo-soon { color:#cc6; font-size:11px; }
+  .combo-tag { display:inline-block; font-size:9.5px; color:var(--sub); border:1px solid var(--border); border-radius:4px; padding:0 4px; margin:2px 2px 0 0; }
+  .combo-tag.me { color:#8d8; border-color:#5a5; }
+  .combo-body { font-size:11.5px; margin-top:3px; }
   .race-asi { font-size:10.5px; color:var(--accent); }
   .locked { opacity:.45; }
   .slot-pip { display:inline-block; width:16px; height:16px; border-radius:50%; border:2px solid var(--accent); margin:2px; cursor:pointer; }
@@ -344,6 +353,9 @@
     <div id="nextLevel" class="sub"></div>
     <table id="planTable" style="margin-top:4px"></table>
     <textarea class="txt-in" id="planNotes" placeholder="Long-term notes — RP arc, items you're hunting, DM asks…"></textarea>
+    <h2>Power Combos <label class="sub" style="font-weight:normal"><input type="checkbox" id="comboOnly" onchange="renderCombos()"> only what fits</label></h2>
+    <div class="sub">Strong builds, tagged by class/race/level — ★ qualifies now, ◐ unlocks next level.</div>
+    <div id="comboGrid"></div>
     <h2>Stat Assessment</h2>
     <div class="sub">Infer monster stats from observed rolls.</div>
     <div><input class="txt-in" id="mobName" style="width:150px;display:inline" placeholder="monster label" onchange="renderAssess()"></div>
@@ -1502,6 +1514,7 @@ function renderPlan(){
    <td><input class="txt-in" style="width:100%" value="${esc(bp.note||'')}" placeholder="${hint}" onchange="setPlan(${i},'note',this.value)"></td></tr>`;
  }
  el('planTable').innerHTML=h;
+ renderCombos();
 }
 
 // ================= DRAINS & EPIC =================
@@ -1656,6 +1669,35 @@ function renderRaceGrid(){
    ${r.gim?`<div class="race-gim">${r.gim}</div>`:''}
    ${r.traits?`<div class="race-traits">${r.traits}</div>`:''}
   </div>`).join('')||'<span class="sub">No races loaded yet…</span>';
+}
+// ================= POWER COMBOS =================
+let COMBOS=[];
+const CLS_TAGS=['ranger','rogue','warlock','paladin','monk','barbarian','sorcerer','fighter','cleric','druid','wizard','bard'];
+const RACE_TAGS=['yuan-ti','elf','halfling','gnome','dwarf','human','orc','tiefling','aasimar','goliath','tabaxi','goblin','kenku','kobold','firbolg','bugbear','triton','lizardfolk','leonin','satyr','changeling','warforged','shifter','kalashtar','dhampir','hexblood','reborn','fairy','harengon','owlin','giff','thri-kreen','autognome','centaur','minotaur','loxodon','vedalken','verdan','gith','aarakocra','genasi','duergar','avariel','revenant','simic','eladrin','shadar-kai','drow','dragonborn','half-elf','half-orc','halfline','small'];
+function renderCombos(){
+ const grid=el('comboGrid');if(!grid)return;
+ const myCls=mclasses.map(m=>m.c.toLowerCase());
+ const race=el('raceLabel').textContent.toLowerCase();
+ const only=el('comboOnly')&&el('comboOnly').checked;
+ const cards=COMBOS.map(c=>{
+  const t=c.tags.toLowerCase().split(/\s+/);
+  const lvlTag=t.find(x=>x.startsWith('lvl:'));
+  const need=lvlTag?+lvlTag.slice(4):0;
+  const clsTags=t.filter(x=>CLS_TAGS.includes(x));
+  const raceTags=t.filter(x=>RACE_TAGS.includes(x));
+  const clsOK=!clsTags.length||clsTags.some(ct=>myCls.some(m=>m.includes(ct)));
+  const raceOK=!raceTags.length||raceTags.some(r=>r==='halfline'?/half-(elf|orc)/.test(race):race.includes(r));
+  const fit=clsOK&&raceOK;
+  const now=fit&&lvl()>=need,soon=fit&&need===lvl()+1;
+  const chips=t.filter(x=>!x.startsWith('lvl:')).map(x=>`<span class="combo-tag${(CLS_TAGS.includes(x)&&clsOK&&clsTags.includes(x))||(RACE_TAGS.includes(x)&&raceOK&&raceTags.includes(x))?' me':''}">${x}</span>`).join('');
+  return {c,fit,now,soon,need,chips};
+ }).sort((a,b)=>(b.fit-a.fit)||(a.need-b.need)||a.c.name.localeCompare(b.c.name));
+ grid.innerHTML=cards.filter(x=>!only||x.fit).map(x=>`
+  <div class="combo-card${x.fit?' fit':' dim'}">
+   <div class="combo-name">${x.c.name} ${x.now?'<span class="combo-now">★ now</span>':x.soon?`<span class="combo-soon">◐ lvl ${x.need}</span>`:''}</div>
+   <div>${x.chips}${x.need?`<span class="combo-tag">lvl ${x.need}</span>`:''}</div>
+   <div class="combo-body">${x.c.text}</div>
+  </div>`).join('')||'<div class="sub">Combos failed to load — check the data repo.</div>';
 }
 function chooseRace(n){
  el('raceLabel').textContent=n;
@@ -2091,7 +2133,7 @@ el('conds').innerHTML=CONDS.map(c=>`<span class="tag" onclick="this.classList.to
 const DATA_BASE='https://raw.githubusercontent.com/barlowa124/dnd5e-sheet-data/main/data/';
 async function loadRemote(){
  try{
-  const [eq,mo,co,sp,extra,opts,cf,rng,ua,cv,sf,rc]=await Promise.all([
+  const [eq,mo,co,sp,extra,opts,cf,rng,ua,cv,sf,rc,cb]=await Promise.all([
    fetch(DATA_BASE+'5e-SRD-Equipment.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Monsters.json').then(r=>r.json()),
    fetch(DATA_BASE+'5e-SRD-Conditions.json').then(r=>r.json()),
@@ -2103,7 +2145,8 @@ async function loadRemote(){
    fetch(DATA_BASE+'ua.json').then(r=>r.json()).catch(()=>null),
    fetch(DATA_BASE+'class-variants.json').then(r=>r.json()).catch(()=>null),
    fetch(DATA_BASE+'subclass-features.json').then(r=>r.json()).catch(()=>({})),
-   fetch(DATA_BASE+'races.json').then(r=>r.json()).catch(()=>null)
+   fetch(DATA_BASE+'races.json').then(r=>r.json()).catch(()=>null),
+   fetch(DATA_BASE+'build-combos.json').then(r=>r.json()).catch(()=>[])
   ]);
   EQUIPMENT=eq;
   el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}" label="${esc(equipTip(e,false)).slice(0,120)}"></option>`).join('');
@@ -2132,7 +2175,8 @@ async function loadRemote(){
   });
   SUBFEATS=sf||{};
   if(rc)RACES_RICH=rc.map(([n,src,icon,asi,spd,flavor,traits,gim])=>({n,src,icon,asi,spd,flavor,traits,gim}));
-  renderRaceGrid();
+  COMBOS=(cb||[]).map(([name,tags,text])=>({name,tags,text}));
+  renderRaceGrid();renderCombos();
   registerVariants();renderClassRows();
   if(wsSel)pickWS(wsSel);
   el('featList').innerHTML=(OPTIONS&&OPTIONS.feats||[]).map(f=>`<option value="${f.n||f}">`).join('');
