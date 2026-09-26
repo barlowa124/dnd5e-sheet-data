@@ -571,12 +571,29 @@ function renderSpells(){
 }
 
 // ================= INVENTORY =================
+function equipTip(e,full){
+ const b=[];
+ if(e.weapon_category)b.push(e.weapon_category.toLowerCase()+' '+(e.weapon_range||'').toLowerCase()+' weapon');
+ if(e.armor_category)b.push(e.armor_category+' armor');
+ if(e.damage&&e.damage.damage_dice)b.push(e.damage.damage_dice+' '+(e.damage.damage_type?e.damage.damage_type.name.toLowerCase():''));
+ if(e.two_handed_damage&&e.two_handed_damage.damage_dice)b.push('2H '+e.two_handed_damage.damage_dice);
+ if(e.armor_class)b.push('AC '+e.armor_class.base+(e.armor_class.dex_bonus?'+Dex':'')+(e.armor_class.max_bonus?' (cap '+e.armor_class.max_bonus+')':''));
+ if(e.str_minimum)b.push('needs Str '+e.str_minimum);
+ if(e.stealth_disadvantage)b.push('stealth disadv');
+ if(e.range&&e.range.normal>5)b.push(e.range.normal+(e.range.long?'/'+e.range.long:'')+' ft');
+ if(e.properties&&e.properties.length)b.push(e.properties.map(p=>p.name.toLowerCase()).join(', '));
+ if(e.weight)b.push(e.weight+' lb');
+ if(e.cost)b.push(e.cost.quantity+' '+e.cost.unit);
+ const d=full&&e.desc?((e.desc.join?e.desc.join(' '):e.desc)||''):'';
+ return b.join(' · ')+(d?'\n'+d.slice(0,300):'');
+}
+const ARMOR_TIP={none:'10 + Dex — no cap','mage':'Mage Armor spell — 13 + Dex, no cap, 8 hr','leather':'11 + Dex · light','studded':'12 + Dex · light','chain shirt':'13 + Dex (max 2) · medium','scale mail':'14 + Dex (max 2) · stealth disadv · medium','breastplate':'14 + Dex (max 2) · medium','half plate':'15 + Dex (max 2) · stealth disadv · medium','ring mail':'14 flat · stealth disadv · heavy','chain mail':'16 flat · Str 13 · stealth disadv · heavy','splint':'17 flat · Str 15 · stealth disadv · heavy','plate':'18 flat · Str 15 · stealth disadv · heavy'};
 function renderInv(){
  let total=0;
  el('invBody').innerHTML=inv.map((it,i)=>{
   const w=it[1]*it[2];total+=w;
   const fq=EQUIPMENT.find(e=>e.name.toLowerCase()===String(it[0]).toLowerCase());
-  const itip=fq?((fq.desc&&fq.desc.join)?fq.desc.join(' '):(fq.desc||fq.properties&&fq.properties.map(x=>x.name).join(', ')||'')).slice(0,250):'';
+  const itip=fq?equipTip(fq,true):'';
   return `<tr><td><input class="txt-in" value="${it[0]}" title="${esc(itip)}" onchange="inv[${i}][0]=this.value;saveState()"></td>
   <td><input class="num-in invw" type="number" value="${it[1]}" onchange="inv[${i}][1]=Number(this.value);renderInv();saveState()"></td>
   <td><input class="num-in invw" type="number" step="0.05" value="${it[2]}" onchange="inv[${i}][2]=Number(this.value);renderInv();saveState()"></td>
@@ -765,11 +782,12 @@ function recalc(){
   const hit=p+st+plus+(style==='archery'&&ranged?2:0);
   const dd=parseDice(eq.damage.damage_dice);
   const dv=st+plus+(duel&&!ranged&&!props.includes('Two-Handed')?duel:0);
-  rows.push([it[0],hit,`${dd.n}d${dd.s}+${dv}`,dv]);
+  const tip=equipTip(eq,false);
+  rows.push([it[0],hit,`${dd.n}d${dd.s}+${dv}`,dv,tip]);
   if(props.includes('Light')&&fin&&it[1]>=2&&twf)
-   rows.push([it[0]+' (off-hand)',hit,`${dd.n}d${dd.s}+${plus+st}`,plus+st]);
+   rows.push([it[0]+' (off-hand)',hit,`${dd.n}d${dd.s}+${plus+st}`,plus+st,tip]);
  });
- el('attacks').innerHTML=rows.map(([n,h,d,dv])=>`<tr><td>${n}${hitPct(h)}</td><td class="bonus">${fmt(h)}</td><td>${d}</td><td><button data-h="${h}" data-dv="${dv}" onclick="attackRow(this)">Attack</button></td></tr>`).join('')||'<tr><td class="sub">Add weapons to Inventory.</td></tr>';
+ el('attacks').innerHTML=rows.map(([n,h,d,dv,tip])=>`<tr><td title="${esc(tip)}">${n}${hitPct(h)}</td><td class="bonus">${fmt(h)}</td><td>${d}</td><td><button data-h="${h}" data-dv="${dv}" onclick="attackRow(this)">Attack</button></td></tr>`).join('')||'<tr><td class="sub">Add weapons to Inventory.</td></tr>';
  el('fightStyle').disabled=lvl()<2;
  el('styleNote').textContent=lvl()<2?'Fighting Style unlocks at level 2.':
   style==='twf'?'TWF: off-hand damage includes ability mod.':
@@ -989,6 +1007,7 @@ function unarmoredBase(){
 }
 function autoAC(){
  const a=el('armorSel').value||'none';
+ el('armorSel').title=ARMOR_TIP[a]||'';
  let ac;
  if(a==='none')ac=unarmoredBase()+mod('dex');
  else if(a==='mage')ac=13+mod('dex');
@@ -1203,7 +1222,7 @@ function addHB(){const t=el('hbType').value,parts=el('hbLine').value.split('|').
  el('hbLine').value='';applyHB();renderHB();saveState();}
 function renderHB(){el('hbList').innerHTML=['items','feats','spells'].flatMap(k=>hb[k].map((x,i)=>`<span class="tag">${k[0]}: ${x.name||x.n} <a href="#" onclick="hb.${k}.splice(${i},1);applyHB();renderHB();saveState();return false" style="color:#c00">×</a></span>`)).join('')||'<span class="sub">none</span>';}
 function applyHB(){hb.items.forEach(it=>{if(!EQUIPMENT.find(e=>e.name===it.name))EQUIPMENT.push(it);});
- el('itemList').innerHTML=EQUIPMENT.map(e=>`<option value="${e.name}"></option>`).join('');
+ el('itemList').innerHTML=EQUIPMENT.map(e=>`<option value="${e.name}" label="${esc(equipTip(e,false)).slice(0,120)}"></option>`).join('');
  if(OPTIONS&&OPTIONS.feats)hb.feats.forEach(f=>{if(!OPTIONS.feats.find(x=>(x.n||x)===f.n))OPTIONS.feats.push(f);});
  el('featList').innerHTML=(OPTIONS&&OPTIONS.feats||[]).map(f=>`<option value="${f.n||f}">`).join('');
  hb.spells.forEach(s=>{if(!ALLSPELLS.find(x=>x.n===s.n))ALLSPELLS.push(s);});}
@@ -1527,7 +1546,7 @@ async function loadRemote(){
    fetch(DATA_BASE+'subclass-features.json').then(r=>r.json()).catch(()=>({}))
   ]);
   EQUIPMENT=eq;
-  el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}"></option>`).join('');
+  el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}" label="${esc(equipTip(e,false)).slice(0,120)}"></option>`).join('');
   ALLBEASTS=mo.filter(m=>m.type==='beast');
   MONSTERS=mo.filter(m=>m.type==='beast'&&m.challenge_rating<=0.25&&['Tiny','Small','Medium'].includes(m.size));
   el('compPick').innerHTML='<option value="">Acosta (Constrictor Snake)</option>'+MONSTERS.map(m=>`<option value="${m.index}">${m.name} (CR ${m.challenge_rating})</option>`).join('');
