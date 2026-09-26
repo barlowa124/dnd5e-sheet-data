@@ -6,7 +6,8 @@
 "+1 all",
 "30",
 "Ambitious and everywhere — the baseline mortal.",
-"+1 to all six stats; one language."
+"+1 to all six stats; one language.",
+"No gimmick — that is the point: +1 to all six stats is the whole trick."
 ],
 [
 "Variant Human",
@@ -15,7 +16,8 @@
 "+1/+1 any",
 "30",
 "Same human drive, sharpened by early specialization.",
-"+1 to two stats, one skill, one feat at lvl 1."
+"+1 to two stats, one skill, one feat at lvl 1.",
+"A free feat at level 1 — customize before anyone else."
 ],
 [
 "Hill Dwarf",
@@ -24,7 +26,8 @@
 "+2 Con +1 Wis",
 "25",
 "Sturdy mountain folk; senses keen as their stonework.",
-"Poison resist & adv, +1 HP/level, darkvision, stonecunning."
+"Poison resist & adv, +1 HP/level, darkvision, stonecunning.",
+"+1 HP every level, forever — the dwarf that just will not die."
 ],
 [
 "Mountain Dwarf",
@@ -33,7 +36,8 @@
 "+2 Con +2 Str",
 "25",
 "The warrior strain of dwarfkind.",
-"Poison resilience, darkvision, light & medium armor."
+"Poison resilience, darkvision, light & medium armor.",
+"Free armor proficiencies — wizard in full plate is legal."
 ],
 [
 "High Elf",
@@ -42,7 +46,8 @@
 "+2 Dex +1 Int",
 "30",
 "Aloof masters of the fey courts — magic in the blood.",
-"Darkvision, Perception prof, one wizard cantrip, fey ancestry, trance."
+"Darkvision, Perception prof, one wizard cantrip, fey ancestry, trance.",
+"A free wizard cantrip — elf mage schooling."
 ],
 [
 "Wood Elf",
@@ -51,7 +56,8 @@
 "+2 Dex +1 Wis",
 "35",
 "Foresters who vanish behind a leaf.",
-"Darkvision, Perception prof, fey ancestry, mask of the wild, 35 ft."
+"Darkvision, Perception prof, fey ancestry, mask of the wild, 35 ft.",
+"Hide whenever there is foliage to nod at — plus 35 ft speed."
 ],
 [
 "Drow",
@@ -60,7 +66,8 @@
 "+2 Dex +1 Cha",
 "30",
 "Dark elves of the Underdark — radiant webs and old betrayals.",
-"Superior darkvision 120, innate dancing lights/faerie fire/darkness, sunlight sensitivity."
+"Superior darkvision 120, innate dancing lights/faerie fire/darkness, sunlight sensitivity.",
+"Free darkness and faerie fire — 120 ft darkvision, but sunlight stings."
 ],
 [
 "Eladrin",
@@ -69,7 +76,8 @@
 "+2 Dex +1 Cha",
 "30",
 "Elves closest to the Feywild — mood made flesh.",
-"Darkvision, fey ancestry, trance, Fey Step teleport 1/rest."
+"Darkvision, fey ancestry, trance, Fey Step teleport 1/rest.",
+"Bonus-action teleport 25 ft — the blink-elf."
 ],
 [
 "Sea Elf",
@@ -78,7 +86,8 @@
 "+2 Dex +1 Con",
 "30",
 "Ocean-dwelling elves, friends to dolphins.",
-"Darkvision, swim 30, fey ancestry, speak with sea beasts."
+"Darkvision, swim 30, fey ancestry, speak with sea beasts.",
+"Swim speed and fish-talk."
 ],
 [
 "Shadar-kai",
@@ -87,7 +96,8 @@
 "+2 Dex +1 Con",
 "30",
 "Shadow-sworn elves of the Raven Queen.",
-"Darkvision, necrotic resist, Blessing of the Raven Queen teleport, trance."
+"Darkvision, necrotic resist, Blessing of the Raven Queen teleport, trance.",
+"Teleport plus necrotic resistance — the shadow-elf exit strategy."
 ],
 [
 "Pallid Elf",
@@ -96,7 +106,8 @@
 "+2 Dex +1 Wis",
 "30",
 "Moon-pale explorers from Exandria.",
-"Darkvision, sleep immunity, innate light/sleep/invisibility."
+"Darkvision, sleep immunity, innate light/sleep/invisibility.",
+"Innate invisibility and sleep — the ghost-elf caster."
 ],
 [
 "Lightfoot Halfling",
@@ -105,7 +116,8 @@
 "+2 Dex +1 Cha",
 "25",
 "Wanderers who slip under notice.",
-"Lucky (reroll 1s), brave (adv vs fear), nimbleness, naturally stealthy."
+"Lucky (reroll 1s), brave (adv vs fear), nimbleness, naturally stealthy.",
+"Reroll your nat 1s and hide behind your own party."
 ],
 [
 "Stout Halfling",
@@ -114,7 +126,8 @@
 "+2 Dex +1 Con",
 "25",
 "Broad-shouldered, food-loving cousins.",
-"Lucky, brave, nimbleness, poison resilience."
+"Lucky, brave, nimbleness, poison resilience.",
+"Lucky, and shrugs off poison."
 ],
 [
 "Ghostwise Halfling",
@@ -123,7 +136,8 @@
 "+2 Dex +1 Wis",
 "25",
 "Silent forest halflings who speak without words.",
-"Lucky, brave, nimbleness, silent speech telepathy 30 ft."
+"Lucky, brave, nimbleness, silent speech telepathy 30 ft.",
+"30 ft silent telepathy — scout chatter nobody hears."
 ],
 [
 "Lotusden Halfling",
@@ -132,7 +146,8 @@
 "+2 Dex +1 Wis",
 "25",
 "Mire-bound halflings of Exandria's swamps.",
-"Lucky, brave, nimbleness, swampwalker + woodcraft."
+"Lucky, brave, nimbleness, swampwalker + woodcraft.",
+"Walk through undergrowth and swamp like it is pavement."
 ],
 [
 "Dragonborn",
@@ -141,7 +156,8 @@
 "+2 Str +1 Cha",
 "30",
 "Honor-bound descendants of dragons, breath and all.",
-"Breath weapon (ancestry element), resistance to that element."
+"Breath weapon (ancestry element), resistance to that element.",
+"Exhale a cone or line of element — the breath weapon is the gimmick."
 ],
 [
 "Chromatic Dragonborn",
@@ -150,7 +166,8 @@
 "TCE flexible",
 "30",
 "Black, blue, green, red or white draconic blood.",
-"Breath weapon (ancestry), resistance, (TCE: ASI anywhere)."
+"Breath weapon (ancestry), resistance, (TCE: ASI anywhere).",
+"Pick an element, breathe it."
 ],
 [
 "Metallic Dragonborn",
@@ -159,7 +176,8 @@
 "TCE flexible",
 "30",
 "Brass, bronze, copper, gold or silver blood.",
-"As chromatic — ancestry-flavored breath and resistance."
+"As chromatic — ancestry-flavored breath and resistance.",
+"Good-dragon metals — same breath trick."
 ],
 [
 "Gem Dragonborn",
@@ -168,7 +186,8 @@
 "TCE flexible",
 "30",
 "Amethyst, crystal, emerald, sapphire or topaz blood.",
-"Ancestry breath + resistance, psionic-ish flavor."
+"Ancestry breath + resistance, psionic-ish flavor.",
+"Gem-blood breath plus psionic flavor."
 ],
 [
 "Forest Gnome",
@@ -177,7 +196,8 @@
 "+2 Int +1 Dex",
 "25",
 "Fey-touched tricksters of the deep wood.",
-"Darkvision, gnome cunning, minor illusion cantrip, small-beast speech."
+"Darkvision, gnome cunning, minor illusion cantrip, small-beast speech.",
+"Free minor illusion, plus talking to squirrels."
 ],
 [
 "Rock Gnome",
@@ -186,7 +206,8 @@
 "+2 Int +1 Con",
 "25",
 "Tinkerers who can't stop inventing.",
-"Darkvision, gnome cunning, artificer's lore, tinker gadgets."
+"Darkvision, gnome cunning, artificer's lore, tinker gadgets.",
+"Invent tiny clockwork gadgets that actually function."
 ],
 [
 "Deep Gnome",
@@ -195,7 +216,8 @@
 "+2 Int +1 Dex",
 "25",
 "Svirfneblin — stone-still survivors of the Underdark.",
-"Superior darkvision 120, gnome cunning, stone camouflage."
+"Superior darkvision 120, gnome cunning, stone camouflage.",
+"Hide against bare rock like it is not there."
 ],
 [
 "Half-Elf",
@@ -204,7 +226,8 @@
 "+2 Cha +1/+1",
 "30",
 "Two worlds, wholly belonging to neither.",
-"Darkvision, fey ancestry, skill versatility (any 2 skills)."
+"Darkvision, fey ancestry, skill versatility (any 2 skills).",
+"Two free skills of your choice — the flexible diplomat."
 ],
 [
 "Half-Orc",
@@ -213,7 +236,8 @@
 "+2 Str +1 Con",
 "30",
 "Raised on strength — harder to kill than seems legal.",
-"Darkvision, relentless endurance (drop to 1 not 0, 1/rest), savage crits."
+"Darkvision, relentless endurance (drop to 1 not 0, 1/rest), savage crits.",
+"Once a rest, drop to 1 HP instead of 0 — relentless."
 ],
 [
 "Tiefling",
@@ -222,7 +246,8 @@
 "+2 Cha +1 Int",
 "30",
 "Infernal heritage worn on the skin — horns and a reputation.",
-"Darkvision, hellish resistance (fire), innate thaumaturgy/hellish rebuke/darkness."
+"Darkvision, hellish resistance (fire), innate thaumaturgy/hellish rebuke/darkness.",
+"Fire resistance plus a free hellish rebuke when hit."
 ],
 [
 "Tiefling (variant)",
@@ -231,7 +256,8 @@
 "+2 Cha varies",
 "30",
 "Bloodline variants — Asmodeus through Levistus.",
-"Each bloodline swaps the innate spells and sometimes the ASI."
+"Each bloodline swaps the innate spells and sometimes the ASI.",
+"Pick your devilish bloodline for different innate spells."
 ],
 [
 "Aasimar",
@@ -240,7 +266,8 @@
 "+2 Cha",
 "30",
 "Carriers of a celestial spark — guardians marked for purpose.",
-"Darkvision, celestial resist (necro+radiant), healing hands, light bearer."
+"Darkvision, celestial resist (necro+radiant), healing hands, light bearer.",
+"A free daily heal, plus radiant and necrotic resistance."
 ],
 [
 "Bugbear",
@@ -249,7 +276,8 @@
 "+2 Str +1 Dex",
 "30",
 "Long-limbed ambushers the size of doorways.",
-"Darkvision, long-limbed reach +5, powerful build, surprise attack."
+"Darkvision, long-limbed reach +5, powerful build, surprise attack.",
+"+5 ft reach and bonus damage when you hit first."
 ],
 [
 "Firbolg",
@@ -258,7 +286,8 @@
 "+2 Wis +1 Str",
 "30",
 "Gentle forest giants who'd rather hide than fight.",
-"Detect magic & disguise self innate, hidden step, powerful build, beast/leaf speech."
+"Detect magic & disguise self innate, hidden step, powerful build, beast/leaf speech.",
+"Brief invisibility, plus built-in detect magic and disguise."
 ],
 [
 "Goblin",
@@ -267,7 +296,8 @@
 "+2 Dex +1 Con",
 "30",
 "Small, quick, and vindictive about it.",
-"Darkvision, fury of the small, nimble escape (Disengage/Hide as bonus action)."
+"Darkvision, fury of the small, nimble escape (Disengage/Hide as bonus action).",
+"Disengage or hide as a bonus action, every round."
 ],
 [
 "Hobgoblin",
@@ -276,7 +306,8 @@
 "+2 Con +1 Int",
 "30",
 "Disciplined martial legionaries.",
-"Darkvision, martial training, saving face (nearby allies add to a failed roll)."
+"Darkvision, martial training, saving face (nearby allies add to a failed roll).",
+"Nearby allies bump your failed rolls up — saving face."
 ],
 [
 "Kenku",
@@ -285,7 +316,8 @@
 "+2 Dex +1 Wis",
 "30",
 "Wingless crow-folk who speak only in mimicry.",
-"Expert forgery, 2 kenku skills, mimicry — perfect impressionist."
+"Expert forgery, 2 kenku skills, mimicry — perfect impressionist.",
+"Perfect mimicry and forgery — you are the voice on the tape."
 ],
 [
 "Kobold",
@@ -294,7 +326,8 @@
 "+2 Dex −2 Str",
 "30",
 "Pack survivors the size of children, draconic if you ask them.",
-"Darkvision, grovel cower & beg, pack tactics, sunlight sensitivity."
+"Darkvision, grovel cower & beg, pack tactics, sunlight sensitivity.",
+"Advantage whenever a buddy is flanking — pack tactics."
 ],
 [
 "Lizardfolk",
@@ -303,7 +336,8 @@
 "+2 Con +1 Wis",
 "30",
 "Emotion-free swamp pragmatists with natural armor.",
-"13+Dex natural AC, hold breath 15 min, cunning artisan, hunter's lore."
+"13+Dex natural AC, hold breath 15 min, cunning artisan, hunter's lore.",
+"Built-in 13+Dex armor, and you craft gear mid-march."
 ],
 [
 "Orc",
@@ -312,7 +346,8 @@
 "+2 Str +1 Con −2 Int",
 "30",
 "Gruumsh's fury in a broad frame.",
-"Darkvision, aggressive (bonus-action dash at a foe), powerful build, menacing."
+"Darkvision, aggressive (bonus-action dash at a foe), powerful build, menacing.",
+"Bonus-action charge — close the distance for free."
 ],
 [
 "Tabaxi",
@@ -321,7 +356,8 @@
 "+2 Dex +1 Cha",
 "30",
 "Curious cat-folk — wanderlust with claws.",
-"Darkvision, feline agility (double-speed burst), claws, perception+stealth."
+"Darkvision, feline agility (double-speed burst), claws, perception+stealth.",
+"Double speed for a turn whenever it matters — feline agility."
 ],
 [
 "Triton",
@@ -330,7 +366,8 @@
 "+1 Str Con Cha",
 "30",
 "Guardians of the deep who surface for threats.",
-"Amphibious, swim 30, control air & water spells, fog cloud+innate."
+"Amphibious, swim 30, control air & water spells, fog cloud+innate.",
+"Amphibious with innate water spells — Poseidon, junior grade."
 ],
 [
 "Yuan-ti Pureblood",
@@ -339,7 +376,8 @@
 "+2 Cha +1 Int",
 "30",
 "Snake-blooded infiltrators — cold charm, warm venom.",
-"MAGIC RESISTANCE, poison immunity, darkvision, innate snake magic."
+"MAGIC RESISTANCE, poison immunity, darkvision, innate snake magic.",
+"Advantage on every save vs magic — the anti-wizard chassis."
 ],
 [
 "Goliath",
@@ -348,7 +386,8 @@
 "+2 Str +1 Con",
 "30",
 "Mountain-born giants competing at everything.",
-"Powerful build, stone's endurance (1d12+Con redux), mountain born."
+"Powerful build, stone's endurance (1d12+Con redux), mountain born.",
+"Shrug off 1d12+Con damage once a rest — stone's endurance."
 ],
 [
 "Aarakocra",
@@ -357,7 +396,8 @@
 "+2 Dex +1 Wis",
 "25",
 "Bird-folk who pity everything earthbound.",
-"FLY 50 ft (light armor only), talons — the best trait and the biggest DM headache."
+"FLY 50 ft (light armor only), talons — the best trait and the biggest DM headache.",
+"FLY 50 ft at level 1 — the whole gimmick; DMs ban it for a reason."
 ],
 [
 "Genasi (Air)",
@@ -366,7 +406,8 @@
 "+2 Con +1 Dex",
 "30",
 "Descendants of air djinn — always slightly windswept.",
-"Unending breath, levitate 1/rest."
+"Unending breath, levitate 1/rest.",
+"Never needs to breathe, plus free levitate."
 ],
 [
 "Genasi (Earth)",
@@ -375,7 +416,8 @@
 "+2 Con +1 Str",
 "30",
 "Stones in blood and temperament.",
-"Earth walk (ignores stone difficult terrain), pass without trace 1/rest."
+"Earth walk (ignores stone difficult terrain), pass without trace 1/rest.",
+"Treats rocky terrain like a hallway."
 ],
 [
 "Genasi (Fire)",
@@ -384,7 +426,8 @@
 "+2 Con +1 Int",
 "30",
 "Ember-eyed descendants of efreet.",
-"Fire resist, darkvision, produce flame + burning hands innate."
+"Fire resist, darkvision, produce flame + burning hands innate.",
+"Fireproof skin, plus free burning hands."
 ],
 [
 "Genasi (Water)",
@@ -393,7 +436,8 @@
 "+2 Con +1 Wis",
 "30",
 "Saltwater souls, amphibious.",
-"Swim 30, water breathing, acid resist, shape water cantrip."
+"Swim 30, water breathing, acid resist, shape water cantrip.",
+"Breathe water, swim free, spit acid resistance."
 ],
 [
 "Githyanki",
@@ -402,7 +446,8 @@
 "+2 Str +1 Int",
 "30",
 "Astral raiders with silver swords and a grudge against mind flayers.",
-"Martial prodigy (armor+weapons), innate mage hand/jump/misty step."
+"Martial prodigy (armor+weapons), innate mage hand/jump/misty step.",
+"Innate misty step and martial gear — the fighter-mage package."
 ],
 [
 "Githzerai",
@@ -411,7 +456,8 @@
 "+1 Int +2 Wis",
 "30",
 "Monastic order-keepers hiding from the same hunters.",
-"Mental discipline, innate mage hand/shield/detect thoughts."
+"Mental discipline, innate mage hand/shield/detect thoughts.",
+"Innate shield and detect thoughts — psychic monk wiring."
 ],
 [
 "Duergar",
@@ -420,7 +466,8 @@
 "+2 Con +1 Str",
 "25",
 "Gray dwarves — Underdark slavers turned psionic.",
-"Superior darkvision 120, duergar resilience, enlarge + invisibility innate, sun sensitivity."
+"Superior darkvision 120, duergar resilience, enlarge + invisibility innate, sun sensitivity.",
+"Turn invisible AND enlarge to Large — the hulking gnome."
 ],
 [
 "Centaur",
@@ -429,7 +476,8 @@
 "+2 Str +1 Wis",
 "40",
 "Cavalry in one body.",
-"Charge feature, hooves (1d6 weapon), equine build."
+"Charge feature, hooves (1d6 weapon), equine build.",
+"You are the mounted unit — 40 ft, charge attack, carry a buddy."
 ],
 [
 "Loxodon",
@@ -438,7 +486,8 @@
 "+2 Con +1 Wis",
 "30",
 "Elephantine paragons of serenity.",
-"Powerful build, natural armor 12+Con, trunk as a limb, loxodon serenity."
+"Powerful build, natural armor 12+Con, trunk as a limb, loxodon serenity.",
+"Natural armor, plus a trunk that works as a hand."
 ],
 [
 "Minotaur",
@@ -447,7 +496,8 @@
 "+2 Str +1 Con",
 "30",
 "Horned navigators who never lose the way.",
-"Horns (1d6 weapon), goring rush, hammering horns, labyrinthine recall."
+"Horns (1d6 weapon), goring rush, hammering horns, labyrinthine recall.",
+"Horns that launch enemies across the map — goring rush."
 ],
 [
 "Simic Hybrid",
@@ -456,7 +506,8 @@
 "+2 Con +1 any",
 "30",
 "Bio-engineered merfolk-lab volunteers.",
-"Darkvision, animal enhancements — pick adaptations (fins, grappling arms, glide…)."
+"Darkvision, animal enhancements — pick adaptations (fins, grappling arms, glide…).",
+"Choose-your-own mutations — fins, glide membranes, grappling arms."
 ],
 [
 "Vedalken",
@@ -465,7 +516,8 @@
 "+2 Int +1 Wis",
 "30",
 "Dispassionate blue scholars of Ravnica.",
-"Vedalken cunning (adv on mental saves), tireless precision (d4 on tool checks)."
+"Vedalken cunning (adv on mental saves), tireless precision (d4 on tool checks).",
+"Advantage on all mental saves — Int, Wis, and Cha."
 ],
 [
 "Leonin",
@@ -474,7 +526,8 @@
 "+2 Con +1 Str",
 "35",
 "Lion prides of Theros — oathkeepers with roars.",
-"Darkvision, claws (1d4), hunter's instincts, daunting roar (fear 10 ft)."
+"Darkvision, claws (1d4), hunter's instincts, daunting roar (fear 10 ft).",
+"A roar that frightens everything within 10 ft."
 ],
 [
 "Satyr",
@@ -483,7 +536,8 @@
 "+2 Cha +1 Dex",
 "35",
 "Revelers of Theros — the party is the resistance.",
-"Fey creature type, ram attack, mirthful leaps, reveler skill."
+"Fey creature type, MAGIC RESISTANCE (adv vs spells), ram attack, mirthful leaps, reveler skill.",
+"Advantage vs spells plus fey typing — magic bounces off a party goat."
 ],
 [
 "Verdan",
@@ -492,7 +546,8 @@
 "+2 Con +1 Cha",
 "30",
 "New goblinoids — fast-growing shapeshifting friends.",
-"Telepathic insight, persuasion prof, limited telepathy."
+"Telepathic insight, persuasion prof, limited telepathy.",
+"A goblin that outgrew its own species — mutating empathy."
 ],
 [
 "Dhampir",
@@ -501,7 +556,8 @@
 "TCE flexible",
 "30",
 "Living half-vampires — the hunger without the curse. Half-way between mortal and monster: they climb walls like spiders and bite like the undead.",
-"Deathless nature (no air needed), spider climb, vampiric bite (1d4 piercing — can empower next attack/save, or heal yourself) — +2/+1 to any stats (TCE rules)."
+"Deathless nature (no air needed), spider climb, vampiric bite (1d4 piercing — can empower next attack/save, or heal yourself) — +2/+1 to any stats (TCE rules).",
+"Spider-climb, and a bite that heals you or buffs your next hit."
 ],
 [
 "Hexblood",
@@ -510,7 +566,8 @@
 "TCE flexible",
 "30",
 "Mortals re-forged by a hag's bargain — fate-weavers with an eerie eye for bargains of their own.",
-"Fey creature type, darkvision, eerie token (send senses through a trinket), hex spell 1/day — +2/+1 any (TCE)."
+"Fey creature type, darkvision, eerie token (send senses through a trinket), hex spell 1/day — +2/+1 any (TCE).",
+"Free hex spell, and spy through a trinket you hand people."
 ],
 [
 "Reborn",
@@ -519,7 +576,8 @@
 "TCE flexible",
 "30",
 "Died and came back wrong — or right. Something between living and undead, haunted by flashes of a former life.",
-"Deathless nature (no air, adv vs disease/poison/death), knowledge from a past life (prof + d6 on chosen checks) — +2/+1 any (TCE)."
+"Deathless nature (no air, adv vs disease/poison/death), knowledge from a past life (prof + d6 on chosen checks) — +2/+1 any (TCE).",
+"You already died once — disease, poison, and death barely register."
 ],
 [
 "Fairy",
@@ -528,7 +586,8 @@
 "TCE flexible",
 "30",
 "Actual Feywild natives — tiny, winged, and delighted by your confusion.",
-"Fey type, flight (light armor), druidcraft + faerie fire + enlarge/reduce innate — +2/+1 any (TCE)."
+"Fey type, flight (light armor), druidcraft + faerie fire + enlarge/reduce innate — +2/+1 any (TCE).",
+"Tiny flyer with innate faerie fire and enlarge/reduce."
 ],
 [
 "Harengon",
@@ -537,7 +596,8 @@
 "TCE flexible",
 "30",
 "Rabbit-folk — luck runs in their feet.",
-"Hare-trigger (add prof to initiative), lucky footwork (reaction d4 to failed Dex save), rabbit hop (jump prof×5) — +2/+1 any (TCE)."
+"Hare-trigger (add prof to initiative), lucky footwork (reaction d4 to failed Dex save), rabbit hop (jump prof×5) — +2/+1 any (TCE).",
+"Add your prof die to initiative — nobody out-draws a rabbit."
 ],
 [
 "Owlin",
@@ -546,7 +606,8 @@
 "TCE flexible",
 "30",
 "Owl-folk scholars of Strixhaven — quiet fliers with loud eyes.",
-"Darkvision 120, fly 30 (no heavy/med armor), silent feathers — +2/+1 any (TCE)."
+"Darkvision 120, fly 30 (no heavy/med armor), silent feathers — +2/+1 any (TCE).",
+"Silent 30 ft flight and 120 ft darkvision — the night-shift scout."
 ],
 [
 "Giff",
@@ -555,7 +616,8 @@
 "+2 Str +1 any",
 "30",
 "Hippo-folk mercenaries of the astral seas — firearms welcome.",
-"Hippo build (powerful build), astral spark or firearms training."
+"Hippo build (powerful build), astral spark or firearms training.",
+"A hippo with powerful build and firearms proficiency."
 ],
 [
 "Autognome",
@@ -564,7 +626,8 @@
 "TCE flexible",
 "30",
 "Self-aware gnome-made constructs — mechanical life.",
-"Armored casing (13+Dex), sentry's rest, healing machine — +2/+1 any (TCE)."
+"Armored casing (13+Dex), sentry's rest, healing machine — +2/+1 any (TCE).",
+"You are a robot — no sleep, built-in armor, self-repair."
 ],
 [
 "Thri-kreen",
@@ -573,7 +636,8 @@
 "TCE flexible",
 "30",
 "Mantis-folk — four arms, antennae, and a taste for quiet.",
-"Natural armor 13+Dex, secondary arms, chameleon carapace, thri-kreen telepathy."
+"Natural armor 13+Dex, secondary arms, chameleon carapace, thri-kreen telepathy.",
+"FOUR arms — sword, shield, and a free set of hands."
 ],
 [
 "Changeling",
@@ -582,7 +646,8 @@
 "+2 Cha +1 any",
 "30",
 "Faces are a wardrobe — wear a different one per scene.",
-"Shapechanger (appearance+voice at will), 2 skills, changeling instincts."
+"Shapechanger (appearance+voice at will), 2 skills, changeling instincts.",
+"Rebuild your face and voice at will — no disguise kit needed."
 ],
 [
 "Kalashtar",
@@ -591,7 +656,8 @@
 "+2 Wis +1 Cha",
 "30",
 "Humans merged with dream-spirits — calm on the outside, war in the head.",
-"Dual mind (adv Wis saves), mind link telepathy, severed from dreams (immune to dream intrusion)."
+"Dual mind (adv Wis saves), mind link telepathy, severed from dreams (immune to dream intrusion).",
+"Advantage on Wis saves, plus mind-link telepathy."
 ],
 [
 "Shifter",
@@ -600,7 +666,8 @@
 "+1 Dex +1 any",
 "30",
 "Lycan ancestry lite — shift into a bestial aspect mid-fight.",
-"Darkvision, shifting (temp HP + trait by subrace — beasthide/longtooth/swiftstride/wildhunt)."
+"Darkvision, shifting (temp HP + trait by subrace — beasthide/longtooth/swiftstride/wildhunt).",
+"Once a rest, beast-mode: temp HP plus a trait buff."
 ],
 [
 "Warforged",
@@ -609,7 +676,8 @@
 "+2 Con +1 any",
 "30",
 "Living constructs built for a war that ended — now deciding what they're for.",
-"Integrated armor (plating = armor), construct resilience (immunities), sentry's rest."
+"Integrated armor (plating = armor), construct resilience (immunities), sentry's rest.",
+"Your armor is bolted on — immune to sleep, disease, exhaustion."
 ],
 [
 "Revenant",
@@ -618,7 +686,8 @@
 "+1 Con",
 "30",
 "Dead and back — something unfinished drags the corpse onward.",
-"Undead nature, relentless regeneration & tracking toward their goal."
+"Undead nature, relentless regeneration & tracking toward their goal.",
+"Unkillable tracker — regenerate and always know where the target is."
 ],
 [
 "Avariel",
@@ -627,6 +696,7 @@
 "+2 Dex +1 Int",
 "30",
 "Winged elves — the sky-borne strain.",
-"Fly 30, darkvision, fey ancestry, trance."
+"Fly 30, darkvision, fey ancestry, trance.",
+"The winged elf — 30 ft flight plus the full elf package."
 ]
 ]

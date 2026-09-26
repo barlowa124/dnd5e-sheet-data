@@ -49,6 +49,8 @@
   .race-name { font-weight:bold; font-size:14px; }
   .race-src { font-size:10px; color:var(--sub); border:1px solid #3a2d1e; border-radius:4px; padding:0 4px; margin-left:4px; }
   .race-flavor { font-size:11.5px; color:var(--sub); font-style:italic; margin:5px 0 3px; }
+  .race-gim { font-size:11.5px; color:var(--gold); margin:3px 0; }
+  .race-gim::before { content:'★ '; font-size:10px; }
   .race-traits { font-size:11.5px; }
   .race-asi { font-size:10.5px; color:var(--accent); }
   .locked { opacity:.45; }
@@ -1377,7 +1379,8 @@ function raceTip(n){const low=(n||'').toLowerCase();
  const asi=hit?Object.entries(hit[1]).map(([s,v])=>'+'+v+' '+s.toUpperCase()).join(', ')+' · ':'';
  const sp=RACE_SPEED.find(([k])=>low.includes(k));
  const tk=Object.keys(RACE_TRAIT).find(k=>low.includes(k));
- return asi+(sp?sp[1]+' ft':'30 ft')+' · '+(tk?RACE_TRAIT[tk]:'racial traits per source');}
+ const rr=RACES_RICH.find(x=>(x.n||'').toLowerCase()===low);
+ return asi+(sp?sp[1]+' ft':'30 ft')+' · '+(tk?RACE_TRAIT[tk]:'racial traits per source')+(rr&&rr.gim?'\n★ '+rr.gim:'');}
 function setMetaTips(){
  el('raceLabel').title=raceTip(el('raceLabel').textContent);
  const bg=el('bgLabel').textContent.split(' (')[0];
@@ -1645,11 +1648,12 @@ function renderRaceGrid(){
  const q=(el('raceQ').value||'').toLowerCase();
  const cur=el('raceLabel').textContent;
  const src=RACES_RICH.length?RACES_RICH:(OPTIONS?OPTIONS.races.map(r=>({n:r.n||r,src:r.src||'',icon:'🧝',flavor:'',traits:'',asi:'',spd:'30'})):[]);
- el('raceGrid').innerHTML=src.filter(r=>!q||r.n.toLowerCase().includes(q)||(r.traits||'').toLowerCase().includes(q)||(r.flavor||'').toLowerCase().includes(q)).map(r=>`
+ el('raceGrid').innerHTML=src.filter(r=>!q||r.n.toLowerCase().includes(q)||(r.traits||'').toLowerCase().includes(q)||(r.gim||'').toLowerCase().includes(q)||(r.flavor||'').toLowerCase().includes(q)).map(r=>`
   <div class="race-card${cur===r.n?' cur':''}" onclick="chooseRace('${r.n.replace(/'/g,"\\'")}')">
    <div><span class="race-icon" title="${esc(r.icon||'')}">${raceArt(r.n)}</span><span class="race-name">${r.n}</span><span class="race-src">${r.src||''}</span></div>
    ${r.traits||r.asi?`<div class="race-asi">${r.asi||''}${r.spd?' · '+r.spd+' ft':''}</div>`:''}
    ${r.flavor?`<div class="race-flavor">${r.flavor}</div>`:''}
+   ${r.gim?`<div class="race-gim">${r.gim}</div>`:''}
    ${r.traits?`<div class="race-traits">${r.traits}</div>`:''}
   </div>`).join('')||'<span class="sub">No races loaded yet…</span>';
 }
@@ -2127,7 +2131,7 @@ async function loadRemote(){
    cv[base].forEach(v=>{if(!VARIANTS[base].find(x=>x.n===v.n))VARIANTS[base].push(v);});
   });
   SUBFEATS=sf||{};
-  if(rc)RACES_RICH=rc.map(([n,src,icon,asi,spd,flavor,traits])=>({n,src,icon,asi,spd,flavor,traits}));
+  if(rc)RACES_RICH=rc.map(([n,src,icon,asi,spd,flavor,traits,gim])=>({n,src,icon,asi,spd,flavor,traits,gim}));
   renderRaceGrid();
   registerVariants();renderClassRows();
   if(wsSel)pickWS(wsSel);
