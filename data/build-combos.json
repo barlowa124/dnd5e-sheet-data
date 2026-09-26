@@ -238,5 +238,150 @@
 "Twilight Cleric",
 "cleric sub lvl:1",
 "The domain that got errata'd for being too strong: 300-ft darkvision shared with the party, a channel that hands out temp HP every round like a warlock aura — and flight at 6. The safest 'strong' pick in the book."
+],
+[
+"Owl familiar flyby",
+"any spell lvl:1",
+"Find Familiar (wizard list, or Ritual Caster feat): an owl uses Flyby so it never provokes — it lands the Help action on your target every turn and leaves. Free advantage on demand, forever, for one ritual slot. The cheapest advantage engine in the game."
+],
+[
+"Silvery Barbs",
+"any spell lvl:5",
+"Reaction: force a reroll of ANY d20 — their successful save against your banishment, their crit on the fighter — and grant someone advantage. The single most complained-about spell of the edition. If it is legal at your table, it is always right."
+],
+[
+"Spirit Guardians blender",
+"cleric spell lvl:5",
+"15-ft aura: halves enemy speed AND 3d8 every turn — they cannot leave and cannot stop taking it. Pair with Spiritual Weapon (no concentration) and the cleric has a real bonus action too. The standing blender build."
+],
+[
+"Spiritual Weapon",
+"cleric spell lvl:3",
+"Bonus action, NO concentration, scales with slot level — the spell that fixes the cleric's dead bonus action and never competes with your real concentration pick."
+],
+[
+"Plant Growth + Spike Growth",
+"ranger druid spell lvl:5",
+"Plant Growth is NOT concentration — quarter-speed terrain, permanently. Layer spike growth (2d4 per 5 ft) on top and the field grinds: slowed to a crawl and bleeding. The ranger battlefield-in-a-box nobody casts."
+],
+[
+"Goodberry + Life Cleric",
+"cleric druid ranger combo lvl:2",
+"Disciple of Life applies PER BERRY: each goodberry heals 4 HP instead of 1 — ten berries, 40 HP of distribute-anywhere healing for a 1st-level slot. The famous goodberry bomb."
+],
+[
+"Conjure Woodland Beings -> pixies",
+"druid ranger spell lvl:9",
+"Eight pixies, each carrying polymorph and fly: they turn the whole party into T-Rexes, or mass-fly the raid. The strongest 4th-level slot in the game — so strong DMs invoke 'the DM picks the fey' specifically because of it."
+],
+[
+"Subtle Suggestion (Metamagic Adept)",
+"feat lvl:4",
+"The TCE feat: 2 sorcery points plus two metamagics. Take Subtle — no verbal or somatic components. Yuan-ti's racial suggestion now leaves no trace: charm someone and nobody saw a spell happen. The criminal's feat."
+],
+[
+"Fey Touched",
+"feat lvl:4",
+"+1 Int/Wis/Cha AND a free daily Misty Step AND a free 1st-level div/ench spell — the strongest half-feat printed. Put it on every caster."
+],
+[
+"Skill Expert",
+"feat lvl:4",
+"+1 to any stat, +1 skill, expertise in anything — Deception expertise on a Cha-forward ranger means a proficiency-doubled face. Cheap and always right."
+],
+[
+"War Caster",
+"feat lvl:4",
+"Advantage on concentration saves plus casting as an opportunity attack — the seatbelt for any build living on a concentration spell."
+],
+[
+"Telekinetic",
+"feat lvl:4",
+"+1 mental stat, invisible bonus-action shove, buffed mage hand — push people off ledges with your mind and never touch them. Pairs with spikes, cliffs, and lava."
+],
+[
+"Crusher / Slasher / Piercer",
+"feat lvl:4",
+"The TCE half-feats: on-hit push 5 ft (off the cliff), speed debuff, or party-wide advantage on your crits — free riders stapled onto every attack you were already making."
+],
+[
+"Monster Slayer — Slayer's Prey",
+"ranger sub lvl:3",
+"The forgotten tech: Slayer's Prey is a class feature, not a spell — no concentration. It stacks with Hunter's Mark for double damage dice on the target and re-applies free forever. Both tracks on one boss."
+],
+[
+"Horde Breaker + Dread Ambusher",
+"ranger sub lvl:5",
+"Hunter's Horde Breaker adds an attack vs a second adjacent target; Gloom's Dread Ambusher adds a bonus turn-one attack. Add a bonus-action attack (TWF or Crossbow Expert) and that is 4-5 attacks on turn one."
+],
+[
+"Ring of Spell Storing",
+"gear lvl:5",
+"Anyone can hold it: bank 5 levels of spells pre-fight — an ally carries your concentration cast, or you store a second fireball. The rechargeable utility slot."
+],
+[
+"Grapple + Shove prone",
+"any melee lvl:1",
+"Zero investment: shove a target prone with Athletics, then hit the floor — prone grants melee advantage, and grappled means they cannot stand anyway. The free melee engine, no levels needed."
+],
+[
+"Find Greater Steed",
+"paladin spell lvl:9",
+"A pegasus that shares your smites and every 'self' spell — flyby smiting from the air at level 9. The paladin spell nobody reads the second page of."
+],
+[
+"Glyph of Warding banking",
+"cleric wizard spell lvl:5",
+"Store buffs and heals in glyphs as pre-fight batteries — haste keyed to 'when I draw steel', heals keyed to 'when I fall'. Spellcasting as infrastructure."
+],
+[
+"Planar Binding",
+"wizard spell lvl:9",
+"Bind the thing you just conjured for a day (upcast: months) — your elemental keeps working after concentration ends. The loop that turns summons into permanent assets."
+],
+[
+"Aid, upcast",
+"cleric spell lvl:3",
+"+5 max HP per slot level to three allies for eight hours — a 4th-level Aid is +10 each. The quiet best HP buff in the game; cast it before the boss door, no concentration needed."
+],
+[
+"Tiny Hut / Rope Trick",
+"any spell lvl:3",
+"The 'no ambush on the road' spells: a ritual hut nothing enters without your say, or a rope-extradimensional short rest. In a plane of ambushers, sleeping safe is a build feature — see Alert."
+],
+[
+"Speak with Animals (ritual)",
+"ranger spell lvl:1",
+"Ritual-cast free — every snake in Hell is a witness. A snake charmer with ritual speak is the nosiest man in Avernus."
+],
+[
+"Druidic Warrior + Shillelagh",
+"ranger lvl:2",
+"The TCE style: shillelagh turns the quarterstaff into a WISDOM weapon — a single-stat ranger where max Wis covers attacks AND spells, and you never touch Dex. Guidance cantrip included."
+],
+[
+"Tunnel Fighter (UA)",
+"ua lvl:1",
+"The UA fighting style: unlimited opportunity attacks inside your reach. Pair it with Polearm Master's enter-reach trigger and enemies cannot approach you, full stop."
+],
+[
+"Custom Lineage",
+"race feat lvl:1",
+"The TCE race option: +2 to any stat, darkvision, and ANY FEAT at level 1 — variant human except the feat IS the chassis. Start with Sharpshooter or Crusher and the build exists on day one."
+],
+[
+"Thorn Whip through Spike Growth",
+"ranger druid spell lvl:3",
+"Thorn Whip pulls 10 ft; Spike Growth deals 2d4 per 5 ft moved — that's 4d4 free per pull, no save on the drag. Yank the ogre through the blender every turn."
+],
+[
+"Haste the nova",
+"any spell lvl:5",
+"Cast Haste on your party's nova build — its extra action stacks with Action Surge for an absurd burst turn. The classic 'gas the fighter' play, still correct."
+],
+[
+"Necklace of Fireballs",
+"gear lvl:1",
+"Free fireballs for the martial — the DM's gift to characters who don't cast. Ranged AoE with zero levels spent."
 ]
 ]
