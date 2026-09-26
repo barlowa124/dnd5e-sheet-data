@@ -1770,24 +1770,17 @@ function copyTune(){
  const t=el('showtune').value;if(!t.trim())return log('No showtune written yet.');
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>log('Showtune copied — paste it in chat.')).catch(()=>dlMD(t));}
  else dlMD(t);}
-const TUNE=[ // ≈ melody guide, D harmonic minor — winding snake-charmer register
-  // Oh I come from a land / from a faraway place
-  [65,.26],[67,.26],[69,.26],[69,.26],[67,.26],[65,.26],[64,.26],[62,.52],
-  // where the caravan camels roam
-  [64,.26],[65,.26],[67,.26],[67,.26],[70,.26],[69,.26],[67,.26],[69,.52],
-  // where it's flat and immense / and the heat is intense
-  [69,.26],[69,.26],[70,.26],[72,.26],[70,.26],[69,.26],[67,.26],[65,.26],[64,.26],[62,.52],
-  // it's barbaric, but hey, it's home
-  [62,.39],[61,.13],[62,.52],[62,.13],[64,.26],[62,.26],[61,.26],[62,.78],
-  [0,.52],
-  // Arabian nights / like Arabian days
-  [69,.26],[69,.26],[70,.26],[72,.26],[70,.26],[69,.26],[67,.52],
-  // more often than not are hotter than hot / in a lot of good ways
-  [65,.26],[64,.26],[62,.26],[64,.26],[65,.26],[67,.26],[69,.26],[69,.52],
-  // Arabian nights / 'neath Arabian moons
-  [69,.26],[69,.26],[70,.26],[72,.26],[74,.26],[72,.26],[70,.52],
-  // a fool off his guard / could fall and fall hard / out there on the dunes
-  [67,.26],[65,.26],[64,.26],[62,.39],[61,.13],[62,.26],[65,.26],[64,.26],[62,.78]];
+const TUNE_PHRASES=[ // ≈ melody guide, D harmonic minor — winding snake-charmer register; one phrase per lyric line
+  [[65,.26],[67,.26],[69,.26],[69,.26],[67,.26],[65,.26],[64,.26],[62,.52]],
+  [[64,.26],[65,.26],[67,.26],[67,.26],[70,.26],[69,.26],[67,.26],[69,.52]],
+  [[69,.26],[69,.26],[70,.26],[72,.26],[70,.26],[69,.26],[67,.26],[65,.26],[64,.26],[62,.52]],
+  [[62,.39],[61,.13],[62,.52],[62,.13],[64,.26],[62,.26],[61,.26],[62,.78]],
+  [[0,.52]],
+  [[69,.26],[69,.26],[70,.26],[72,.26],[70,.26],[69,.26],[67,.52]],
+  [[65,.26],[64,.26],[62,.26],[64,.26],[65,.26],[67,.26],[69,.26],[69,.52]],
+  [[69,.26],[69,.26],[70,.26],[72,.26],[74,.26],[72,.26],[70,.52]],
+  [[67,.26],[65,.26],[64,.26],[62,.39],[61,.13],[62,.26],[65,.26],[64,.26],[62,.78]]];
+const TUNE=TUNE_PHRASES.flat();
 let tuneCtx=null;
 function playTune(){
  if(tuneCtx){tuneCtx.close();tuneCtx=null;log('Melody stopped.');return;}
@@ -1814,7 +1807,8 @@ function lyricLines(){
   .filter(l=>l.length>2);}
 function singTune(){
  if(!window.speechSynthesis)return log('No speech synthesis in this browser.');
- if(singing){speechSynthesis.cancel();singing=false;log('Stopped.');return;}
+ if(singing){speechSynthesis.cancel();singing=false;
+  if(tuneCtx){tuneCtx.close();tuneCtx=null;}log('Stopped.');return;}
  const lines=lyricLines();
  if(!lines.length)return log('No lyrics to sing.');
  const vs=speechSynthesis.getVoices();
@@ -1822,28 +1816,38 @@ function singTune(){
  const any=vs.find(v=>/^en/i.test(v.lang))||vs[0];
  singing=true;
  if(novelty){
-  log('Singing via "'+novelty.name+'" — the OS novelty voice that literally sings text. Camp quality is the point.');
+  log('Singing via "'+novelty.name+'" — the OS novelty voice carries its own tune.');
   lines.forEach((l,i)=>{const u=new SpeechSynthesisUtterance(l);
    u.voice=novelty;u.rate=.95;
    if(i===lines.length-1)u.onend=()=>{singing=false;};
    speechSynthesis.speak(u);});
  }else{
-  log('Robot-singing: lyrics laid over the melody-guide notes, one syllable per note.');
-  const syl=[];
-  lines.join(' ').split(/\s+/).forEach(w=>{(w.match(/[A-Za-z']+/g)||[]).forEach(p=>{
-   const m=p.match(/[^aeiouyAEIOUY]*[aeiouyAEIOUY]+[^aeiouyAEIOUY]*(?![aeiouyAEIOUY])/g);
-   syl.push(...(m||[p]));});});
-  let i=0;
-  for(const [m,d] of TUNE){
-   if(i>=syl.length)break;
-   if(!m)continue;
-   const u=new SpeechSynthesisUtterance(syl[i]);
+  log('Singing whole lines over the melody — phrase loops underneath, pitch follows each phrase.');
+  tuneCtx=new (window.AudioContext||window.webkitAudioContext)();
+  let li=0;
+  const step=()=>{
+   if(li>=lines.length){singing=false;
+    if(tuneCtx){tuneCtx.close();tuneCtx=null;}return;}
+   const ph=TUNE_PHRASES[li%TUNE_PHRASES.length];
+   const notes=ph.filter(n=>n[0]).map(n=>n[0]);
+   const mean=notes.length?notes.reduce((a,b)=>a+b,0)/notes.length:62;
+   const u=new SpeechSynthesisUtterance(lines[li]);
    u.voice=any;
-   u.pitch=Math.min(2,Math.max(.4,Math.pow(2,(m-69)/12)*1.3));
-   u.rate=Math.min(6,Math.max(.6,syl[i].length/(d*9)));
-   if(i===Math.min(syl.length,TUNE.filter(n=>n[0]).length)-1)u.onend=()=>{singing=false;};
-   speechSynthesis.speak(u);i++;}
-  if(syl.length>i)log('(Melody covers verse+chorus — the rest of the lyric is spoken-word between you and the pit.)');
+   u.pitch=Math.min(1.7,Math.max(.6,Math.pow(2,(mean-69)/12)*1.4));
+   u.rate=1.05;
+   let t=tuneCtx.currentTime+0.25;
+   for(const [m,d] of ph){
+    if(m){const f=440*Math.pow(2,(m-69)/12);
+     const o=tuneCtx.createOscillator(),g=tuneCtx.createGain();
+     o.type='triangle';o.frequency.value=f;
+     g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.15,t+0.02);
+     g.gain.setTargetAtTime(0,t+Math.max(0.03,d-0.05),0.03);
+     o.connect(g);g.connect(tuneCtx.destination);o.start(t);o.stop(t+d);}
+    t+=d;}
+   const wd=setTimeout(()=>{if(singing){li++;step();}},14000);
+   u.onend=()=>{clearTimeout(wd);if(singing){li++;step();}};
+   speechSynthesis.speak(u);};
+  step();
  }}
 
 // ================= DISCORD EXPORT =================
