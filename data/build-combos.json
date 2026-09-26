@@ -653,5 +653,240 @@
 "Aberrant Sorc / criminal anything",
 "sorcerer combo lvl:5",
 "Subtle psychic spells + Deception expertise: nobody ever sees the charm happen. The social-combat build — mind control with no witnesses."
+],
+[
+"Silvered weapons — the devil loophole",
+"gear lvl:1",
+"Devils resist nonmagical weapon damage ONLY if it isn't silvered — a silvered arrow/bolt is 100 gp and bypasses the resistance on every fiend in the plane. In Hell this is the cheapest +damage in the game. Silver the bow."
+],
+[
+"Mace of Disruption",
+"gear lvl:8",
+"A fiend hit by it: DC 15 save or DESTROYED outright — a coin-flip delete button on every devil in existence. Even on a pass it takes radiant damage and glows. The anti-Hell item; worth a strength dip just to swing."
+],
+[
+"Iron Flask",
+"gear lvl:10",
+"Throw it at a fiend: DC 17 or it's trapped, then it serves YOU for an hour when released. In Hell it's a pokeball for devils — legally dubious, mechanically magnificent."
+],
+[
+"Dimensional Shackles",
+"gear lvl:8",
+"Clamp them on a creature and it cannot teleport or plane-shift — a devil that can't go home. The devil-binder kit: summon or corner a fiend, shackle it, now you have a witness."
+],
+[
+"Lantern of Revealing",
+"gear lvl:5",
+"A hooded lantern that makes ALL invisible things visible in 30 ft — fiends go invisible constantly (imps especially). One 5-gp-once-trinket hard-counters half the ambush tactics in the plane."
+],
+[
+"Crystal Ball — the wife finder",
+"gear lvl:8",
+"Scrying at will on a creature you know — the character's entire quest is find one woman in Hell, and this item is literally a find-one-person machine. Ask the DM very nicely."
+],
+[
+"Flame Tongue — the anti-pick",
+"gear lvl:5",
+"Honest warning: 2d6 fire on hit, in a plane where nearly everything is immune to fire. In the mortal realms it's a great sword; in Hell it's a +0 with a glow. Do not buy the shiny red sword."
+],
+[
+"Mantle of Spell Resistance — redundant",
+"gear lvl:8",
+"Advantage on spell saves — which yuan-ti already HAS racially. The rare case where a legendary-tier item does nothing for you. Sell it to the elf."
+],
+[
+"Periapt of Proof Against Poison — redundant",
+"gear lvl:3",
+"Same trap: poison immunity item on the race that's already immune to poison. Know which items YOUR build makes obsolete — and pocket the savings."
+],
+[
+"Frost Brand",
+"gear lvl:8",
+"Fire resistance while held plus extra cold damage — the sword built for this exact plane: fire resist vs every breath weapon and burn aura in Avernus."
+],
+[
+"Sun Blade",
+"gear lvl:8",
+"Radiant damage finesse longsword — fiends don't resist radiant, and the sun imagery reads well when you're negotiating with devils who really do fear light."
+],
+[
+"Holy water — the cheap counter",
+"gear lvl:1",
+"25 gp a flask, thrown like a weapon: 2d6 radiant to fiends and undead on a hit. The peasant's anti-devil tech — keep three flasks bandoliered."
+],
+[
+"Arrows of Slaying",
+"gear lvl:5",
+"Arrows exist keyed to creature types — Fiend-Slaying arrows make the target save DC 17 or take +6d10. For the one devil that has to die this session."
+],
+[
+"Oathbow",
+"gear lvl:7",
+"Whisper the enemy's name: it becomes your sworn foe, you get advantage-ish accuracy and +3d6 to everything against it until it dies — the vendetta bow. Whisper a pit fiend's name and mean it."
+],
+[
+"Ring of Mind Shielding",
+"gear lvl:3",
+"Immune to detect thoughts, zone of truth, magic reading your lies — the ring that makes you un-deposable. Criminal essential #1."
+],
+[
+"Amulet of Proof Against Detection",
+"gear lvl:5",
+"Cannot be found by divination or scrying — the ring handles the mind-reading, this handles the finding. Together you are legally invisible."
+],
+[
+"Hat of Disguise",
+"gear lvl:2",
+"At-will disguise self, no slot, no concentration — Mask of Many Faces in hat form for non-warlocks. The cover identity item."
+],
+[
+"Medallion of Thoughts",
+"gear lvl:4",
+"Detect thoughts on a charge — the interrogator's locket. Paired with criminal deception work, it's a truth serum you wear."
+],
+[
+"Forgery + disguise kits",
+"gear lvl:1",
+"The mundane version: the criminal background hands you the skills, and the kits make new identities and documents. In a plane run on contracts, forged paperwork is a weapon."
+],
+[
+"Thieves' tools — actual uses",
+"gear lvl:1",
+"Pick locks, disarm traps — and in a contract-law plane, the real theft is documents. The tools open the cabinet; the forgery kit closes the deal."
+],
+[
+"Bag of Holding + Portable Hole",
+"gear lvl:8",
+"The famous exploit: hole inside bag tears a rift that sucks everything nearby to the Astral — a one-use teleport-and-delete that most DMs ban on sight. Know it, expect it to be illegal."
+],
+[
+"Daern's Instant Fortress",
+"gear lvl:10",
+"The drop exploit: a cube that grows to a 20-ft tower wherever it's tossed — including inside a creature's mouth. 'Fortress the dragon' is a classic; whether the DM allows it defines the table."
+],
+[
+"Immovable Rod",
+"gear lvl:3",
+"Push a button, the rod floats fixed in space holding 8,000 lb — hang midair, bar doors, anchor rope climbs, disable portcullises. The physics-breaking utility item with a hundred uses."
+],
+[
+"Cloak of Displacement",
+"gear lvl:7",
+"Enemies have disadvantage attacking you — like having dodge on, passively, forever. One of the best pure-defense items; pair with blur-style miss mechanics to never be hit."
+],
+[
+"Boots of Elvenkind + Cloak of Elvenkind",
+"gear lvl:4",
+"Silent steps plus advantage on hiding with enemy disadvantage to spot — stack these on an Umbral-Sight gloom stalker and you are not findable by anything that can't see invisibility."
+],
+[
+"Bracers of Archery",
+"gear lvl:5",
+"+2 damage on every bow shot, forever, for one attunement — the boring-but-correct ranger item. The damage adds up more than any flashy trinket."
+],
+[
+"Gloves of Missile Snaring",
+"gear lvl:4",
+"Catch arrows/bolts thrown at you for reduced damage — or fully negate on a good roll. Against the kobold horde firing lines, the glove catch never stops being funny."
+],
+[
+"Animated Shield",
+"gear lvl:5",
+"A shield that floats beside you — full +2 AC with a free hand. For dual-wielders, archers, and anyone whose build demanded two hands, this solves the shield tax."
+],
+[
+"Sentinel Shield",
+"gear lvl:4",
+"Advantage on initiative rolls — stacks with Gloom Stalker's +Wis and Alert's +5 into a build that goes first on every fight. Note: advantage is binary, so one source is enough."
+],
+[
+"Amulet of Health",
+"gear lvl:6",
+"Sets Con to 19 — for casters it locks in concentration saves; for martials it's +HP every level. The 'stop being fragile' amulet."
+],
+[
+"Pearl of Power",
+"gear lvl:4",
+"Recover one spent slot per day, up to 3rd — the cheap spell battery that never stops being useful. Two pearls, two extra smites or conjure animals a day."
+],
+[
+"Decanter of Endless Water",
+"gear lvl:3",
+"A 30-gallon-per-round geyser — knocks things prone, douses fires, fills moats. In a burning plane it's both a firehose and a battlefield shaper."
+],
+[
+"Alchemy Jug",
+"gear lvl:3",
+"Daily liquids including ACID and poison — free splash weapon every day, plus infinite mayonnaise for reasons nobody can fully explain. The utility meme item."
+],
+[
+"Folding Boat",
+"gear lvl:4",
+"A boat that folds to a box — and the Styx has ferries, currents, and things you do not want to wade past. Owning a boat in Hell is unreasonably powerful."
+],
+[
+"Rod of Absorption",
+"gear lvl:8",
+"Eat enemy spells with your reaction, bank the levels as fuel — a staff that punishes enemy casters and feeds your own casting."
+],
+[
+"Staff of the Python",
+"gear lvl:5",
+"The staff BECOMES a giant constrictor snake — the snake-charmer endgame item. Caveat: attunement is cleric/druid/warlock only — you need the dip or a sympathetic DM."
+],
+[
+"Figurines of Wondrous Power",
+"gear lvl:4",
+"Statuettes that become real animals — the serpentine owl version gives a giant owl familiar with flyby attacks: animal companion without Beast Master."
+],
+[
+"Bag of Tricks",
+"gear lvl:4",
+"Three fuzzy animals a day pulled from a bag — random, but even the bad pulls are bodies, distractions, and trap-testers. The budget summon engine."
+],
+[
+"Dust of Disappearance / Sneezing",
+"gear lvl:4",
+"The sneezing dust incapacitates on a failed save — no attack roll, toss it and take the spellcaster out of the fight. The disappearance dust makes the party invisible for repositioning."
+],
+[
+"Bead of Force",
+"gear lvl:5",
+"Throw it: 5d4 force plus the target gets force-caged for a minute — a throwable banishment with damage. Cheap, single-use, swingy."
+],
+[
+"Potion of healing — the action tax",
+"gear lvl:1",
+"Honest note: drinking a potion costs your ACTION in 2014 — the 'bonus action potion' is a house rule nearly every table uses but is not RAW. Craft potions with herbalism in downtime, hand them out pre-fight."
+],
+[
+"Crafting consumables",
+"gear lvl:2",
+"Herbalism kit brews healing potions; alchemist supplies craft acid and alchemist's fire; poisoner's kit brews basic poison (worthless vs fiends — they're immune). Downtime that converts to resources."
+],
+[
+"Arrow-catching / missile-attraction shield",
+"gear lvl:5",
+"The shield that draws ranged attacks away from your allies to you — pair with Gloves of Missile Snaring for the gimmick build: you are the arrow vacuum."
+],
+[
+"Armor of Resistance — fire",
+"gear lvl:6",
+"Fire resistance armor in the plane where everything burns — quietly the best armor upgrade available in Avernus, above any +1."
+],
+[
+"Moon Sickle",
+"gear lvl:5",
+"+1/+2/+3 to druid and ranger spell attacks AND save DCs, plus a d4 heal boost — TCE finally gave rangers a weapon that buffs their casting."
+],
+[
+"Weapon of Warning",
+"gear lvl:5",
+"Cannot be surprised, warns you of danger — on a Gloom Stalker already stacking anti-ambush tools, it's the 'they literally cannot ambush me' package."
+],
+[
+"Ioun Stone of Reserve",
+"gear lvl:6",
+"Store a spell in the rock, cast it later — an extra concentration-free slot you bank in the morning. The caster's spare magazine."
 ]
 ]
