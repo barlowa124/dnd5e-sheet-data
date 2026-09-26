@@ -427,6 +427,7 @@ Flaw: Keeps referring to "his island." The island owns him.</textarea>
       </datalist>
       <button onclick="songTemplate()">draft skeleton</button>
       <button onclick="copyTune()">copy lyrics</button>
+      <button onclick="playTune()" title="plays an approximate melody guide for pitch reference">▶ melody</button>
     </div>
     <textarea class="txt-in" id="showtune" rows="18" spellcheck="false" style="font-style:italic">EFFEREY JEPSTEIN'S INTRODUCTORY SHOWTUNE
 "Avernian Nights" — to the tune of "Arabian Nights"
@@ -1768,6 +1769,41 @@ function copyTune(){
  const t=el('showtune').value;if(!t.trim())return log('No showtune written yet.');
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>log('Showtune copied — paste it in chat.')).catch(()=>dlMD(t));}
  else dlMD(t);}
+let tuneCtx=null;
+function playTune(){
+ if(tuneCtx){tuneCtx.close();tuneCtx=null;log('Melody stopped.');return;}
+ if(!/arabian/i.test(el('songBase').value)){
+  log('Melody guide only exists for Arabian Nights right now — that is the one Efferey filks.');return;}
+ tuneCtx=new (window.AudioContext||window.webkitAudioContext)();
+ const S=[ // ≈ melody guide, D harmonic minor — winding snake-charmer register
+  // Oh I come from a land / from a faraway place
+  [65,.26],[67,.26],[69,.26],[69,.26],[67,.26],[65,.26],[64,.26],[62,.52],
+  // where the caravan camels roam
+  [64,.26],[65,.26],[67,.26],[67,.26],[70,.26],[69,.26],[67,.26],[69,.52],
+  // where it's flat and immense / and the heat is intense
+  [69,.26],[69,.26],[70,.26],[72,.26],[70,.26],[69,.26],[67,.26],[65,.26],[64,.26],[62,.52],
+  // it's barbaric, but hey, it's home
+  [62,.39],[61,.13],[62,.52],[62,.13],[64,.26],[62,.26],[61,.26],[62,.78],
+  [0,.52],
+  // Arabian nights / like Arabian days
+  [69,.26],[69,.26],[70,.26],[72,.26],[70,.26],[69,.26],[67,.52],
+  // more often than not are hotter than hot / in a lot of good ways
+  [65,.26],[64,.26],[62,.26],[64,.26],[65,.26],[67,.26],[69,.26],[69,.52],
+  // Arabian nights / 'neath Arabian moons
+  [69,.26],[69,.26],[70,.26],[72,.26],[74,.26],[72,.26],[70,.52],
+  // a fool off his guard / could fall and fall hard / out there on the dunes
+  [67,.26],[65,.26],[64,.26],[62,.39],[61,.13],[62,.26],[65,.26],[64,.26],[62,.78]];
+ let t=tuneCtx.currentTime+0.15;
+ for(const [m,d] of S){
+  if(m){const f=440*Math.pow(2,(m-69)/12);
+   const o=tuneCtx.createOscillator(),g=tuneCtx.createGain();
+   o.type='triangle';o.frequency.value=f;
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.22,t+0.02);
+   g.gain.setTargetAtTime(0,t+Math.max(0.03,d-0.05),0.03);
+   o.connect(g);g.connect(tuneCtx.destination);o.start(t);o.stop(t+d);}
+  t+=d;}
+ setTimeout(()=>{if(tuneCtx){tuneCtx.close();tuneCtx=null;}},(t-tuneCtx.currentTime+0.3)*1000);
+ log('Playing melody guide — approximation in the Arabian Nights register, for pitch reference. Click ▶ again to stop.');}
 
 // ================= DISCORD EXPORT =================
 function exportDiscord(){
