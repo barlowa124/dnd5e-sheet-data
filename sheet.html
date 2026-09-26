@@ -428,6 +428,7 @@ Flaw: Keeps referring to "his island." The island owns him.</textarea>
       <button onclick="songTemplate()">draft skeleton</button>
       <button onclick="copyTune()">copy lyrics</button>
       <button onclick="playTune()" title="plays an approximate melody guide for pitch reference">▶ melody</button>
+      <button onclick="singTune()" title="an AI voice sings the lyrics — camp quality guaranteed">🎤 sing</button>
     </div>
     <textarea class="txt-in" id="showtune" rows="18" spellcheck="false" style="font-style:italic">EFFEREY JEPSTEIN'S INTRODUCTORY SHOWTUNE
 "Avernian Nights" — to the tune of "Arabian Nights"
@@ -1769,13 +1770,7 @@ function copyTune(){
  const t=el('showtune').value;if(!t.trim())return log('No showtune written yet.');
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>log('Showtune copied — paste it in chat.')).catch(()=>dlMD(t));}
  else dlMD(t);}
-let tuneCtx=null;
-function playTune(){
- if(tuneCtx){tuneCtx.close();tuneCtx=null;log('Melody stopped.');return;}
- if(!/arabian/i.test(el('songBase').value)){
-  log('Melody guide only exists for Arabian Nights right now — that is the one Efferey filks.');return;}
- tuneCtx=new (window.AudioContext||window.webkitAudioContext)();
- const S=[ // ≈ melody guide, D harmonic minor — winding snake-charmer register
+const TUNE=[ // ≈ melody guide, D harmonic minor — winding snake-charmer register
   // Oh I come from a land / from a faraway place
   [65,.26],[67,.26],[69,.26],[69,.26],[67,.26],[65,.26],[64,.26],[62,.52],
   // where the caravan camels roam
@@ -1793,8 +1788,14 @@ function playTune(){
   [69,.26],[69,.26],[70,.26],[72,.26],[74,.26],[72,.26],[70,.52],
   // a fool off his guard / could fall and fall hard / out there on the dunes
   [67,.26],[65,.26],[64,.26],[62,.39],[61,.13],[62,.26],[65,.26],[64,.26],[62,.78]];
+let tuneCtx=null;
+function playTune(){
+ if(tuneCtx){tuneCtx.close();tuneCtx=null;log('Melody stopped.');return;}
+ if(!/arabian/i.test(el('songBase').value)){
+  log('Melody guide only exists for Arabian Nights right now — that is the one Efferey filks.');return;}
+ tuneCtx=new (window.AudioContext||window.webkitAudioContext)();
  let t=tuneCtx.currentTime+0.15;
- for(const [m,d] of S){
+ for(const [m,d] of TUNE){
   if(m){const f=440*Math.pow(2,(m-69)/12);
    const o=tuneCtx.createOscillator(),g=tuneCtx.createGain();
    o.type='triangle';o.frequency.value=f;
@@ -1804,6 +1805,46 @@ function playTune(){
   t+=d;}
  setTimeout(()=>{if(tuneCtx){tuneCtx.close();tuneCtx=null;}},(t-tuneCtx.currentTime+0.3)*1000);
  log('Playing melody guide — approximation in the Arabian Nights register, for pitch reference. Click ▶ again to stop.');}
+let singing=false;
+function lyricLines(){
+ const skip=/^(SNAKES|DEVILS|ALL|ACOSTA|A DAMNED SOUL)/;
+ return el('showtune').value.split('\n').map(l=>l.trim())
+  .filter(l=>l&&!l.startsWith('(')&&!l.startsWith('"')&&!skip.test(l)&&!/SHOWTUNE/.test(l))
+  .map(l=>l.replace(/^[A-Z][A-Z' \.]+:\s*/,'').replace(/["\u201c\u201d]/g,'').replace(/\s*\([^)]*\)\s*/g,' ').trim())
+  .filter(l=>l.length>2);}
+function singTune(){
+ if(!window.speechSynthesis)return log('No speech synthesis in this browser.');
+ if(singing){speechSynthesis.cancel();singing=false;log('Stopped.');return;}
+ const lines=lyricLines();
+ if(!lines.length)return log('No lyrics to sing.');
+ const vs=speechSynthesis.getVoices();
+ const novelty=vs.find(v=>/good news|cellos|bells/i.test(v.name));
+ const any=vs.find(v=>/^en/i.test(v.lang))||vs[0];
+ singing=true;
+ if(novelty){
+  log('Singing via "'+novelty.name+'" — the OS novelty voice that literally sings text. Camp quality is the point.');
+  lines.forEach((l,i)=>{const u=new SpeechSynthesisUtterance(l);
+   u.voice=novelty;u.rate=.95;
+   if(i===lines.length-1)u.onend=()=>{singing=false;};
+   speechSynthesis.speak(u);});
+ }else{
+  log('Robot-singing: lyrics laid over the melody-guide notes, one syllable per note.');
+  const syl=[];
+  lines.join(' ').split(/\s+/).forEach(w=>{(w.match(/[A-Za-z']+/g)||[]).forEach(p=>{
+   const m=p.match(/[^aeiouyAEIOUY]*[aeiouyAEIOUY]+[^aeiouyAEIOUY]*(?![aeiouyAEIOUY])/g);
+   syl.push(...(m||[p]));});});
+  let i=0;
+  for(const [m,d] of TUNE){
+   if(i>=syl.length)break;
+   if(!m)continue;
+   const u=new SpeechSynthesisUtterance(syl[i]);
+   u.voice=any;
+   u.pitch=Math.min(2,Math.max(.4,Math.pow(2,(m-69)/12)*1.3));
+   u.rate=Math.min(6,Math.max(.6,syl[i].length/(d*9)));
+   if(i===Math.min(syl.length,TUNE.filter(n=>n[0]).length)-1)u.onend=()=>{singing=false;};
+   speechSynthesis.speak(u);i++;}
+  if(syl.length>i)log('(Melody covers verse+chorus — the rest of the lyric is spoken-word between you and the pit.)');
+ }}
 
 // ================= DISCORD EXPORT =================
 function exportDiscord(){
@@ -2113,6 +2154,7 @@ el('boonDL').innerHTML=Object.keys(EPIC_BOONS).map(n=>`<option value="${n}">`).j
 renderSummon();renderRules();renderMacros();renderSup();updateDiceStats();renderTurn();renderProfs();
 if(store.chars[curChar])applyState(store.chars[curChar]);
 rebuild();renderCoins();loadRemote();
+if(window.speechSynthesis){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();}
 if(GH_PAT)pullAll();
 document.querySelectorAll('input,select,textarea').forEach(e=>e.addEventListener('input',saveState));
 log('Sheet loaded. Welcome to Hell, Efferey.');
