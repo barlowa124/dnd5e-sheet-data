@@ -71,6 +71,8 @@
   #log { background:#0d0906; border:1px solid var(--border); border-radius:var(--r-sm); padding:10px; height:180px; overflow-y:auto; font-family:var(--mono); font-size:.82em; }
   #log div { padding:2px 0; border-bottom:1px dotted rgba(61,46,33,.6); }
   .hp-cur { font-size:1.6em !important; width:90px !important; }
+  #hpbar { height:11px; background:#0d0906; border:1px solid var(--border); border-radius:7px; margin-top:7px; overflow:hidden; }
+  #hpfill { height:100%; width:100%; background:linear-gradient(180deg,#7dc47d,var(--good)); transition:width .3s ease, background .3s; border-radius:6px 0 0 6px; }
   .tag { display:inline-block; background:var(--panel3); border:1px solid var(--border); border-radius:20px; padding:2px 10px;
     margin:2px; font-size:.78em; color:var(--gold); cursor:pointer; transition:all .13s; user-select:none; }
   .tag:hover { border-color:var(--gold-dim); transform:translateY(-1px); }
@@ -256,7 +258,7 @@
     <button id="advBtn" onclick="cycleAdv()">Normal</button>
     <h2>Conditions</h2>
     <div id="conds"></div>
-    <div class="sub" style="margin-top:4px">Exhaustion level <input class="num-in" id="exhaust" type="number" min="0" max="6" value="0" style="width:50px"></div>
+    <div class="sub" style="margin-top:4px">Exhaustion level <input class="num-in" id="exhaust" type="number" min="0" max="6" value="0" style="width:50px" onchange="renderExhNote()"> <span id="exhNote" style="color:var(--warn)"></span></div>
     <h2>Resources</h2>
     <div id="resBody"></div>
     <button onclick="addRes()">+ Add tracker</button>
@@ -268,6 +270,7 @@
   <div class="panel">
     <h2>Hit Points</h2>
     <div><input class="num-in hp-cur" id="hp" type="number" value="11"> / <input class="num-in" id="hpmax" type="number" value="11"></div>
+    <div id="hpbar"><div id="hpfill"></div></div>
     <div style="margin-top:6px">Temp: <input class="num-in" id="temphp" type="number" value="0" style="width:55px"></div>
     <div class="sub" style="margin-top:4px">Drain: <select id="drainStat"><option value="maxhp">max HP</option><option>str</option><option>dex</option><option>con</option><option>int</option><option>wis</option><option>cha</option></select> <input class="num-in" id="drainAmt" type="number" style="width:42px" value="1"> <button onclick="applyDrain()">Apply</button> <button onclick="restoreDrains()">Restore</button></div>
     <div class="sub" id="drainList">none</div>
@@ -299,7 +302,7 @@
   </div>
 
   <div class="panel">
-    <h2>Attacks</h2>
+    <h2>Attacks <span class="sub" style="font-variant:normal;letter-spacing:0">×<input class="num-in" id="atkN" type="number" min="1" max="4" style="width:38px" placeholder="auto" title="attacks per Attack action — auto-detects Extra Attack"> per action</span></h2>
     <table id="attacks"></table>
     <div class="sub" id="styleNote">Fighting Style unlocks at level 2.</div>
     <div>Fighting Style: <select id="fightStyle" onchange="recalc();autoAC();saveState()" disabled>
@@ -359,6 +362,7 @@
   </div>
   <div class="panel">
     <h2>Roll Log <span class="sub" id="diceStats"></span></h2>
+    <input class="txt-in" id="logFilter" style="margin-bottom:5px" placeholder="filter log…" oninput="filterLog()">
     <div id="log"></div>
     <div style="margin-top:8px">
       <button onclick="roll('d20',0)">d20</button>
@@ -816,6 +820,8 @@ function log(m){const d=document.createElement('div');
  const c=document.createElement('span');c.textContent=m;d.append(t,c);el('log').prepend(d);}
 function copyLog(){const txt=[...el('log').children].reverse().map(d=>d.textContent).join('\n');
  navigator.clipboard.writeText(txt).then(()=>log('log copied to clipboard.'));}
+function filterLog(){const q=(el('logFilter').value||'').toLowerCase();
+ [...el('log').children].forEach(d=>{d.style.display=!q||d.textContent.toLowerCase().includes(q)?'':'none';});}
 function portraitUp(inp){const f=inp.files[0];if(!f)return;
  const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{
   const cv=document.createElement('canvas');cv.width=cv.height=96;const ctx=cv.getContext('2d');
@@ -1015,7 +1021,14 @@ function pickCompanion(idx){
 }
 
 // ================= FEATURES =================
-function featuresFor(cName,l){return (CLASS_FEATURES[cName]||{})[l]||[];}
+// CLASS_FEATURES is level-keyed {level:[...]} locally, but the remote file is
+// {class:[comma-joined strings]} indexed 0..19 — normalize both to a string[]
+function featuresFor(cName,l){
+ const cf=CLASS_FEATURES[cName]||{};
+ let f=Array.isArray(cf)?cf[l-1]:cf[l];
+ if(!f)return[];
+ return Array.isArray(f)?f:String(f).split(',').map(x=>x.trim()).filter(Boolean);
+}
 
 // ================= REBUILD =================
 function rebuild(){
@@ -1107,16 +1120,39 @@ function recalc(){
   style==='archery'?'Archery: longbow attack +2.':
   style==='defense'?'Defense: add +1 to your AC.':
   style==='dueling'?'Dueling: one-hand damage +2.':'Pick a fighting style.';
- renderDCs();
+ renderDCs();renderHPBar();renderExhNote();
+ if(el('atkN'))el('atkN').placeholder='auto ×'+derivedAtk();
 }
+function renderHPBar(){
+ const f=el('hpfill');if(!f)return;
+ const hp=Number(el('hp').value)||0,mx=Math.max(1,Number(el('hpmax').value)||1);
+ const pct=Math.max(0,Math.min(100,hp/mx*100));
+ f.style.width=pct+'%';
+ f.style.background=pct>50?'linear-gradient(180deg,#7dc47d,var(--good))':pct>25?'linear-gradient(180deg,#e0a54a,var(--warn))':'linear-gradient(180deg,#e0574a,var(--accent))';
+}
+const EXH_NOTE=['','disadv on checks','half speed','disadv on attacks & saves','half max HP','speed 0','dead'];
+function renderExhNote(){const e=el('exhNote');if(!e)return;
+ const x=Number(el('exhaust').value)||0;e.textContent=EXH_NOTE[x]?'→ '+EXH_NOTE[x]:'';}
+// attacks per Attack action — Extra Attack auto-detects; #atkN overrides
+function derivedAtk(){
+ let n=1;
+ mclasses.forEach(m=>{for(let l=1;l<=m.l;l++)featuresFor(effName(m),l).forEach(f=>{
+  const mm=/extra attack\s*\((\d)\)/i.exec(f);
+  if(mm)n=Math.max(n,1+ +mm[1]);else if(/extra attack/i.test(f))n=Math.max(n,2);});});
+ return n;
+}
+function atkTimes(){const o=Number(el('atkN').value);return o>=1?o:derivedAtk();}
 function attackRow(btn){
  const tr=btn.closest('tr'),name=tr.children[0].textContent;
- roll(name+' hit',Number(btn.dataset.h),'attack');
- const dm=/(\d+)d(\d+)\s*\+?\s*(-?\d+)?/.exec(tr.children[2].textContent)||[];
- const n=+dm[1]||1,s=+dm[2]||6,b=+(dm[3]||0);
- let t=0,rs=[];for(let i=0;i<n;i++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
- log(`${name} dmg: [${rs.join(',')}] ${fmt(b)} = ${t+b}`);
- burnAmmo(name);
+ const n=atkTimes();
+ for(let a=0;a<n;a++){
+  roll(name+' hit'+(n>1?' #'+(a+1):''),Number(btn.dataset.h),'attack');
+  const dm=/(\d+)d(\d+)\s*\+?\s*(-?\d+)?/.exec(tr.children[2].textContent)||[];
+  const nd=+dm[1]||1,s=+dm[2]||6,b=+(dm[3]||0);
+  let t=0,rs=[];for(let i=0;i<nd;i++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
+  log(`${name} dmg${n>1?' #'+(a+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}`);
+  burnAmmo(name);
+ }
 }
 // ammunition linkage: weapon name → ammo keyword matched inside inventory names
 const AMMO_LINK={longbow:'arrow',shortbow:'arrow','light crossbow':'bolt','heavy crossbow':'bolt','hand crossbow':'bolt',sling:'bullet',blowgun:'needle',pistol:'bullet',musket:'bullet',revolver:'bullet'};
@@ -1145,12 +1181,15 @@ function cantripDmg(n,s){const c=1+(lvl()>=5)+(lvl()>=11)+(lvl()>=17);let rs=[],
 function atkGo(i){
  const a=customAtk[i];
  const h=a.h===''?Math.max(prof()+mod('dex'),prof()+mod('str')):Number(a.h);
- roll(a.n+' hit',h,'attack');
- const m=/(\d+)d(\d+)\s*([+-]\s*\d+)?/.exec(a.d);
- if(m){const n=+m[1],s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let t=0,rs=[];
-  for(let k=0;k<n;k++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
-  log(`${a.n} dmg: [${rs.join(',')}] ${fmt(b)} = ${t+b}`);}
- burnAmmo(a.n);
+ const n=atkTimes();
+ for(let j=0;j<n;j++){
+  roll(a.n+' hit'+(n>1?' #'+(j+1):''),h,'attack');
+  const m=/(\d+)d(\d+)\s*([+-]\s*\d+)?/.exec(a.d);
+  if(m){const nd=+m[1],s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let t=0,rs=[];
+   for(let k=0;k<nd;k++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
+   log(`${a.n} dmg${n>1?' #'+(j+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}`);}
+  burnAmmo(a.n);
+ }
  saveState();
 }
 // ---- resources ----
@@ -1983,7 +2022,8 @@ function applyState(s){
  (s._ds||[]).forEach((v,i)=>{const p=document.querySelectorAll('.ds-pip')[i];if(p)p.classList.toggle('on',v);});
  if(s._log){el('log').innerHTML='';s._log.forEach(([t,m])=>{const d=document.createElement('div');
   const ts=document.createElement('span');ts.className='sub';ts.textContent=t;
-  const c=document.createElement('span');c.textContent=m;d.append(ts,c);el('log').appendChild(d);});}
+  const c=document.createElement('span');c.textContent=m;d.append(ts,c);el('log').appendChild(d);});
+ if(el('logFilter'))filterLog();}
  if(s._portrait&&el('portrait')){el('portrait').src=s._portrait;el('portrait').style.display='block';}
 }
 let saveT=null;
@@ -2374,7 +2414,7 @@ async function loadRemote(){
   const srd=sp.map(s=>({n:s.name,l:s.level,t:s.casting_time,r:s.range,c:(s.components||[]).join(','),d:s.duration,s:s.school&&s.school.name,rit:s.ritual,conc:s.concentration,src:'SRD',cls:(s.classes||[]).map(c=>CL2A[c.name]).filter(Boolean).join('/'),desc:(s.desc||[]).join(' ')}));
   const custom=rng.map(e=>{e.ranger=1;e.cls=e.cls||'Ran';return e;}).concat(extra);
   ALLSPELLS=custom.concat(srd.filter(s=>!custom.find(e=>e.n===s.name)));
-  const extra2=`<span class="tag" onclick="this.classList.toggle('on');saveState()">Poisoned (immune!)</span>`;
+  const extra2=`<span class="tag" onclick="this.classList.toggle('on');saveState()">Poisoned</span>`;
   el('conds').innerHTML=extra2+co.map(c=>`<span class="tag" title="${(c.desc||[]).join(' ').replace(/"/g,'&quot;')}" onclick="this.classList.toggle('on');saveState()">${c.name}</span>`).join('');
   OPTIONS=opts;CLASS_FEATURES=cf||CLASS_FEATURES;
   if(ua){
