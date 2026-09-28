@@ -75,6 +75,12 @@
   .scrollbox th { position:sticky; top:0; background:var(--panel2); z-index:2; }
   .tallbox { max-height:640px; overflow-y:auto; }
   #log div { padding:1px 0; border-bottom:1px solid rgba(255,255,255,.03); }
+  .initRow { padding:5px 2px 6px; border-bottom:1px solid var(--border); }
+  .initRow.active { background:rgba(217,168,78,.07); border-left:2px solid var(--gold); padding-left:6px; }
+  .initRow.dead b { color:#c00; text-decoration:line-through; }
+  .initRow .ir-top { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+  .initRow .ir-ctl { display:flex; gap:3px; align-items:center; flex-wrap:wrap; margin-top:3px; }
+  #spellTable td { padding:3px 6px; }
   #log div { padding:2px 0; border-bottom:1px dotted rgba(61,46,33,.6); }
   .hp-cur { font-size:1.6em !important; width:90px !important; }
   #hpbar { height:11px; background:#0d0906; border:1px solid var(--border); border-radius:7px; margin-top:7px; overflow:hidden; }
@@ -153,7 +159,11 @@
     #log{height:110px;}
     select{max-width:140px;}
     #classRows span{white-space:normal;}
-    #charBar{top:0;}
+    #charBar{top:0;gap:5px;}
+    #charBar button,#charBar select{font-size:.82em;padding:5px 8px;}
+    #charBar .txt-in{width:150px!important;}
+    .scrollbox{max-height:60vh;}
+    .tallbox{max-height:50vh;}
   }
   @media (max-width:420px){ .cols-6{grid-template-columns:repeat(2,1fr);} .ability input{width:42px;} }
   @media print{
@@ -165,7 +175,8 @@
     .sub{color:#444;}
     .bonus,.mod{color:#000;}
     .locked{opacity:.25;}
-    #log,#newChar,#syncPanel,#classRows,#skillPick,#charBar{display:none;}
+    .scrollbox,.tallbox{max-height:none!important;overflow:visible;border:none;background:transparent;}
+    #log,#newChar,#syncPanel,#classRows,#skillPick,#charBar,#navSel{display:none;}
     .grid{gap:8px;margin-top:8px;}
     .ability{border-color:#999;background:#fff;}
   }
@@ -1327,15 +1338,15 @@ function renderInit(){
  el('initList').innerHTML=initOrder.map((e,i)=>{
   const dead=Number(e.hp)===0&&e.hp!=='';
   const conds=(e.c||[]).map((c,j)=>` <span class="tag" style="padding:0 4px;cursor:default">${c}<a href="#" onclick="initOrder[${i}].c.splice(${j},1);renderInit();saveState();return false" style="color:#c00">×</a></span>`).join('');
-  return `<div class="${i===initIdx?'newfeat':''}" style="padding:3px;border-bottom:1px solid #222">
-   ${i===initIdx?'▶ ':''}<b style="${dead?'color:#c00;text-decoration:line-through':''}">${e.n}</b> <span class="sub">${e.v}</span>
-   · HP <input class="num-in" style="width:42px" value="${e.hp??''}" onchange="initOrder[${i}].hp=this.value;renderInit();saveState()">/<input class="num-in" style="width:42px" value="${e.mhp??''}" placeholder="max" onchange="initOrder[${i}].mhp=this.value;saveState()">
-   · +<input class="num-in" style="width:32px" value="${e.atk??''}" placeholder="atk" title="their attack bonus" onchange="initOrder[${i}].atk=this.value;saveState()">
-   <input class="txt-in" style="width:66px;display:inline" value="${e.dmg||''}" placeholder="2d6+3 fire" title="damage expr — leading '2x' = multiattack swings; trailing damage type feeds your resist/vuln/immune" onchange="initOrder[${i}].dmg=this.value;saveState()">
-   <button onclick="enemyAtk(${i})" title="they attack you">⚔</button>
-   <button onclick="hurtEnemy(${i})" title="deal damage to them">−hp</button>
-   <select style="width:70px" onchange="if(this.value){(initOrder[${i}].c=initOrder[${i}].c||[]).push(this.value);renderInit();saveState();}this.value=''"><option value="">+cond</option>${CONDS.filter(c=>!c.includes('(')).map(c=>`<option>${c}</option>`).join('')}</select>
-   <a href="#" onclick="initOrder.splice(${i},1);renderInit();saveState();return false" style="color:#c00">×</a>${conds}</div>`;
+  return `<div class="initRow${i===initIdx?' active':''}${dead?' dead':''}">
+   <div class="ir-top">${i===initIdx?'▶ ':''}<b>${e.n}</b> <span class="sub">${e.v}</span>${conds}</div>
+   <div class="ir-ctl">HP <input class="num-in" style="width:42px" value="${e.hp??''}" onchange="initOrder[${i}].hp=this.value;renderInit();saveState()">/<input class="num-in" style="width:42px" value="${e.mhp??''}" placeholder="max" onchange="initOrder[${i}].mhp=this.value;saveState()">
+    +<input class="num-in" style="width:32px" value="${e.atk??''}" placeholder="atk" title="their attack bonus" onchange="initOrder[${i}].atk=this.value;saveState()">
+    <input class="txt-in" style="width:66px" value="${e.dmg||''}" placeholder="2d6+3 fire" title="damage expr — leading '2x' = multiattack swings; trailing damage type feeds your resist/vuln/immune" onchange="initOrder[${i}].dmg=this.value;saveState()">
+    <button onclick="enemyAtk(${i})" title="they attack you">⚔</button>
+    <button onclick="hurtEnemy(${i})" title="deal damage to them">−hp</button>
+    <select style="width:70px" onchange="if(this.value){(initOrder[${i}].c=initOrder[${i}].c||[]).push(this.value);renderInit();saveState();}this.value=''"><option value="">+cond</option>${CONDS.filter(c=>!c.includes('(')).map(c=>`<option>${c}</option>`).join('')}</select>
+    <a href="#" onclick="initOrder.splice(${i},1);renderInit();saveState();return false" style="color:#c00">×</a></div></div>`;
  }).join('')||'<span class="sub">Empty. Add combatants above.</span>';
 }
 function addInit(){const raw=el('initName').value.trim(),v=Number(el('initVal').value)||0,hp=el('initHP').value;
