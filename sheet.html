@@ -256,6 +256,7 @@
     <div class="sub" id="actCard" style="margin-top:4px;font-style:normal"></div>
     <h2>Roll Mode</h2>
     <button id="advBtn" onclick="cycleAdv()">Normal</button>
+    <span class="tag" id="inspTag" title="Inspiration — next d20 rolls with advantage, then it's spent" onclick="tglInsp()">Inspiration</span>
     <h2>Conditions</h2>
     <div id="conds"></div>
     <div class="sub" style="margin-top:4px">Exhaustion level <input class="num-in" id="exhaust" type="number" min="0" max="6" value="0" style="width:50px" onchange="renderExhNote()"> <span id="exhNote" style="color:var(--warn)"></span></div>
@@ -275,7 +276,7 @@
     <div class="sub" style="margin-top:4px">Drain: <select id="drainStat"><option value="maxhp">max HP</option><option>str</option><option>dex</option><option>con</option><option>int</option><option>wis</option><option>cha</option></select> <input class="num-in" id="drainAmt" type="number" style="width:42px" value="1"> <button onclick="applyDrain()">Apply</button> <button onclick="restoreDrains()">Restore</button></div>
     <div class="sub" id="drainList">none</div>
     <div style="margin-top:8px"><button onclick="healPrompt()">Heal</button> <button onclick="dmgPrompt()">Damage</button> <button onclick="shortRest()">Short Rest</button> <button onclick="longRest()">Long Rest</button></div>
-    <div class="sub" style="margin-top:6px">Concentrating: <input class="txt-in" id="concSpell" style="width:130px;display:inline" placeholder="—"> <button onclick="el('concSpell').value='';saveState();log('Concentration dropped.')">Drop</button></div>
+    <div class="sub" style="margin-top:6px">Concentrating: <input class="txt-in" id="concSpell" style="width:110px;display:inline" placeholder="—"> <input class="num-in" id="concRounds" type="number" min="0" style="width:42px" title="rounds left — ticks down each round, auto-drops at 0"> <button onclick="el('concSpell').value='';el('concRounds').value='';saveState();log('Concentration dropped.')">Drop</button></div>
     <h2>Death Saves</h2>
     <div>
       Pass: <span class="ds-pip" data-ds="s1"></span><span class="ds-pip" data-ds="s2"></span><span class="ds-pip" data-ds="s3"></span><br>
@@ -287,7 +288,7 @@
   <div class="panel">
     <h2>Saving Throws</h2>
     <table id="saves"></table>
-    <div class="sub">Passive Perception <span class="bonus" id="passPerc">14</span> · Insight <span class="bonus" id="passIns">—</span> · Investigation <span class="bonus" id="passInv">—</span> · Darkvision 60 ft</div>
+    <div class="sub">Passive Perception <span class="bonus" id="passPerc">14</span> · Insight <span class="bonus" id="passIns">—</span> · Investigation <span class="bonus" id="passInv">—</span> · <span id="dvCell">Darkvision 60 ft</span></div>
     <h2>Currency</h2>
     <table>
       <tr><td>pp</td><td><input class="num-in coin" data-coin="pp" type="number" value="0"></td>
@@ -777,7 +778,9 @@ registerVariants();
 const SPELLS=[]; // populated by loadRemote + embedded fallback below
 
 // ================= STATE =================
-let advMode=0, suggestionUsed=false;
+let advMode=0, suggestionUsed=false, inspOn=false;
+function tglInsp(){inspOn=!inspOn;renderInsp();saveState();}
+function renderInsp(){const e=el('inspTag');if(e)e.classList.toggle('on',inspOn);}
 let mclasses=[{c:'Ranger',l:1,v:''}]; // multiclass rows; [0] = primary
 let hdSpent={};   // className -> dice spent
 let feats=[];     // feat names
@@ -839,11 +842,13 @@ function roll(name,bonus,kind){
  if(kind==='attack'&&(exh>=3||condOn('Poisoned')||condOn('Restrained')||condOn('Prone')))auto='auto-disadv';
  else if(kind==='check'&&exh>=1)auto='auto-disadv (exhaustion)';
  else if(kind==='save'&&(exh>=3||condOn('Poisoned')))auto='auto-disadv';
- const eff=auto?-1:advMode;
- const{r,txt}=d20(eff);const tag=eff===1?' (adv)':eff===-1?' (dis)':'';
+ let eff=auto?-1:advMode,usedInsp=false;
+ if(inspOn&&eff<1){eff=1;usedInsp=true;}
+ const{r,txt}=d20(eff);const tag=usedInsp?' (inspiration)':eff===1?' (adv)':eff===-1?' (dis)':'';
  dstat.n++;dstat.sum+=r;if(r===20)dstat.c20++;if(r===1)dstat.c1++;updateDiceStats();
  const crit=r>=critRange()&&/(hit|attack)/i.test(name);
- log(`${name}${tag}${auto?' ⚠'+auto:''}: [${txt}] ${fmt(bonus)} = ${r+bonus}${crit?' — CRIT!':r===20&&eff>=0?' — NAT 20':''}${r===1&&eff<=0?' — NAT 1':''}`);}
+ log(`${name}${tag}${auto?' ⚠'+auto:''}: [${txt}] ${fmt(bonus)} = ${r+bonus}${crit?' — CRIT!':r===20&&eff>=0?' — NAT 20':''}${r===1&&eff<=0?' — NAT 1':''}`);
+ if(usedInsp){inspOn=false;renderInsp();log('Inspiration spent.');}}
 function rollAtk(name,bonus){roll(name,bonus,'attack');}
 function rollDie(name,sides,bonus){const r=Math.ceil(Math.random()*sides);log(`${name}: [${r}] ${fmt(bonus)} = ${r+bonus}`);}
 function cycleAdv(){advMode=(advMode+2)%3-1;const b=el('advBtn');
@@ -864,7 +869,9 @@ function castSpell(name,ev){
  let useLvl=sp.l;
  if(ev&&ev.shiftKey){const x=Number(prompt('Upcast at what slot level? (min '+sp.l+')',sp.l))||sp.l;if(x>sp.l)useLvl=x;}
  if(!spendSlot(useLvl)&&!spendPact(useLvl)){log(`${name}: no level-${useLvl}+ slots left.`);return;}
- if(sp.conc)el('concSpell').value=name;
+ if(sp.conc){el('concSpell').value=name;
+  const dm=/up to (\d+)\s*(minute|hour|round)/i.exec(sp.d||'');
+  el('concRounds').value=dm?(dm[2][0]==='r'?+dm[1]:dm[2][0]==='m'?+dm[1]*10:+dm[1]*600):'';}
  log(`Cast ${name} (slot ${useLvl}${useLvl>sp.l?' — upcast':''}, via ${effName(owner)})${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
  if(REMIND[name])log(REMIND[name]);
  if(sp.atk)roll(name+' attack',prof()+mod(spellStatFor(sp)),'attack');
@@ -1122,6 +1129,14 @@ function recalc(){
   style==='dueling'?'Dueling: one-hand damage +2.':'Pick a fighting style.';
  renderDCs();renderHPBar();renderExhNote();
  if(el('atkN'))el('atkN').placeholder='auto ×'+derivedAtk();
+ // darkvision: derive from the race's trait text, not a hardcoded value
+ if(el('dvCell')){
+  const rl=el('raceLabel').textContent.toLowerCase();let dv=null;
+  for(const k in RACE_TRAIT){if(rl.includes(k)){const m=/darkvision\D*(\d+)/i.exec(RACE_TRAIT[k]);if(m)dv=+m[1];break;}}
+  if(dv===null){const rc=RACES_RICH.find(r=>{const rn=(r.n||'').toLowerCase();return rl.includes(rn)||rn.includes(rl);});
+   if(rc){const m=/darkvision\D*(\d+)/i.exec([rc.traits,rc.gim].join(' '));if(m)dv=+m[1];}}
+  el('dvCell').textContent=dv?'Darkvision '+dv+' ft':'No darkvision';
+ }
 }
 function renderHPBar(){
  const f=el('hpfill');if(!f)return;
@@ -1260,17 +1275,23 @@ function enemyAtk(i){const e=initOrder[i];if(!e)return;
  const dc=cs.find(c=>ATK_DIS.includes(c)||EXH_DIS.some(x=>c.startsWith(x)));
  if(dc){mode=-1;why=dc;}
  if(cs.includes('Invisible')){if(mode===-1)mode=0;else{mode=1;why='invisible';}}
+ const wtag=why?' ('+why.toLowerCase()+')':'';
+ // multiattack: a leading "Nx" in the damage field = that many attack rolls
+ const ma=/^(\d+)\s*[x×]\s*/.exec(e.dmg||'');const swings=ma?+ma[1]:1;
  const bon=Number(e.atk)||0,ac=Number(el('ac').value)||10;
- const{r,txt}=d20(mode);
- const crit=r===20,miss1=r===1;
- if(!crit&&(miss1||r+bon<ac)){log(`${e.n} attacks you: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — ${miss1?'nat 1, ':''}MISS.`);return;}
- let total=0,dtype='';
- if(e.dmg){const dm=/(\d+)d(\d+)\s*([+-]?\s*\d+)?\s*([a-z]*)/i.exec(e.dmg);
-  if(dm){let n=+dm[1]||1;const s=+dm[2]||6,b=dm[3]?+dm[3].replace(/\s/g,''):0;dtype=(dm[4]||'').toLowerCase();
-   if(crit)n*=2;let rs=[],t=0;for(let k=0;k<n;k++){const rr=Math.ceil(Math.random()*s);rs.push(rr);t+=rr;}
-   total=t+b;log(`${e.n} hits${crit?' — CRIT, dice doubled':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — dmg [${rs.join(',')}] ${fmt(b)} = ${total} ${dtype}.`);}}
- else log(`${e.n} hits${crit?' — CRIT':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac}.`);
- if(total>0)applyDamage(total,dtype);
+ for(let sw=0;sw<swings;sw++){
+  const{r,txt}=d20(mode);
+  const crit=r===20,miss1=r===1;
+  const lbl=swings>1?' #'+(sw+1):'';
+  if(!crit&&(miss1||r+bon<ac)){log(`${e.n} attacks you${wtag}${lbl}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — ${miss1?'nat 1, ':''}MISS.`);continue;}
+  let total=0,dtype='';
+  if(e.dmg){const dm=/(\d+)d(\d+)\s*([+-]?\s*\d+)?\s*([a-z]*)/i.exec(e.dmg.replace(ma?ma[0]:'',''));
+   if(dm){let n=+dm[1]||1;const s=+dm[2]||6,b=dm[3]?+dm[3].replace(/\s/g,''):0;dtype=(dm[4]||'').toLowerCase();
+    if(crit)n*=2;let rs=[],t=0;for(let k=0;k<n;k++){const rr=Math.ceil(Math.random()*s);rs.push(rr);t+=rr;}
+    total=t+b;log(`${e.n} hits${wtag}${lbl}${crit?' — CRIT, dice doubled':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — dmg [${rs.join(',')}] ${fmt(b)} = ${total} ${dtype}.`);}}
+  else log(`${e.n} hits${wtag}${lbl}${crit?' — CRIT':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac}.`);
+  if(total>0)applyDamage(total,dtype);
+ }
  saveState();}
 function hurtEnemy(i){const e=initOrder[i];if(!e)return;
  const n=Number(prompt('Damage to '+e.n+'?','0'))||0;if(!n)return;
@@ -1282,7 +1303,10 @@ function rollInitFor(){
  log(`Initiative: [${txt}] ${fmt(mod('dex'))} = ${v}`);saveState();
 }
 function nextInit(){if(!initOrder.length)return;initIdx=(initIdx+1)%initOrder.length;
- if(initIdx===0){roundN++;turnUse={a:0,b:0,r:0};renderTurn();log('— round '+roundN+' —');}
+ if(initIdx===0){roundN++;turnUse={a:0,b:0,r:0};renderTurn();log('— round '+roundN+' —');
+  const cr=Number(el('concRounds').value);
+  if(el('concSpell').value&&cr>0){el('concRounds').value=cr-1;
+   if(cr-1===0){const sp=el('concSpell').value;el('concSpell').value='';log(`Concentration on ${sp} expired — duration ran out.`);}}}
  renderInit();log('Turn → '+initOrder[initIdx].n);saveState();}
 // ---- feats ----
 function featDesc(n){const f=(OPTIONS&&OPTIONS.feats||[]).find(x=>(x.n||x)===n);return f&&f.desc?f.desc:'';}
@@ -1975,7 +1999,7 @@ function collectState(){
  s._cls=baseCls();s._variant=mclasses[0].v||'';
  s._race=el('raceLabel').textContent;s._bg=el('bgLabel').textContent;s._align=el('alignLabel').textContent;
  s._bio=el('bio').textContent;
- s._sugg=suggestionUsed;
+ s._sugg=suggestionUsed;s._insp=inspOn;
  s._log=[...el('log').children].slice(0,400).map(d=>[d.children[0]?d.children[0].textContent:'',d.children[1]?d.children[1].textContent:d.textContent]);
  if(el('portrait')&&el('portrait').style.display==='block')s._portrait=el('portrait').src;
  return s;
@@ -2010,6 +2034,7 @@ function applyState(s){
  renderDrains();renderBoons();
  renderRes();renderAtkCustom();renderMacros();renderSup();applyHB();renderHB();updateDiceStats();renderTurn();
  suggestionUsed=!!s._sugg;el('suggBtn').disabled=suggestionUsed;
+ inspOn=!!s._insp;renderInsp();
  rebuild();
  (s._skills||[]).forEach((v,i)=>{const c=document.querySelectorAll('.skillProf')[i];if(c)c.checked=v;});
  (s._saves||[]).forEach((v,i)=>{const c=document.querySelectorAll('.saveProf')[i];if(c)c.checked=v;});
