@@ -197,6 +197,7 @@
   <button onclick="exportDiscord()">Discord</button>
   <button onclick="el('raceGallery').style.display=el('raceGallery').style.display==='none'?'block':'none'">🧬 Races</button>
   <select id="navSel" title="jump to section" style="max-width:130px"><option value="">§ jump to…</option></select>
+  <button onclick="el('helpBox').style.display='block'" title="conventions + hotkeys">?</button>
   <input type="file" id="impFile" accept=".json" style="display:none" onchange="importChar(this)">
   <button onclick="const p=el('syncPanel');p.style.display=p.style.display==='none'?'inline':'none'">⚙ Sync</button>
   <span id="syncPanel" style="display:none">
@@ -243,13 +244,14 @@
   <div class="panel ability"><div class="name">CHA</div><input type="number" class="stat" data-stat="cha" value="12"><div class="mod" id="mod-cha">+1</div></div>
 </div>
 <div class="sub" style="margin:2px 0 8px">
-  <b>Charactermancer:</b>
+  <div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center"><b>Charactermancer:</b>
   <button onclick="genStandard()">Standard Array</button>
   <button onclick="genRoll()">Roll 4d6 drop-lowest</button>
   Point buy: <b id="pbLeft">27</b> pts
   <span id="pbBtns"></span>
   · Race <select id="raceSel"></select>
   <button onclick="applyRacial()">Apply racial ASI + speed</button>
+  </div>
 </div>
 
 <div class="grid cols-4">
@@ -323,6 +325,7 @@
   <div class="panel">
     <h2>Attacks <span class="sub" style="font-variant:normal;letter-spacing:0">×<input class="num-in" id="atkN" type="number" min="1" max="4" style="width:38px" placeholder="auto" title="attacks per Attack action — auto-detects Extra Attack"> per action</span></h2>
     <table id="attacks"></table>
+    <div class="sub" style="font-style:normal;margin:3px 0">Rider: <input class="txt-in" id="riderExpr" style="width:64px;display:inline" placeholder="1d6" title="extra damage dice on every hit — hunter's mark 1d6, colossus slayer 1d8, sneak attack, smite…"> <input class="txt-in" id="riderTag" style="width:80px;display:inline" placeholder="label" title="what it is — e.g. hunter's mark"> <label><input type="checkbox" id="riderOn"> on</label></div>
     <div class="sub" id="styleNote">Fighting Style unlocks at level 2.</div>
     <div>Fighting Style: <select id="fightStyle" onchange="recalc();autoAC();saveState()" disabled>
       <option value="none">—</option>
@@ -957,11 +960,11 @@ function renderSpells(){
  const list=ALLSPELLS.filter(s=>f==='cls'?(s.cls==='*'||(s.cls||'').split('/').some(a=>myA.includes(a))||(s.ranger&&myA.includes('Ran'))):f==='all'?true:f==='known'?knownSpells[s.n]:s.l===Number(f));
  el('spellTable').innerHTML=`<tr><th></th>${prepMode()?'<th title="prepared">◐</th>':''}<th>Spell</th><th>Lvl</th><th></th><th></th></tr>`+list.map(s=>`
   <tr class="spellRow" title="${esc((s.desc||'').slice(0,300))}" onclick="el('spellInfo').innerHTML='<b>${s.n}</b> — ${s.s||''}, lvl ${s.l}. ${s.t||''} · ${s.r||''} · ${s.c||''} · ${s.d||''}. ${s.src?'['+s.src+']':''}<br>${s.desc||''}'">
-   <td><button onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
-   ${prepMode()?`<td><button title="prepared for today" onclick="event.stopPropagation();togglePrep('${s.n}')">${prepSpells[s.n]?'◉':'◯'}</button></td>`:''}
+   <td><button aria-label="toggle ${s.n} known" onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
+   ${prepMode()?`<td><button aria-label="toggle ${s.n} prepared" title="prepared for today" onclick="event.stopPropagation();togglePrep('${s.n}')">${prepSpells[s.n]?'◉':'◯'}</button></td>`:''}
    <td>${s.n}${s.xge||s.src?` <span class="tag-rit">(${s.src||'XGE'})</span>`:''}</td><td>${s.l}</td>
    <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}${s.dc?`<span class="tag-rit" title="${s.dc.a} save${s.dc.h==='half'?', half damage on success':''}">DC ${8+prof()+mod(spellStatFor(s))} ${s.dc.a||''}</span>`:''}${spellTagDice(s)}</td>
-   <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button>${s.at?` <button title="${s.at} spell attack" onclick="event.stopPropagation();spellHit('${s.n}')">⚔</button>`:''}</td></tr>`).join('');
+   <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button>${s.at?` <button aria-label="${s.n} attack roll" title="${s.at} spell attack" onclick="event.stopPropagation();spellHit('${s.n}')">⚔</button>`:''}</td></tr>`).join('');
  const np=Object.values(prepSpells).filter(Boolean).length;
  const km=knownMax();
  const nk=Object.keys(knownSpells).filter(k=>knownSpells[k]&&(ALLSPELLS.find(x=>x.n===k)||{l:1}).l>0).length;
@@ -1240,7 +1243,7 @@ function attackRow(btn){
   const dm=/(\d+)d(\d+)\s*\+?\s*(-?\d+)?/.exec(tr.children[2].textContent)||[];
   const nd=(+dm[1]||1)*(res&&res.crit?2:1),s=+dm[2]||6,b=+(dm[3]||0);
   let t=0,rs=[];for(let i=0;i<nd;i++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
-  log(`${name} dmg${n>1?' #'+(a+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}${res&&res.crit?' — crit dice doubled':''}`);
+  log(`${name} dmg${n>1?' #'+(a+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}${riderRoll()}${res&&res.crit?' — crit dice doubled':''}`);
   burnAmmo(name);
  }
 }
@@ -1291,7 +1294,7 @@ function atkGo(i){
   const m=/(\d+)d(\d+)\s*([+-]\s*\d+)?/.exec(a.d);
   if(m){const nd=(+m[1])*(res&&res.crit?2:1),s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let t=0,rs=[];
    for(let k=0;k<nd;k++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
-   log(`${a.n} dmg${n>1?' #'+(j+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}${res&&res.crit?' — crit dice doubled':''}`);}
+   log(`${a.n} dmg${n>1?' #'+(j+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}${riderRoll()}${res&&res.crit?' — crit dice doubled':''}`);}
   burnAmmo(a.n);
  }
  saveState();
@@ -1669,7 +1672,9 @@ function longRest(){
  el('concSpell').value='';
  suggestionUsed=false;el('suggBtn').disabled=false;
  rebuild();
- log('Long rest — everything restored.');saveState();}
+ log('Long rest — everything restored.');
+ if(prepMode())log('New day — re-prep your spell list (◐).');
+ saveState();}
 function deathSave(){
  const{r,txt}=d20(advMode);
  if(r===20){
@@ -1768,6 +1773,10 @@ function renderDCs(){if(!el('dcCard'))return;const p=prof();
  el('dcCard').innerHTML=`Ability DCs: ${line}<br>Spell DC <b>${el('spellDC').textContent}</b> · Innate DC <b>${el('innateDC').textContent}</b> · Companion DC <b>${el('compDC')?el('compDC').textContent:'—'}</b>`;}
 // horde roller
 function rollDiceExpr(str){const m=/(\d*)d(\d+)\s*([+-]?\s*\d+)?/.exec(str||'');if(!m)return{rs:[],t:0};const n=+m[1]||1,s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let rs=[],t=b;for(let i=0;i<n;i++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}return{rs,t};}
+function riderRoll(){const c=el('riderOn');if(!c||!c.checked)return'';
+ const m=/(\d*)d(\d+)/.exec((el('riderExpr').value||'').trim());if(!m)return'';
+ const n=+m[1]||1,s=+m[2];let t=0,rs=[];for(let i=0;i<n;i++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
+ return` +${el('riderTag').value||'rider'} [${rs.join(',')}] = ${t}`;}
 function hordeRoll(){
  const n=Math.max(1,+el('hN').value||1),mode=el('hMode').value,bon=+el('hBonus').value||0,tgt=+el('hTarget').value||0;
  const rd=()=>Math.ceil(Math.random()*20);
@@ -2619,11 +2628,31 @@ document.addEventListener('keydown',e=>{
  if(k>='1'&&k<='9'){const b=document.querySelectorAll('#attacks button')[Number(k)-1];
   if(b){b.click();e.preventDefault();}return;}
  const map={d:()=>roll('d20',0),v:cycleAdv,n:nextInit,x:dmgPrompt,h:healPrompt,i:rollInitFor,
-  a:()=>tglTurn('a'),b:()=>tglTurn('b'),r:()=>tglTurn('r')};
+  a:()=>tglTurn('a'),b:()=>tglTurn('b'),r:()=>tglTurn('r'),
+  '?':()=>{const hb=el('helpBox');hb.style.display=hb.style.display==='none'?'block':'none';},
+  escape:()=>{el('helpBox').style.display='none';}};
  if(map[k]){map[k]();e.preventDefault();}
 });
 document.querySelectorAll('input,select,textarea').forEach(e=>e.addEventListener('input',saveState));
-log('Sheet loaded. Welcome to Hell, Efferey.');
+log(`Sheet loaded — ${curChar}.`);
 </script>
+<div id="helpBox" style="display:none;position:fixed;top:8%;left:50%;transform:translateX(-50%);width:min(560px,92vw);max-height:80vh;overflow:auto;z-index:60;background:var(--panel);border:1px solid var(--border-strong);border-radius:var(--r);padding:16px 18px;box-shadow:0 18px 60px rgba(0,0,0,.6)">
+ <h2>Sheet conventions <button style="float:right" onclick="el('helpBox').style.display='none'">Close ×</button></h2>
+ <ul class="sub" style="font-style:normal;line-height:1.8;padding-left:18px">
+  <li><b>Shift-click Cast</b> — upcast into a higher slot</li>
+  <li><b>wolf x3</b> in the tracker name — bulk-adds numbered combatants, each with its own initiative roll</li>
+  <li>Enemy damage field — <b>2d6+3 fire</b> feeds your resist/vuln/immune; a leading <b>2x</b> = multiattack swings</li>
+  <li>Conditions actually constrain: incapacitated-type enemies can't attack; poisoned/prone/etc. roll at disadvantage — and yours do the same to you</li>
+  <li><b>Rider</b> in Attacks — extra dice on every hit (hunter's mark 1d6, sneak attack…)</li>
+  <li>Attack ammo auto-burns; rename inventory to link (longbow → arrows)</li>
+  <li>Damage intake: type a suffix like <b>14 fire</b> in the damage prompt for resist/immune</li>
+  <li>★ known · ◐ prepared (prep casters) · ⚔ attack-roll spells · DC/dice chips on each row</li>
+  <li>Concentration: damage auto-prompts the CON save; the rounds field counts down each round</li>
+  <li>Temp HP soaks before real HP; nat-1 attacks skip the damage roll; crits double the dice</li>
+  <li>Hotkeys — 1-9 attack rows · d d20 · v advantage · a/b/r action-economy · n next turn · x damage · h heal · i initiative · ? this panel · esc close</li>
+  <li>Everything saves locally per character; Export/Import = JSON; Snapshot = in-session checkpoint; Discord = shareable text</li>
+  <li>Remote data caches offline — on a dead connection it uses the last-good copy and says so in the log</li>
+ </ul>
+</div>
 </body>
 </html>
