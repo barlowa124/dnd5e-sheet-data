@@ -68,6 +68,8 @@
   button:hover { filter:brightness(1.12); transform:translateY(-1px); box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 4px 10px rgba(0,0,0,.4); }
   button:active { transform:translateY(0); filter:brightness(.95); }
   button:disabled { background:#3a2d22; border-color:var(--border); color:var(--sub); cursor:not-allowed; transform:none; box-shadow:none; filter:none; }
+  button.lvReady { background:linear-gradient(180deg,#ffd25e,#e8a33d); color:#2c1c05; border-color:#ffd25e; box-shadow:0 0 0 1px rgba(255,210,94,.35),0 0 14px rgba(255,210,94,.5); animation:lvPulse 1.6s ease-in-out infinite; }
+  @keyframes lvPulse { 50% { box-shadow:0 0 0 2px rgba(255,210,94,.6),0 0 22px rgba(255,210,94,.75); } }
   .bonus { color:var(--gold); font-weight:bold; min-width:34px; display:inline-block; font-family:var(--mono); }
   #log { background:#0d0906; border:1px solid var(--border); border-radius:var(--r-sm); padding:10px; height:180px; overflow-y:auto; font-family:var(--mono); font-size:.82em; }
   .scrollbox { max-height:520px; overflow-y:auto; overflow-x:auto; border:1px solid var(--border); border-radius:var(--r-sm); background:var(--panel2); }
@@ -227,8 +229,8 @@
   Level <input class="num-in" id="level" type="number" value="1" min="1" max="20" style="width:55px" readonly title="total character level — edit per-class levels below"> <span id="clsLabel">Ranger</span> ·
   <span id="raceLabel">Yuan-ti Pureblood</span> · <span id="bgLabel">Criminal</span> · <span id="alignLabel">Neutral Evil</span> ·
   Prof Bonus <span class="bonus" id="profBonus">+2</span> ·
-  XP <input class="num-in" id="xp" type="number" value="0" style="width:80px"> <span id="xpNext" class="sub"></span>
-  <button onclick="levelUp()">Level Up</button>
+  XP <input class="num-in" id="xp" type="number" value="0" style="width:80px" oninput="rebuild()"> <span id="xpNext" class="sub"></span>
+  <button onclick="levelUp()" id="lvBtn">Level Up</button>
   <div id="classRows" style="margin-top:4px"></div>
 </div>
 <img id="portrait" style="width:72px;height:72px;object-fit:cover;border:1px solid var(--gold);border-radius:6px;display:none;float:left;margin:0 10px 6px 0;cursor:pointer" title="click to change portrait" onclick="el('portraitFile').click()">
@@ -1140,7 +1142,9 @@ function rebuild(){
  el('compUnlocked').classList.toggle('locked',!hasComp);
  pickCompanion(el('compPick')?el('compPick').value:'');
  const xp=Number(el('xp').value)||0;
- el('xpNext').textContent=l<20?`· next at ${XP_THRESH[l].toLocaleString()} XP${xp>=XP_THRESH[l]?' — LEVEL UP READY!':''}`:'';
+ const lvReady=l<20&&xp>=XP_THRESH[l];
+ el('xpNext').textContent=l<20?`· next at ${XP_THRESH[l].toLocaleString()} XP${lvReady?' — LEVEL UP READY!':''}`:'';
+ el('lvBtn').classList.toggle('lvReady',lvReady);
  el('nextLevel').innerHTML=l<20?`Next: <b>${effName(mclasses[0])} ${mclasses[0].l+1}</b> → ${featuresFor(effName(mclasses[0]),mclasses[0].l+1).join(', ')||'—'}`:'Max level.';
  let html='';
  mclasses.forEach(m=>{
@@ -1367,7 +1371,10 @@ function addPetInit(){
  const nm=m?m.name:(sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text.split(' (')[0]:'Companion');
  const dexM=m?Math.floor(((m.dexterity||10)-10)/2):2;
  const{r}=d20(0),v=r+dexM;
- initOrder.push({n:nm,v});initOrder.sort((a,b)=>b.v-a.v);renderInit();
+ const a=compAtk[0]||{};
+ initOrder.push({n:nm,v,hp:el('compHP')?el('compHP').value:'',mhp:el('compHPMax')?el('compHPMax').textContent:'',
+  atk:a.hit??'',dmg:a.die?`${a.n||1}d${a.die}${fmt(a.dv||0)}`:''});
+ initOrder.sort((a,b)=>b.v-a.v);renderInit();
  log(`${nm} initiative: [${r}] ${fmt(dexM)} = ${v}`);saveState();}
 const CANT_ACT=['Incapacitated','Paralyzed','Stunned','Unconscious','Petrified'];
 const ATK_DIS=['Poisoned','Prone','Restrained','Frightened','Blinded'];
@@ -1402,10 +1409,12 @@ function rollInitFor(){
  log(`Initiative: [${txt}] ${fmt(mod('dex'))} = ${v}`);saveState();
 }
 function nextInit(){if(!initOrder.length)return;initIdx=(initIdx+1)%initOrder.length;
- if(initIdx===0){roundN++;turnUse={a:0,b:0,r:0};renderTurn();log('— round '+roundN+' —');
+ if(initIdx===0){roundN++;log('— round '+roundN+' —');
+  if(!initOrder.some(x=>x.n===curChar)){turnUse={a:0,b:0,r:0};renderTurn();}
   const cr=Number(el('concRounds').value);
   if(el('concSpell').value&&cr>0){el('concRounds').value=cr-1;
    if(cr-1===0){const sp=el('concSpell').value;el('concSpell').value='';log(`Concentration on ${sp} expired — duration ran out.`);}}}
+ if(initOrder[initIdx].n===curChar){turnUse={a:0,b:0,r:0};renderTurn();}
  renderInit();log('Turn → '+initOrder[initIdx].n);saveState();}
 // ---- feats ----
 function featDesc(n){const f=(OPTIONS&&OPTIONS.feats||[]).find(x=>(x.n||x)===n);return f&&f.desc?f.desc:'';}
@@ -1626,7 +1635,12 @@ function applyDamage(n,t){
  // temp HP soaks first (PHB)
  const tmp=Number(el('temphp').value)||0,soak=Math.min(tmp,n);
  if(soak>0){el('temphp').value=tmp-soak;n-=soak;log(`Temp HP absorbs ${soak}.`);}
- el('hp').value=Math.max(0,Number(el('hp').value)-n);
+ const curHp=Number(el('hp').value)||0;
+ el('hp').value=Math.max(0,curHp-n);
+ if(curHp>0&&el('hp').value==='0'){
+  const mx=Number(el('hpmax').value)||0;
+  if(n-curHp>=mx&&mx>0)log(`MASSIVE DAMAGE (${n} dealt, ${n-curHp} over on empty HP ≥ ${mx} max) — instant death.`);
+ }
  const conc=el('concSpell').value;
  if(n>0&&conc){
   const dc=Math.max(10,Math.floor(n/2));
