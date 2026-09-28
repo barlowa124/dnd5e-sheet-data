@@ -879,16 +879,24 @@ function castSpell(name,ev){
  if(!castUnlocked(owner)){log(`${name}: ${effName(owner)} hasn't unlocked spellcasting.`);return;}
  if(sp.rit&&confirm('Cast '+name+' as ritual (10 extra min, no slot)?')){log(`Ritual cast ${name} — ${sp.desc||''}`);saveState();return;}
  let useLvl=sp.l;
- if(ev&&ev.shiftKey){const x=Number(prompt('Upcast at what slot level? (min '+sp.l+')',sp.l))||sp.l;if(x>sp.l)useLvl=x;}
- if(!spendSlot(useLvl)&&!spendPact(useLvl)){log(`${name}: no level-${useLvl}+ slots left.`);return;}
+ if(sp.l>0&&ev&&ev.shiftKey){const x=Number(prompt('Upcast at what slot level? (min '+sp.l+')',sp.l))||sp.l;if(x>sp.l)useLvl=x;}
+ if(sp.l>0&&!spendSlot(useLvl)&&!spendPact(useLvl)){log(`${name}: no level-${useLvl}+ slots left.`);return;}
  if(sp.conc){const prev=el('concSpell').value;
   if(prev&&prev!==name)log(`Dropped ${prev} — concentration moved to ${name}.`);
   el('concSpell').value=name;
   const dm=/up to (\d+)\s*(minute|hour|round)/i.exec(sp.d||'');
   el('concRounds').value=dm?(dm[2][0]==='r'?+dm[1]:dm[2][0]==='m'?+dm[1]*10:+dm[1]*600):'';}
- log(`Cast ${name} (slot ${useLvl}${useLvl>sp.l?' — upcast':''}, via ${effName(owner)})${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
+ const viaTxt=sp.l>0?` (slot ${useLvl}${useLvl>sp.l?' — upcast':''}, via ${effName(owner)})`:` via ${effName(owner)}`;
+ log(`Cast ${name}${viaTxt}${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
  if(REMIND[name])log(REMIND[name]);
- if(sp.atk)roll(name+' attack',prof()+mod(spellStatFor(sp)),'attack');
+ const st=mod(spellStatFor(sp));
+ let crit=false;
+ if(sp.at){const res=roll(name+' attack',prof()+st,'attack');crit=!!(res&&res.crit);}
+ if(sp.dc)log(`${name}: DC ${8+prof()+st} ${sp.dc.a||''} save${sp.dc.h==='half'?' — half damage on success':''}.`);
+ spellDice(sp,useLvl).forEach(d=>{
+  const rr=rollSpellDice(d.ex,st,crit&&d.t!=='healing');
+  if(rr)log(`${name} ${d.t==='healing'?'heals':'dmg'}: [${rr.rs.join(',')}]${rr.mod?` ${fmt(rr.mod)}`:''} = ${rr.flat+rr.mod}${d.t&&d.t!=='healing'?' '+d.t:''}${crit&&d.t!=='healing'?' — crit dice':''}`);
+ });
  if(sp.dx){const[sides,mo]=sp.dx;const n=typeof mo==='string'?mod(mo):0;
   const cnt=(typeof mo==='number'&&mo>0?mo:1)+(useLvl-sp.l);
   let t=0,rs=[];for(let i=0;i<cnt;i++){const r=Math.ceil(Math.random()*sides);rs.push(r);t+=r;}
@@ -896,6 +904,32 @@ function castSpell(name,ev){
  saveState();
 }
 function toggleKnown(name){knownSpells[name]=!knownSpells[name];renderSpells();renderActions();saveState();}
+function spellDice(sp,useLvl){
+ const out=[];
+ (sp.dmg||[]).forEach(d=>{
+  let ex=null;
+  if(d.sl){const k=Math.min(9,useLvl);ex=d.sl[k]||d.sl[sp.l]||d.sl[Math.max(...Object.keys(d.sl).map(Number))];}
+  else if(d.cl){const ks=Object.keys(d.cl).map(Number).sort((a,b)=>a-b);
+   const k=ks.filter(x=>x<=lvl()).pop();ex=k!=null?d.cl[k]:d.cl[ks[0]];}
+  if(ex)out.push({ex,t:(d.t||'').toLowerCase()});
+ });
+ if(sp.heal){const k=Math.min(9,useLvl);const ex=sp.heal[k]||sp.heal[sp.l];
+  if(ex)out.push({ex,t:'healing'});}
+ return out;
+}
+function rollSpellDice(ex,statMod,crit){
+ const m=/(\d+)d(\d+)/.exec(ex);if(!m)return null;
+ const n=+m[1]*(crit?2:1),s=+m[2],mo=/MOD/i.test(ex)?statMod:0;
+ let flat=0,rs=[];for(let i=0;i<n;i++){const r=Math.ceil(Math.random()*s);rs.push(r);flat+=r;}
+ return{rs,flat,mod:mo};
+}
+function spellTagDice(s){
+ const ds=spellDice(s,s.l);
+ if(!ds.length)return'';
+ const d=ds[0],m=/\d+d\d+/.exec(d.ex);
+ if(!m)return'';
+ return`<span class="tag-conc" title="auto-rolled on cast${ds.length>1?' (+'+(ds.length-1)+' more)':''}">${m[0]}${d.t==='healing'?'+':d.t?' '+d.t.slice(0,3):''}</span>`;
+}
 function spellHit(name){const sp=ALLSPELLS.find(s=>s.n===name);if(!sp)return;
  roll(name+' hit',prof()+mod(spellStatFor(sp)),'attack');}
 function renderSpells(){
@@ -908,7 +942,7 @@ function renderSpells(){
    <td><button onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
    ${prepMode()?`<td><button title="prepared for today" onclick="event.stopPropagation();togglePrep('${s.n}')">${prepSpells[s.n]?'◉':'◯'}</button></td>`:''}
    <td>${s.n}${s.xge||s.src?` <span class="tag-rit">(${s.src||'XGE'})</span>`:''}</td><td>${s.l}</td>
-   <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}</td>
+   <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}${s.dc?`<span class="tag-rit" title="${s.dc.a} save${s.dc.h==='half'?', half damage on success':''}">DC ${8+prof()+mod(spellStatFor(s))} ${s.dc.a||''}</span>`:''}${spellTagDice(s)}</td>
    <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button>${s.at?` <button title="${s.at} spell attack" onclick="event.stopPropagation();spellHit('${s.n}')">⚔</button>`:''}</td></tr>`).join('');
  const np=Object.values(prepSpells).filter(Boolean).length;
  const km=knownMax();
@@ -2480,7 +2514,10 @@ async function loadRemote(){
   MONSTERS=mo.filter(m=>m.type==='beast'&&m.challenge_rating<=0.25&&['Tiny','Small','Medium'].includes(m.size));
   el('compPick').innerHTML='<option value="">Acosta (Constrictor Snake)</option>'+MONSTERS.map(m=>`<option value="${m.index}">${m.name} (CR ${m.challenge_rating})</option>`).join('');
   const CL2A={'Bard':'Brd','Cleric':'Clr','Druid':'Drd','Paladin':'Pal','Ranger':'Ran','Sorcerer':'Sor','Warlock':'War','Wizard':'Wiz'};
-  const srd=sp.map(s=>({n:s.name,l:s.level,t:s.casting_time,r:s.range,c:(s.components||[]).join(','),d:s.duration,s:s.school&&s.school.name,rit:s.ritual,conc:s.concentration,at:s.attack_type||'',src:'SRD',cls:(s.classes||[]).map(c=>CL2A[c.name]).filter(Boolean).join('/'),desc:(s.desc||[]).join(' ')}));
+  const srd=sp.map(s=>({n:s.name,l:s.level,t:s.casting_time,r:s.range,c:(s.components||[]).join(','),d:s.duration,s:s.school&&s.school.name,rit:s.ritual,conc:s.concentration,at:s.attack_type||'',src:'SRD',cls:(s.classes||[]).map(c=>CL2A[c.name]).filter(Boolean).join('/'),desc:(s.desc||[]).join(' '),
+   dmg:(s.damage||[]).map(x=>({t:x.damage_type&&x.damage_type.name,sl:x.damage_at_slot_level,cl:x.damage_at_character_level})).filter(x=>x.sl||x.cl),
+   heal:s.heal_at_slot_level||null,
+   dc:s.dc?{a:s.dc.dc_type&&s.dc.dc_type.name,h:s.dc.dc_success}:null}));
   const custom=rng.map(e=>{e.ranger=1;e.cls=e.cls||'Ran';return e;}).concat(extra);
   ALLSPELLS=custom.concat(srd.filter(s=>!custom.find(e=>e.n===s.name)));
   const extra2=`<span class="tag" onclick="this.classList.toggle('on');saveState()">Poisoned</span>`;
