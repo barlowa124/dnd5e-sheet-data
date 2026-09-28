@@ -442,7 +442,7 @@
     <table id="features"></table>
     <h2>Proficiencies / Languages</h2>
     <div id="profTags" class="sub"></div>
-    <input class="txt-in" id="profExtra" placeholder="extra proficiencies — tools, languages…">
+    <input class="txt-in" id="profExtra" placeholder="extra proficiencies — tools, languages, weapons…" oninput="recalc()">
   </div>
 </div>
 
@@ -793,6 +793,9 @@ function prepAllowance(){let t=0;mclasses.forEach(m=>{
   t+=Math.max(1,half+mod(PREP_CASTER[m.c]));}});
  return t;}
 function togglePrep(n){prepSpells[n]=!prepSpells[n];renderSpells();saveState();}
+// leveled spells-known per class level (0-indexed)
+const SPELLS_KNOWN={Bard:[4,5,6,7,8,9,10,11,12,14,15,15,16,18,19,19,20,22,22,22],Sorcerer:[2,3,4,5,6,7,8,9,10,11,12,12,13,13,14,14,15,15,15,15],Warlock:[2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,15,15],Ranger:[0,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,11]};
+function knownMax(){let t=0;mclasses.forEach(m=>{const k=SPELLS_KNOWN[m.c];if(k)t+=k[Math.min(19,Math.max(0,m.l-1))];});return t;}
 let inv=[["Leather armor",1,10],["Scimitar",2,3],["Longbow",1,2],["Arrows",20,0.05],["Backpack",1,5],["Crowbar",1,5],["Hammer",1,3],["Piton",10,0.25],["Torch",10,1],["Tinderbox",1,1],["Rations",10,2],["Waterskin",1,5],["Hempen rope 50 ft",1,10],["Pungi (snake flute)",1,1],["Thieves' tools",1,1],["Playing card set",1,0],["Manacles ('for the snakes')",1,6]];
 let curChar='Efferey Jepstein';
 let SRD_SPELLS=[], EQUIPMENT=[], MONSTERS=[], ALLSPELLS=[];
@@ -856,7 +859,8 @@ function roll(name,bonus,kind){
  dstat.n++;dstat.sum+=r;if(r===20)dstat.c20++;if(r===1)dstat.c1++;updateDiceStats();
  const crit=r>=critRange()&&/(hit|attack)/i.test(name);
  log(`${name}${tag}${auto?' ⚠'+auto:''}: [${txt}] ${fmt(bonus)} = ${r+bonus}${crit?' — CRIT!':r===20&&eff>=0?' — NAT 20':''}${r===1&&eff<=0?' — NAT 1':''}`);
- if(usedInsp){inspOn=false;renderInsp();log('Inspiration spent.');}}
+ if(usedInsp){inspOn=false;renderInsp();log('Inspiration spent.');}
+ return{r,crit,fumble:r===1};}
 function rollAtk(name,bonus){roll(name,bonus,'attack');}
 function rollDie(name,sides,bonus){const r=Math.ceil(Math.random()*sides);log(`${name}: [${r}] ${fmt(bonus)} = ${r+bonus}`);}
 function cycleAdv(){advMode=(advMode+2)%3-1;const b=el('advBtn');
@@ -877,7 +881,9 @@ function castSpell(name,ev){
  let useLvl=sp.l;
  if(ev&&ev.shiftKey){const x=Number(prompt('Upcast at what slot level? (min '+sp.l+')',sp.l))||sp.l;if(x>sp.l)useLvl=x;}
  if(!spendSlot(useLvl)&&!spendPact(useLvl)){log(`${name}: no level-${useLvl}+ slots left.`);return;}
- if(sp.conc){el('concSpell').value=name;
+ if(sp.conc){const prev=el('concSpell').value;
+  if(prev&&prev!==name)log(`Dropped ${prev} — concentration moved to ${name}.`);
+  el('concSpell').value=name;
   const dm=/up to (\d+)\s*(minute|hour|round)/i.exec(sp.d||'');
   el('concRounds').value=dm?(dm[2][0]==='r'?+dm[1]:dm[2][0]==='m'?+dm[1]*10:+dm[1]*600):'';}
  log(`Cast ${name} (slot ${useLvl}${useLvl>sp.l?' — upcast':''}, via ${effName(owner)})${sp.conc?' — CONCENTRATING':''} — ${sp.desc||''}`);
@@ -905,7 +911,10 @@ function renderSpells(){
    <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}</td>
    <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button>${s.at?` <button title="${s.at} spell attack" onclick="event.stopPropagation();spellHit('${s.n}')">⚔</button>`:''}</td></tr>`).join('');
  const np=Object.values(prepSpells).filter(Boolean).length;
- el('spellCount').textContent=list.length+' entries'+(prepMode()?` · prepared ${np}/${prepAllowance()}`:'');
+ const km=knownMax();
+ const nk=Object.keys(knownSpells).filter(k=>knownSpells[k]&&(ALLSPELLS.find(x=>x.n===k)||{l:1}).l>0).length;
+ el('spellCount').innerHTML=list.length+' entries'+(prepMode()?` · prepared ${np}/${prepAllowance()}`
+  :km?` · known ${nk>km?`<span style="color:var(--warn)" title="over the spells-known limit">${nk}</span>`:nk}/${km}`:'');
 }
 
 // ================= INVENTORY =================
@@ -1124,11 +1133,12 @@ function recalc(){
   const pm=/\+(\d)/.exec(it[0]),plus=pm?+pm[1]:0;
   const ranged=eq.weapon_range==='Ranged',fin=props.includes('Finesse');
   const st=fin?Math.max(mod('dex'),mod('str')):ranged?mod('dex'):mod('str');
-  const hit=p+st+plus+(style==='archery'&&ranged?2:0);
+  const wp=wpnProf(eq);
+  const hit=(wp?p:0)+st+plus+(style==='archery'&&ranged?2:0);
   const dd=parseDice(eq.damage.damage_dice);
   const dv=st+plus+(duel&&!ranged&&!props.includes('Two-Handed')?duel:0);
-  const tip=equipTip(eq,false);
-  rows.push([it[0],hit,`${dd.n}d${dd.s}+${dv}`,dv,tip]);
+  const tip=(wp?'':'NOT PROFICIENT — no prof bonus. ')+equipTip(eq,false);
+  rows.push([it[0]+(wp?'':' ⚠'),hit,`${dd.n}d${dd.s}+${dv}`,dv,tip]);
   if(props.includes('Light')&&fin&&it[1]>=2&&twf)
    rows.push([it[0]+' (off-hand)',hit,`${dd.n}d${dd.s}+${plus+st}`,plus+st,tip]);
  });
@@ -1173,13 +1183,24 @@ function attackRow(btn){
  const tr=btn.closest('tr'),name=tr.children[0].textContent;
  const n=atkTimes();
  for(let a=0;a<n;a++){
-  roll(name+' hit'+(n>1?' #'+(a+1):''),Number(btn.dataset.h),'attack');
+  const res=roll(name+' hit'+(n>1?' #'+(a+1):''),Number(btn.dataset.h),'attack');
   const dm=/(\d+)d(\d+)\s*\+?\s*(-?\d+)?/.exec(tr.children[2].textContent)||[];
-  const nd=+dm[1]||1,s=+dm[2]||6,b=+(dm[3]||0);
+  const nd=(+dm[1]||1)*(res&&res.crit?2:1),s=+dm[2]||6,b=+(dm[3]||0);
   let t=0,rs=[];for(let i=0;i<nd;i++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
-  log(`${name} dmg${n>1?' #'+(a+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}`);
+  log(`${name} dmg${n>1?' #'+(a+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}${res&&res.crit?' — crit dice doubled':''}`);
   burnAmmo(name);
  }
+}
+function wpnProf(eq){
+ const cat=(eq.weapon_category||'').toLowerCase(),n=eq.name.toLowerCase();
+ const pools=[...mclasses.map(m=>CLASS_PROF[m.c]||''),(el('profExtra')?el('profExtra').value:'')];
+ for(const raw of pools){
+  const pr=raw.toLowerCase().replace(/xbow/g,'crossbow').replace(/qstaff/g,'quarterstaff');
+  if(/\bmartial\b/.test(pr)){if(cat.startsWith('martial')||pr.includes('simple'))return true;}
+  if(/\bsimple\b/.test(pr)&&cat.startsWith('simple'))return true;
+  if(pr.split(/[·,;]/).some(ph=>{ph=ph.trim();return ph.length>3&&n.includes(ph);}))return true;
+ }
+ return false;
 }
 // ammunition linkage: weapon name → ammo keyword matched inside inventory names
 const AMMO_LINK={longbow:'arrow',shortbow:'arrow','light crossbow':'bolt','heavy crossbow':'bolt','hand crossbow':'bolt',sling:'bullet',blowgun:'needle',pistol:'bullet',musket:'bullet',revolver:'bullet'};
@@ -1210,11 +1231,11 @@ function atkGo(i){
  const h=a.h===''?Math.max(prof()+mod('dex'),prof()+mod('str')):Number(a.h);
  const n=atkTimes();
  for(let j=0;j<n;j++){
-  roll(a.n+' hit'+(n>1?' #'+(j+1):''),h,'attack');
+  const res=roll(a.n+' hit'+(n>1?' #'+(j+1):''),h,'attack');
   const m=/(\d+)d(\d+)\s*([+-]\s*\d+)?/.exec(a.d);
-  if(m){const nd=+m[1],s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let t=0,rs=[];
+  if(m){const nd=(+m[1])*(res&&res.crit?2:1),s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let t=0,rs=[];
    for(let k=0;k<nd;k++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
-   log(`${a.n} dmg${n>1?' #'+(j+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}`);}
+   log(`${a.n} dmg${n>1?' #'+(j+1):''}: [${rs.join(',')}] ${fmt(b)} = ${t+b}${res&&res.crit?' — crit dice doubled':''}`);}
   burnAmmo(a.n);
  }
  saveState();
