@@ -379,7 +379,7 @@
     <div class="sub" style="margin-top:3px">keys: 1-9 attack rows · d d20 · v advantage · a/b/r action·bonus·reaction · n next turn · x take damage · h heal · i roll initiative</div>
     <h2>Encounter Tracker</h2>
     <div id="initList"></div>
-    <div><input class="txt-in" id="initName" style="width:90px;display:inline" placeholder="name"> <input class="num-in" id="initVal" type="number" style="width:44px" placeholder="init"> <input class="num-in" id="initHP" type="number" style="width:44px" placeholder="hp"> <button onclick="addInit()">Add</button> <button onclick="rollInitFor()">Roll me</button> <button onclick="nextInit()">Next ▶</button> <button onclick="initOrder=[];initIdx=0;renderInit();saveState()">Clear</button></div>
+    <div><input class="txt-in" id="initName" style="width:90px;display:inline" placeholder="name"> <input class="num-in" id="initVal" type="number" style="width:44px" placeholder="init"> <input class="num-in" id="initHP" type="number" style="width:44px" placeholder="hp"> <button onclick="addInit()">Add</button> <button onclick="addPetInit()" title="roll the companion into initiative">+ Pet</button> <button onclick="rollInitFor()">Roll me</button> <button onclick="nextInit()">Next ▶</button> <button onclick="initOrder=[];initIdx=0;renderInit();saveState()">Clear</button></div>
     <div class="sub" style="margin-top:2px">Per combatant: ⚔ rolls their attack vs your AC — on a hit it auto-applies damage (resist/vuln/concentration included). HP turns red at 0.</div>
     <h2>Attunement (3)</h2>
     <input class="txt-in" id="att1" placeholder="Attuned item 1"><input class="txt-in" id="att2" style="margin-top:4px" placeholder="Attuned item 2"><input class="txt-in" id="att3" style="margin-top:4px" placeholder="Attuned item 3">
@@ -784,7 +784,15 @@ function renderInsp(){const e=el('inspTag');if(e)e.classList.toggle('on',inspOn)
 let mclasses=[{c:'Ranger',l:1,v:''}]; // multiclass rows; [0] = primary
 let hdSpent={};   // className -> dice spent
 let feats=[];     // feat names
-let knownSpells={};
+let knownSpells={}, prepSpells={};
+// classes that prepare a daily subset instead of knowing a fixed list
+const PREP_CASTER={Cleric:'wis',Druid:'wis',Paladin:'cha',Wizard:'int',Artificer:'int'};
+function prepMode(){return mclasses.some(m=>PREP_CASTER[m.c]);}
+function prepAllowance(){let t=0;mclasses.forEach(m=>{
+ if(PREP_CASTER[m.c]){const half=(m.c==='Paladin'||m.c==='Artificer')?Math.floor(m.l/2):m.l;
+  t+=Math.max(1,half+mod(PREP_CASTER[m.c]));}});
+ return t;}
+function togglePrep(n){prepSpells[n]=!prepSpells[n];renderSpells();saveState();}
 let inv=[["Leather armor",1,10],["Scimitar",2,3],["Longbow",1,2],["Arrows",20,0.05],["Backpack",1,5],["Crowbar",1,5],["Hammer",1,3],["Piton",10,0.25],["Torch",10,1],["Tinderbox",1,1],["Rations",10,2],["Waterskin",1,5],["Hempen rope 50 ft",1,10],["Pungi (snake flute)",1,1],["Thieves' tools",1,1],["Playing card set",1,0],["Manacles ('for the snakes')",1,6]];
 let curChar='Efferey Jepstein';
 let SRD_SPELLS=[], EQUIPMENT=[], MONSTERS=[], ALLSPELLS=[];
@@ -882,18 +890,22 @@ function castSpell(name,ev){
  saveState();
 }
 function toggleKnown(name){knownSpells[name]=!knownSpells[name];renderSpells();renderActions();saveState();}
+function spellHit(name){const sp=ALLSPELLS.find(s=>s.n===name);if(!sp)return;
+ roll(name+' hit',prof()+mod(spellStatFor(sp)),'attack');}
 function renderSpells(){
  const f=el('spellFilter').value;
  const casting=mclasses.some(castUnlocked);
  const myA=mclasses.map(m=>ABBREV[m.c]).filter(Boolean);
  const list=ALLSPELLS.filter(s=>f==='cls'?(s.cls==='*'||(s.cls||'').split('/').some(a=>myA.includes(a))||(s.ranger&&myA.includes('Ran'))):f==='all'?true:f==='known'?knownSpells[s.n]:s.l===Number(f));
- el('spellTable').innerHTML=`<tr><th></th><th>Spell</th><th>Lvl</th><th></th><th></th></tr>`+list.map(s=>`
+ el('spellTable').innerHTML=`<tr><th></th>${prepMode()?'<th title="prepared">◐</th>':''}<th>Spell</th><th>Lvl</th><th></th><th></th></tr>`+list.map(s=>`
   <tr class="spellRow" title="${esc((s.desc||'').slice(0,300))}" onclick="el('spellInfo').innerHTML='<b>${s.n}</b> — ${s.s||''}, lvl ${s.l}. ${s.t||''} · ${s.r||''} · ${s.c||''} · ${s.d||''}. ${s.src?'['+s.src+']':''}<br>${s.desc||''}'">
    <td><button onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
+   ${prepMode()?`<td><button title="prepared for today" onclick="event.stopPropagation();togglePrep('${s.n}')">${prepSpells[s.n]?'◉':'◯'}</button></td>`:''}
    <td>${s.n}${s.xge||s.src?` <span class="tag-rit">(${s.src||'XGE'})</span>`:''}</td><td>${s.l}</td>
    <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}</td>
-   <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button></td></tr>`).join('');
- el('spellCount').textContent=list.length+' entries';
+   <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button>${s.at?` <button title="${s.at} spell attack" onclick="event.stopPropagation();spellHit('${s.n}')">⚔</button>`:''}</td></tr>`).join('');
+ const np=Object.values(prepSpells).filter(Boolean).length;
+ el('spellCount').textContent=list.length+' entries'+(prepMode()?` · prepared ${np}/${prepAllowance()}`:'');
 }
 
 // ================= INVENTORY =================
@@ -1253,17 +1265,30 @@ function renderInit(){
    ${i===initIdx?'▶ ':''}<b style="${dead?'color:#c00;text-decoration:line-through':''}">${e.n}</b> <span class="sub">${e.v}</span>
    · HP <input class="num-in" style="width:42px" value="${e.hp??''}" onchange="initOrder[${i}].hp=this.value;renderInit();saveState()">/<input class="num-in" style="width:42px" value="${e.mhp??''}" placeholder="max" onchange="initOrder[${i}].mhp=this.value;saveState()">
    · +<input class="num-in" style="width:32px" value="${e.atk??''}" placeholder="atk" title="their attack bonus" onchange="initOrder[${i}].atk=this.value;saveState()">
-   <input class="txt-in" style="width:66px;display:inline" value="${e.dmg||''}" placeholder="2d6+3 fire" title="their damage expr — a trailing damage type feeds your resist/vuln/immune" onchange="initOrder[${i}].dmg=this.value;saveState()">
+   <input class="txt-in" style="width:66px;display:inline" value="${e.dmg||''}" placeholder="2d6+3 fire" title="damage expr — leading '2x' = multiattack swings; trailing damage type feeds your resist/vuln/immune" onchange="initOrder[${i}].dmg=this.value;saveState()">
    <button onclick="enemyAtk(${i})" title="they attack you">⚔</button>
    <button onclick="hurtEnemy(${i})" title="deal damage to them">−hp</button>
    <select style="width:70px" onchange="if(this.value){(initOrder[${i}].c=initOrder[${i}].c||[]).push(this.value);renderInit();saveState();}this.value=''"><option value="">+cond</option>${CONDS.filter(c=>!c.includes('(')).map(c=>`<option>${c}</option>`).join('')}</select>
    <a href="#" onclick="initOrder.splice(${i},1);renderInit();saveState();return false" style="color:#c00">×</a>${conds}</div>`;
  }).join('')||'<span class="sub">Empty. Add combatants above.</span>';
 }
-function addInit(){const n=el('initName').value.trim(),v=Number(el('initVal').value)||0,hp=el('initHP').value;
- if(!n)return;
- initOrder.push({n,v,hp:hp===''?'':hp,mhp:hp===''?'':hp});initOrder.sort((a,b)=>b.v-a.v);initIdx=0;
+function addInit(){const raw=el('initName').value.trim(),v=Number(el('initVal').value)||0,hp=el('initHP').value;
+ const mm=/^(.*?)\s*x(\d+)$/i.exec(raw);
+ const base=mm?mm[1].trim():raw,cnt=mm?Math.min(12,+mm[2]):1;
+ if(!base)return;
+ for(let k=0;k<cnt;k++){
+  const iv=v||Math.ceil(Math.random()*20); // typed init applies to all; blank rolls each
+  initOrder.push({n:cnt>1?base+' '+(k+1):base,v:iv,hp:hp===''?'':hp,mhp:hp===''?'':hp});
+ }
+ initOrder.sort((a,b)=>b.v-a.v);initIdx=0;
  el('initName').value='';el('initVal').value='';el('initHP').value='';renderInit();saveState();}
+function addPetInit(){
+ const sel=el('compPick');const m=sel&&sel.value?MONSTERS.find(x=>x.index===sel.value):null;
+ const nm=m?m.name:(sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text.split(' (')[0]:'Companion');
+ const dexM=m?Math.floor(((m.dexterity||10)-10)/2):2;
+ const{r}=d20(0),v=r+dexM;
+ initOrder.push({n:nm,v});initOrder.sort((a,b)=>b.v-a.v);renderInit();
+ log(`${nm} initiative: [${r}] ${fmt(dexM)} = ${v}`);saveState();}
 const CANT_ACT=['Incapacitated','Paralyzed','Stunned','Unconscious','Petrified'];
 const ATK_DIS=['Poisoned','Prone','Restrained','Frightened','Blinded'];
 const EXH_DIS=['Exhaustion 3','Exhaustion 4','Exhaustion 5'];
@@ -1275,23 +1300,17 @@ function enemyAtk(i){const e=initOrder[i];if(!e)return;
  const dc=cs.find(c=>ATK_DIS.includes(c)||EXH_DIS.some(x=>c.startsWith(x)));
  if(dc){mode=-1;why=dc;}
  if(cs.includes('Invisible')){if(mode===-1)mode=0;else{mode=1;why='invisible';}}
- const wtag=why?' ('+why.toLowerCase()+')':'';
- // multiattack: a leading "Nx" in the damage field = that many attack rolls
- const ma=/^(\d+)\s*[x×]\s*/.exec(e.dmg||'');const swings=ma?+ma[1]:1;
  const bon=Number(e.atk)||0,ac=Number(el('ac').value)||10;
- for(let sw=0;sw<swings;sw++){
-  const{r,txt}=d20(mode);
-  const crit=r===20,miss1=r===1;
-  const lbl=swings>1?' #'+(sw+1):'';
-  if(!crit&&(miss1||r+bon<ac)){log(`${e.n} attacks you${wtag}${lbl}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — ${miss1?'nat 1, ':''}MISS.`);continue;}
-  let total=0,dtype='';
-  if(e.dmg){const dm=/(\d+)d(\d+)\s*([+-]?\s*\d+)?\s*([a-z]*)/i.exec(e.dmg.replace(ma?ma[0]:'',''));
-   if(dm){let n=+dm[1]||1;const s=+dm[2]||6,b=dm[3]?+dm[3].replace(/\s/g,''):0;dtype=(dm[4]||'').toLowerCase();
-    if(crit)n*=2;let rs=[],t=0;for(let k=0;k<n;k++){const rr=Math.ceil(Math.random()*s);rs.push(rr);t+=rr;}
-    total=t+b;log(`${e.n} hits${wtag}${lbl}${crit?' — CRIT, dice doubled':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — dmg [${rs.join(',')}] ${fmt(b)} = ${total} ${dtype}.`);}}
-  else log(`${e.n} hits${wtag}${lbl}${crit?' — CRIT':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac}.`);
-  if(total>0)applyDamage(total,dtype);
- }
+ const{r,txt}=d20(mode);
+ const crit=r===20,miss1=r===1;
+ if(!crit&&(miss1||r+bon<ac)){log(`${e.n} attacks you: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — ${miss1?'nat 1, ':''}MISS.`);return;}
+ let total=0,dtype='';
+ if(e.dmg){const dm=/(\d+)d(\d+)\s*([+-]?\s*\d+)?\s*([a-z]*)/i.exec(e.dmg);
+  if(dm){let n=+dm[1]||1;const s=+dm[2]||6,b=dm[3]?+dm[3].replace(/\s/g,''):0;dtype=(dm[4]||'').toLowerCase();
+   if(crit)n*=2;let rs=[],t=0;for(let k=0;k<n;k++){const rr=Math.ceil(Math.random()*s);rs.push(rr);t+=rr;}
+   total=t+b;log(`${e.n} hits${crit?' — CRIT, dice doubled':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — dmg [${rs.join(',')}] ${fmt(b)} = ${total} ${dtype}.`);}}
+ else log(`${e.n} hits${crit?' — CRIT':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac}.`);
+ if(total>0)applyDamage(total,dtype);
  saveState();}
 function hurtEnemy(i){const e=initOrder[i];if(!e)return;
  const n=Number(prompt('Damage to '+e.n+'?','0'))||0;if(!n)return;
@@ -1992,7 +2011,7 @@ function collectState(){
  s._cond=[...document.querySelectorAll('#conds .tag.on')].map(t=>t.textContent);
  s._ds=[...document.querySelectorAll('.ds-pip')].map(p=>p.classList.contains('on'));
  s._spent={};document.querySelectorAll('.slot-pip.spent').forEach(p=>{const i=p.dataset.pslot!==undefined?'p'+p.dataset.pslot:p.dataset.slot;s._spent[i]=(s._spent[i]||0)+1;});
- s._inv=inv;s._known=knownSpells;s._res=resources;s._atk=customAtk;
+ s._inv=inv;s._known=knownSpells;s._prep=prepSpells;s._res=resources;s._atk=customAtk;
  s._mclasses=mclasses;s._hd=hdSpent;s._feats=feats;s._init={o:initOrder,i:initIdx};s._mob=mobBook;
  s._macros=macros;s._sup=supplies;s._hb=hb;s._dstat=dstat;s._snaps=snaps;s._turn={u:turnUse,r:roundN};s._ws=wsSel;s._plan=buildPlan;
  s._drain={s:statDrain,h:hpDrain};s._boons=epicBoons;
@@ -2023,7 +2042,7 @@ function applyState(s){
  if(s._bg)el('bgLabel').textContent=s._bg;
  if(s._align)el('alignLabel').textContent=s._align;
  if(s._bio)el('bio').textContent=s._bio;
- inv=s._inv||inv;knownSpells=s._known||{};
+ inv=s._inv||inv;knownSpells=s._known||{};prepSpells=s._prep||{};
  resources=s._res||resources;customAtk=s._atk||customAtk;
  macros=s._macros||[];supplies=s._sup||[];hb=s._hb||hb;dstat=s._dstat||dstat;snaps=s._snaps||{};
  if(s._turn){turnUse=s._turn.u||{a:0,b:0,r:0};roundN=s._turn.r||0;}
@@ -2436,7 +2455,7 @@ async function loadRemote(){
   MONSTERS=mo.filter(m=>m.type==='beast'&&m.challenge_rating<=0.25&&['Tiny','Small','Medium'].includes(m.size));
   el('compPick').innerHTML='<option value="">Acosta (Constrictor Snake)</option>'+MONSTERS.map(m=>`<option value="${m.index}">${m.name} (CR ${m.challenge_rating})</option>`).join('');
   const CL2A={'Bard':'Brd','Cleric':'Clr','Druid':'Drd','Paladin':'Pal','Ranger':'Ran','Sorcerer':'Sor','Warlock':'War','Wizard':'Wiz'};
-  const srd=sp.map(s=>({n:s.name,l:s.level,t:s.casting_time,r:s.range,c:(s.components||[]).join(','),d:s.duration,s:s.school&&s.school.name,rit:s.ritual,conc:s.concentration,src:'SRD',cls:(s.classes||[]).map(c=>CL2A[c.name]).filter(Boolean).join('/'),desc:(s.desc||[]).join(' ')}));
+  const srd=sp.map(s=>({n:s.name,l:s.level,t:s.casting_time,r:s.range,c:(s.components||[]).join(','),d:s.duration,s:s.school&&s.school.name,rit:s.ritual,conc:s.concentration,at:s.attack_type||'',src:'SRD',cls:(s.classes||[]).map(c=>CL2A[c.name]).filter(Boolean).join('/'),desc:(s.desc||[]).join(' ')}));
   const custom=rng.map(e=>{e.ranger=1;e.cls=e.cls||'Ran';return e;}).concat(extra);
   ALLSPELLS=custom.concat(srd.filter(s=>!custom.find(e=>e.n===s.name)));
   const extra2=`<span class="tag" onclick="this.classList.toggle('on');saveState()">Poisoned</span>`;
