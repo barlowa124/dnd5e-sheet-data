@@ -1184,6 +1184,7 @@ function attackRow(btn){
  const n=atkTimes();
  for(let a=0;a<n;a++){
   const res=roll(name+' hit'+(n>1?' #'+(a+1):''),Number(btn.dataset.h),'attack');
+  if(res&&res.fumble){burnAmmo(name);continue;}
   const dm=/(\d+)d(\d+)\s*\+?\s*(-?\d+)?/.exec(tr.children[2].textContent)||[];
   const nd=(+dm[1]||1)*(res&&res.crit?2:1),s=+dm[2]||6,b=+(dm[3]||0);
   let t=0,rs=[];for(let i=0;i<nd;i++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
@@ -1192,13 +1193,15 @@ function attackRow(btn){
  }
 }
 function wpnProf(eq){
- const cat=(eq.weapon_category||'').toLowerCase(),n=eq.name.toLowerCase();
+ const cat=(eq.weapon_category||'').toLowerCase();
+ let n=eq.name.toLowerCase();
+ const cm=n.indexOf(',');if(cm>0)n=(n.slice(cm+1).trim()+' '+n.slice(0,cm)).trim(); // "crossbow, hand" -> "hand crossbow"
  const pools=[...mclasses.map(m=>CLASS_PROF[m.c]||''),(el('profExtra')?el('profExtra').value:'')];
  for(const raw of pools){
   const pr=raw.toLowerCase().replace(/xbow/g,'crossbow').replace(/qstaff/g,'quarterstaff');
   if(/\bmartial\b/.test(pr)){if(cat.startsWith('martial')||pr.includes('simple'))return true;}
   if(/\bsimple\b/.test(pr)&&cat.startsWith('simple'))return true;
-  if(pr.split(/[·,;]/).some(ph=>{ph=ph.trim();return ph.length>3&&n.includes(ph);}))return true;
+  if(pr.split(/[·,;]/).some(ph=>{ph=ph.trim();return ph.length>3&&new RegExp('\\b'+ph.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b').test(n);}))return true;
  }
  return false;
 }
@@ -1232,6 +1235,7 @@ function atkGo(i){
  const n=atkTimes();
  for(let j=0;j<n;j++){
   const res=roll(a.n+' hit'+(n>1?' #'+(j+1):''),h,'attack');
+  if(res&&res.fumble){burnAmmo(a.n);continue;}
   const m=/(\d+)d(\d+)\s*([+-]\s*\d+)?/.exec(a.d);
   if(m){const nd=(+m[1])*(res&&res.crit?2:1),s=+m[2],b=m[3]?+m[3].replace(/\s/g,''):0;let t=0,rs=[];
    for(let k=0;k<nd;k++){const r=Math.ceil(Math.random()*s);rs.push(r);t+=r;}
