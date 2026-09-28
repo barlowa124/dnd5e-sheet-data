@@ -124,6 +124,7 @@
   <button onclick="exportChar()">Export</button>
   <button onclick="el('impFile').click()">Import</button>
   <button onclick="snapshot()">Snapshot</button>
+  <button onclick="el('portraitFile').click()" title="upload a 96px portrait">Portrait</button>
   <button onclick="restoreSnap()">Restore</button>
   <button onclick="exportDiscord()">Discord</button>
   <button onclick="el('raceGallery').style.display=el('raceGallery').style.display==='none'?'block':'none'">🧬 Races</button>
@@ -160,6 +161,8 @@
   <button onclick="levelUp()">Level Up</button>
   <div id="classRows" style="margin-top:4px"></div>
 </div>
+<img id="portrait" style="width:72px;height:72px;object-fit:cover;border:1px solid var(--gold);border-radius:6px;display:none;float:left;margin:0 10px 6px 0;cursor:pointer" title="click to change portrait" onclick="el('portraitFile').click()">
+<input type="file" id="portraitFile" accept="image/*" style="display:none" onchange="portraitUp(this)">
 <div class="sub" id="bio">Disgraced financier, isekai'd into the Nine Hells. Now pursuing his long-suppressed dream of desert snake-charming — and tracking down his accomplice and wife, Mhislane Gaxwell, who was also damned.</div>
 
 <div class="grid cols-6">
@@ -764,6 +767,13 @@ function log(m){const d=document.createElement('div');
  const c=document.createElement('span');c.textContent=m;d.append(t,c);el('log').prepend(d);}
 function copyLog(){const txt=[...el('log').children].reverse().map(d=>d.textContent).join('\n');
  navigator.clipboard.writeText(txt).then(()=>log('log copied to clipboard.'));}
+function portraitUp(inp){const f=inp.files[0];if(!f)return;
+ const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{
+  const cv=document.createElement('canvas');cv.width=cv.height=96;const ctx=cv.getContext('2d');
+  const s=Math.min(img.width,img.height);
+  ctx.drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,96,96);
+  el('portrait').src=cv.toDataURL('image/jpeg',0.75);el('portrait').style.display='block';saveState();};
+  img.src=r.result;};r.readAsDataURL(f);inp.value='';}
 function d20(mode){const a=Math.ceil(Math.random()*20),b=Math.ceil(Math.random()*20);
  if(mode===1)return{r:Math.max(a,b),txt:`${a},${b}`};if(mode===-1)return{r:Math.min(a,b),txt:`${a},${b}`};return{r:a,txt:`${a}`};}
 function critRange(){let c=20;mclasses.forEach(m=>{if(m.c==='Fighter'&&m.s==='Champion')c=Math.min(c,m.l>=15?18:m.l>=3?19:20);});return c;}
@@ -1878,6 +1888,8 @@ function collectState(){
  s._race=el('raceLabel').textContent;s._bg=el('bgLabel').textContent;s._align=el('alignLabel').textContent;
  s._bio=el('bio').textContent;
  s._sugg=suggestionUsed;
+ s._log=[...el('log').children].slice(0,400).map(d=>[d.children[0]?d.children[0].textContent:'',d.children[1]?d.children[1].textContent:d.textContent]);
+ if(el('portrait')&&el('portrait').style.display==='block')s._portrait=el('portrait').src;
  return s;
 }
 function applyState(s){
@@ -1920,6 +1932,10 @@ function applyState(s){
  });
  if(s._cond)document.querySelectorAll('#conds .tag').forEach(t=>{if(s._cond.includes(t.textContent))t.classList.add('on');});
  (s._ds||[]).forEach((v,i)=>{const p=document.querySelectorAll('.ds-pip')[i];if(p)p.classList.toggle('on',v);});
+ if(s._log){el('log').innerHTML='';s._log.forEach(([t,m])=>{const d=document.createElement('div');
+  const ts=document.createElement('span');ts.className='sub';ts.textContent=t;
+  const c=document.createElement('span');c.textContent=m;d.append(ts,c);el('log').appendChild(d);});}
+ if(s._portrait&&el('portrait')){el('portrait').src=s._portrait;el('portrait').style.display='block';}
 }
 let saveT=null;
 function saveState(){
@@ -2279,21 +2295,26 @@ el('conds').innerHTML=CONDS.map(c=>`<span class="tag" onclick="this.classList.to
 // ================= REMOTE CONTENT =================
 const DATA_BASE='https://raw.githubusercontent.com/barlowa124/dnd5e-sheet-data/main/data/';
 async function loadRemote(){
+ // fetch each data file; on failure fall back to the last cached copy so the sheet works offline
+ const jget=async f=>{try{const r=await fetch(DATA_BASE+f);const j=await r.json();
+   try{localStorage.setItem('cache_'+f,JSON.stringify(j));}catch(e){}return j;}
+  catch(e){const c=localStorage.getItem('cache_'+f);
+   if(c){log(f+' unreachable — using cached copy.');return JSON.parse(c);}throw e;}};
  try{
   const [eq,mo,co,sp,extra,opts,cf,rng,ua,cv,sf,rc,cb]=await Promise.all([
-   fetch(DATA_BASE+'5e-SRD-Equipment.json').then(r=>r.json()),
-   fetch(DATA_BASE+'5e-SRD-Monsters.json').then(r=>r.json()),
-   fetch(DATA_BASE+'5e-SRD-Conditions.json').then(r=>r.json()),
-   fetch(DATA_BASE+'5e-SRD-Spells.json').then(r=>r.json()),
-   fetch(DATA_BASE+'spells-extra.json').then(r=>r.json()).catch(()=>[]),
-   fetch(DATA_BASE+'options.json').then(r=>r.json()).catch(()=>null),
-   fetch(DATA_BASE+'class-features.json').then(r=>r.json()).catch(()=>null),
-   fetch(DATA_BASE+'ranger-spells-full.json').then(r=>r.json()).catch(()=>[]),
-   fetch(DATA_BASE+'ua.json').then(r=>r.json()).catch(()=>null),
-   fetch(DATA_BASE+'class-variants.json').then(r=>r.json()).catch(()=>null),
-   fetch(DATA_BASE+'subclass-features.json').then(r=>r.json()).catch(()=>({})),
-   fetch(DATA_BASE+'races.json').then(r=>r.json()).catch(()=>null),
-   fetch(DATA_BASE+'build-combos.json').then(r=>r.json()).catch(()=>[])
+   jget('5e-SRD-Equipment.json'),
+   jget('5e-SRD-Monsters.json'),
+   jget('5e-SRD-Conditions.json'),
+   jget('5e-SRD-Spells.json'),
+   jget('spells-extra.json').catch(()=>[]),
+   jget('options.json').catch(()=>null),
+   jget('class-features.json').catch(()=>null),
+   jget('ranger-spells-full.json').catch(()=>[]),
+   jget('ua.json').catch(()=>null),
+   jget('class-variants.json').catch(()=>null),
+   jget('subclass-features.json').catch(()=>({})),
+   jget('races.json').catch(()=>null),
+   jget('build-combos.json').catch(()=>[])
   ]);
   EQUIPMENT=eq;
   el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}" label="${esc(equipTip(e,false)).slice(0,120)}"></option>`).join('');
