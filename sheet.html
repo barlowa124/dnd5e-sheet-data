@@ -27,7 +27,8 @@
   h2 { color:var(--accent-hi); border-bottom:1px solid var(--border); padding-bottom:5px; font-size:.95em; font-variant:small-caps;
     letter-spacing:1.4px; margin:15px 0 9px; font-weight:600; }
   .sub { color:var(--dim); font-style:italic; margin-top:4px; font-size:.88em; }
-  .grid { display:grid; gap:16px; margin-top:16px; }
+  .grid { display:grid; gap:16px; margin-top:16px; align-items:start; }
+  .panel { scroll-margin-top:76px; }
   .cols-6 { grid-template-columns:repeat(6,1fr); }
   .cols-4 { grid-template-columns:repeat(4,1fr); }
   .cols-3 { grid-template-columns:repeat(3,1fr); }
@@ -69,6 +70,11 @@
   button:disabled { background:#3a2d22; border-color:var(--border); color:var(--sub); cursor:not-allowed; transform:none; box-shadow:none; filter:none; }
   .bonus { color:var(--gold); font-weight:bold; min-width:34px; display:inline-block; font-family:var(--mono); }
   #log { background:#0d0906; border:1px solid var(--border); border-radius:var(--r-sm); padding:10px; height:180px; overflow-y:auto; font-family:var(--mono); font-size:.82em; }
+  .scrollbox { max-height:520px; overflow-y:auto; overflow-x:auto; border:1px solid var(--border); border-radius:var(--r-sm); background:var(--panel2); }
+  .scrollbox table { margin:0; }
+  .scrollbox th { position:sticky; top:0; background:var(--panel2); z-index:2; }
+  .tallbox { max-height:640px; overflow-y:auto; }
+  #log div { padding:1px 0; border-bottom:1px solid rgba(255,255,255,.03); }
   #log div { padding:2px 0; border-bottom:1px dotted rgba(61,46,33,.6); }
   .hp-cur { font-size:1.6em !important; width:90px !important; }
   #hpbar { height:11px; background:#0d0906; border:1px solid var(--border); border-radius:7px; margin-top:7px; overflow:hidden; }
@@ -179,6 +185,7 @@
   <button onclick="restoreSnap()">Restore</button>
   <button onclick="exportDiscord()">Discord</button>
   <button onclick="el('raceGallery').style.display=el('raceGallery').style.display==='none'?'block':'none'">🧬 Races</button>
+  <select id="navSel" title="jump to section" style="max-width:130px"><option value="">§ jump to…</option></select>
   <input type="file" id="impFile" accept=".json" style="display:none" onchange="importChar(this)">
   <button onclick="const p=el('syncPanel');p.style.display=p.style.display==='none'?'inline':'none'">⚙ Sync</button>
   <span id="syncPanel" style="display:none">
@@ -358,7 +365,7 @@
       <option value="cls">My class list</option><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option>
       <option value="4">4th</option><option value="5">5th</option><option value="known">Known only</option><option value="all">All spells</option>
     </select> <span id="spellCount" class="sub"></span></div>
-    <table id="spellTable"></table>
+    <div class="scrollbox"><table id="spellTable"></table></div>
     <div class="sub" id="spellInfo">Click a spell for details. ★ = known.</div>
   </div>
   <div class="panel">
@@ -378,7 +385,7 @@
     </div>
     <div class="sub" style="margin-top:3px">keys: 1-9 attack rows · d d20 · v advantage · a/b/r action·bonus·reaction · n next turn · x take damage · h heal · i roll initiative</div>
     <h2>Encounter Tracker</h2>
-    <div id="initList"></div>
+    <div id="initList" class="tallbox"></div>
     <div><input class="txt-in" id="initName" style="width:90px;display:inline" placeholder="name"> <input class="num-in" id="initVal" type="number" style="width:44px" placeholder="init"> <input class="num-in" id="initHP" type="number" style="width:44px" placeholder="hp"> <button onclick="addInit()">Add</button> <button onclick="addPetInit()" title="roll the companion into initiative">+ Pet</button> <button onclick="rollInitFor()">Roll me</button> <button onclick="nextInit()">Next ▶</button> <button onclick="initOrder=[];initIdx=0;renderInit();saveState()">Clear</button></div>
     <div class="sub" style="margin-top:2px">Per combatant: ⚔ rolls their attack vs your AC — on a hit it auto-applies damage (resist/vuln/concentration included). HP turns red at 0.</div>
     <h2>Attunement (3)</h2>
@@ -416,7 +423,7 @@
     <textarea class="txt-in" id="planNotes" placeholder="Long-term notes — RP arc, items you're hunting, DM asks…"></textarea>
     <h2>Power Combos <label class="sub" style="font-weight:normal"><input type="checkbox" id="comboOnly" onchange="renderCombos()"> only what fits</label></h2>
     <div class="sub">Strong feats, dips, and multiclass combos, tagged by class/race/level — ★ qualifies now, ◐ unlocks next level. Two-class combos fit if you already have one of the classes.</div>
-    <div id="comboGrid"></div>
+    <div id="comboGrid" class="scrollbox"></div>
     <h2>Stat Assessment</h2>
     <div class="sub">Infer monster stats from observed rolls.</div>
     <div><input class="txt-in" id="mobName" style="width:150px;display:inline" placeholder="monster label" onchange="renderAssess()"></div>
@@ -439,7 +446,7 @@
   </div>
   <div class="panel">
     <h2>Features & Traits</h2>
-    <table id="features"></table>
+    <div class="scrollbox"><table id="features"></table></div>
     <h2>Proficiencies / Languages</h2>
     <div id="profTags" class="sub"></div>
     <input class="txt-in" id="profExtra" placeholder="extra proficiencies — tools, languages, weapons…" oninput="recalc()">
@@ -449,10 +456,10 @@
 <div class="grid cols-2">
   <div class="panel">
     <h2>Inventory <span id="weightTotal" class="bonus"></span></h2>
-    <table>
+    <div class="scrollbox" style="max-height:420px"><table>
       <tr><th>Item</th><th style="width:60px">Qty</th><th style="width:70px">Wt ea</th><th style="width:70px">Total</th><th style="width:30px"></th></tr>
       <tbody id="invBody"></tbody>
-    </table>
+    </table></div>
     <div style="margin-top:6px;display:flex;gap:6px">
       <input class="txt-in" id="itemPick" list="itemList" placeholder="Search all equipment...">
       <datalist id="itemList"></datalist>
@@ -684,7 +691,7 @@ Wink.</textarea>
   <div class="panel" id="raceGallery" style="display:none">
     <h2>Race Gallery <span class="sub">— click a card to play that race</span></h2>
     <input class="txt-in" id="raceQ" placeholder="search races…" oninput="renderRaceGrid()">
-    <div id="raceGrid" class="race-grid"></div>
+    <div id="raceGrid" class="race-grid scrollbox"></div>
   </div>
   <div class="panel">
     <h2>Homebrew</h2>
@@ -2479,6 +2486,16 @@ document.querySelectorAll('.stat').forEach(i=>i.addEventListener('input',()=>{re
 el('level').addEventListener('input',()=>{rebuild();saveState();});
 el('xp').addEventListener('input',()=>{rebuild();saveState();});
 document.querySelectorAll('input,select,textarea').forEach(e=>e.addEventListener('change',saveState));
+// section jump-nav: one option per panel heading
+(function(){const ns=el('navSel');if(!ns)return;
+ document.querySelectorAll('.panel h2').forEach((h,i)=>{
+  const p=h.closest('.panel');if(!p)return;
+  const nm=h.textContent.replace(/\(.*?\)/g,'').replace(/×.*$/,'').trim().split('—')[0].slice(0,26);
+  p.id=p.id||('sec-'+i);
+  const o=document.createElement('option');o.value=p.id;o.textContent=nm;ns.appendChild(o);});
+ ns.addEventListener('change',()=>{const t=ns.value&&document.getElementById(ns.value);ns.value='';
+  if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});
+})();
 
 // ================= CONDITIONS =================
 const CONDS=['Blinded','Charmed','Deafened','Frightened','Grappled','Incapacitated','Invisible','Paralyzed','Petrified','Poisoned','Prone','Restrained','Stunned','Unconscious','Exhaustion'];
