@@ -821,8 +821,9 @@ const SPELLS_KNOWN={Bard:[4,5,6,7,8,9,10,11,12,14,15,15,16,18,19,19,20,22,22,22]
 function knownMax(){let t=0;mclasses.forEach(m=>{const k=SPELLS_KNOWN[m.c];if(k)t+=k[Math.min(19,Math.max(0,m.l-1))];});return t;}
 let inv=[["Leather armor",1,10],["Scimitar",2,3],["Longbow",1,2],["Arrows",20,0.05],["Backpack",1,5],["Crowbar",1,5],["Hammer",1,3],["Piton",10,0.25],["Torch",10,1],["Tinderbox",1,1],["Rations",10,2],["Waterskin",1,5],["Hempen rope 50 ft",1,10],["Pungi (snake flute)",1,1],["Thieves' tools",1,1],["Playing card set",1,0],["Manacles ('for the snakes')",1,6]];
 let curChar='Efferey Jepstein';
-let SRD_SPELLS=[], EQUIPMENT=[], MONSTERS=[], ALLSPELLS=[];
+let SRD_SPELLS=[], EQUIPMENT=[], MONSTERS=[], ALLSPELLS=[], MONDEX=[];
 let compAtk=[{name:'Bite',hit:4,die:6,dv:4,n:1},{name:'Constrict',hit:4,die:8,dv:4,n:1}];
+let curTarget=-1;   // index into initOrder — attacks report hit/miss vs its AC
 let customAtk=[];   // [{n:name,h:hitOverrideOrEmpty,d:'2d6+3'}]
 let resources=[];   // [{name,max,used,reset:'S'|'L'|''}]
 let SUBFEATS={};    // subclass -> {level:[features]}
@@ -881,7 +882,13 @@ function roll(name,bonus,kind){
  const{r,txt}=d20(eff);const tag=usedInsp?' (inspiration)':eff===1?' (adv)':eff===-1?' (dis)':'';
  dstat.n++;dstat.sum+=r;if(r===20)dstat.c20++;if(r===1)dstat.c1++;updateDiceStats();
  const crit=r>=critRange()&&/(hit|attack)/i.test(name);
- log(`${name}${tag}${auto?' ⚠'+auto:''}: [${txt}] ${fmt(bonus)} = ${r+bonus}${crit?' — CRIT!':r===20&&eff>=0?' — NAT 20':''}${r===1&&eff<=0?' — NAT 1':''}`);
+ let vs='';
+ if(kind==='attack'&&curTarget>=0&&initOrder[curTarget]){
+  const ac=Number(initOrder[curTarget].ac);
+  if(ac>0){const hit=crit||(r>1&&r+bonus>=ac);
+   vs=` → ${hit?'HIT':'miss'} ${initOrder[curTarget].n} (AC ${ac})`;}
+ }
+ log(`${name}${tag}${auto?' ⚠'+auto:''}: [${txt}] ${fmt(bonus)} = ${r+bonus}${vs}${crit?' — CRIT!':r===20&&eff>=0?' — NAT 20':''}${r===1&&eff<=0?' — NAT 1':''}`);
  if(usedInsp){inspOn=false;renderInsp();log('Inspiration spent.');}
  return{r,crit,fumble:r===1};}
 function rollAtk(name,bonus){roll(name,bonus,'attack');}
@@ -1345,26 +1352,42 @@ function renderInit(){
  el('initList').innerHTML=initOrder.map((e,i)=>{
   const dead=Number(e.hp)===0&&e.hp!=='';
   const conds=(e.c||[]).map((c,j)=>` <span class="tag" style="padding:0 4px;cursor:default">${c}<a href="#" onclick="initOrder[${i}].c.splice(${j},1);renderInit();saveState();return false" style="color:#c00">×</a></span>`).join('');
+  const concTag=e.n===curChar&&el('concSpell').value?` <span class="tag" style="padding:0 4px;cursor:default" title="concentrating">◈ ${el('concSpell').value}</span>`:'';
   return `<div class="initRow${i===initIdx?' active':''}${dead?' dead':''}">
-   <div class="ir-top">${i===initIdx?'▶ ':''}<b>${e.n}</b> <span class="sub">${e.v}</span>${conds}</div>
-   <div class="ir-ctl">HP <input class="num-in" style="width:42px" value="${e.hp??''}" onchange="initOrder[${i}].hp=this.value;renderInit();saveState()">/<input class="num-in" style="width:42px" value="${e.mhp??''}" placeholder="max" onchange="initOrder[${i}].mhp=this.value;saveState()">
+   <div class="ir-top">${i===initIdx?'▶ ':''}${i===curTarget?'🎯 ':''}<b onclick="setTarget(${i})" style="cursor:pointer" title="click to target — your attacks auto-check vs its AC">${e.n}</b> <span class="sub">${e.v}</span>${conds}${concTag}</div>
+   <div class="ir-ctl">AC <input class="num-in" style="width:34px" value="${e.ac??''}" placeholder="—" title="armor class — set by clicking the name to target" onchange="initOrder[${i}].ac=this.value;saveState()">
+    HP <input class="num-in" style="width:42px" value="${e.hp??''}" onchange="initOrder[${i}].hp=this.value;renderInit();saveState()">/<input class="num-in" style="width:42px" value="${e.mhp??''}" placeholder="max" onchange="initOrder[${i}].mhp=this.value;saveState()">
     +<input class="num-in" style="width:32px" value="${e.atk??''}" placeholder="atk" title="their attack bonus" onchange="initOrder[${i}].atk=this.value;saveState()">
     <input class="txt-in" style="width:66px" value="${e.dmg||''}" placeholder="2d6+3 fire" title="damage expr — leading '2x' = multiattack swings; trailing damage type feeds your resist/vuln/immune" onchange="initOrder[${i}].dmg=this.value;saveState()">
     <button onclick="enemyAtk(${i})" title="they attack you">⚔</button>
     <button onclick="hurtEnemy(${i})" title="deal damage to them">−hp</button>
     <select style="width:70px" onchange="if(this.value){(initOrder[${i}].c=initOrder[${i}].c||[]).push(this.value);renderInit();saveState();}this.value=''"><option value="">+cond</option>${CONDS.filter(c=>!c.includes('(')).map(c=>`<option>${c}</option>`).join('')}</select>
-    <a href="#" onclick="initOrder.splice(${i},1);renderInit();saveState();return false" style="color:#c00">×</a></div></div>`;
+    <a href="#" onclick="initOrder.splice(${i},1);if(curTarget===${i})curTarget=-1;else if(curTarget>${i})curTarget--;renderInit();saveState();return false" style="color:#c00">×</a></div></div>`;
  }).join('')||'<span class="sub">Empty. Add combatants above.</span>';
 }
+function setTarget(i){curTarget=curTarget===i?-1:i;renderInit();saveState();
+ if(curTarget>=0)log('Target → '+initOrder[i].n+(initOrder[i].ac?` (AC ${initOrder[i].ac})`:' (no AC set)'));}
+function monStat(base){const m=MONDEX.find(x=>x.name.toLowerCase()===base.toLowerCase());
+ if(!m)return{};
+ const act=(m.actions||[]).find(a=>a.attack_bonus!=null);
+ const flat=x=>x&&(x.damage_dice?x:((x.from&&x.from.options)||[]).map(flat).find(Boolean));
+ const dm=act&&((act.damage||[]).map(flat).find(Boolean));
+ return{ac:m.armor_class&&m.armor_class[0]?m.armor_class[0].value:'',
+  hp:m.hit_points||'',atk:act?act.attack_bonus:'',
+  dmg:dm?dm.damage_dice+' '+(dm.damage_type&&dm.damage_type.name||'').toLowerCase():''};}
 function addInit(){const raw=el('initName').value.trim(),v=Number(el('initVal').value)||0,hp=el('initHP').value;
  const mm=/^(.*?)\s*x(\d+)$/i.exec(raw);
  const base=mm?mm[1].trim():raw,cnt=mm?Math.min(12,+mm[2]):1;
  if(!base)return;
+ const mo=monStat(base);
  for(let k=0;k<cnt;k++){
   const iv=v||Math.ceil(Math.random()*20); // typed init applies to all; blank rolls each
-  initOrder.push({n:cnt>1?base+' '+(k+1):base,v:iv,hp:hp===''?'':hp,mhp:hp===''?'':hp});
+  initOrder.push({n:cnt>1?base+' '+(k+1):base,v:iv,
+   hp:hp===''?mo.hp??'':hp,mhp:hp===''?mo.hp??'':hp,
+   ac:mo.ac??'',atk:mo.atk??'',dmg:mo.dmg||''});
  }
  initOrder.sort((a,b)=>b.v-a.v);initIdx=0;
+ if(mo.hp)log(`${base} matched the monster book — stats autofilled.`);
  el('initName').value='';el('initVal').value='';el('initHP').value='';renderInit();saveState();}
 function addPetInit(){
  const sel=el('compPick');const m=sel&&sel.value?MONSTERS.find(x=>x.index===sel.value):null;
@@ -2112,7 +2135,7 @@ function collectState(){
  s._ds=[...document.querySelectorAll('.ds-pip')].map(p=>p.classList.contains('on'));
  s._spent={};document.querySelectorAll('.slot-pip.spent').forEach(p=>{const i=p.dataset.pslot!==undefined?'p'+p.dataset.pslot:p.dataset.slot;s._spent[i]=(s._spent[i]||0)+1;});
  s._inv=inv;s._known=knownSpells;s._prep=prepSpells;s._res=resources;s._atk=customAtk;
- s._mclasses=mclasses;s._hd=hdSpent;s._feats=feats;s._init={o:initOrder,i:initIdx};s._mob=mobBook;
+ s._mclasses=mclasses;s._hd=hdSpent;s._feats=feats;s._init={o:initOrder,i:initIdx,t:curTarget};s._mob=mobBook;
  s._macros=macros;s._sup=supplies;s._hb=hb;s._dstat=dstat;s._snaps=snaps;s._turn={u:turnUse,r:roundN};s._ws=wsSel;s._plan=buildPlan;
  s._drain={s:statDrain,h:hpDrain};s._boons=epicBoons;
  s._cls=baseCls();s._variant=mclasses[0].v||'';
@@ -2135,7 +2158,7 @@ function applyState(s){
  else if(s._cls)mclasses=[{c:s._cls,l:Number(s.level)||1,v:s._variant||''}];
  hdSpent=s._hd||{};feats=s._feats||feats;
  renderClassRows();renderFeats();
- if(s._init){initOrder=s._init.o||[];initIdx=s._init.i||0;renderInit();}
+ if(s._init){initOrder=s._init.o||[];initIdx=s._init.i||0;curTarget=s._init.t??-1;renderInit();}
  if(s._mob)mobBook=s._mob;
  if(el('mobName'))renderAssess();
  if(s._race)el('raceLabel').textContent=s._race;
@@ -2561,6 +2584,7 @@ async function loadRemote(){
   ]);
   EQUIPMENT=eq;
   el('itemList').innerHTML=eq.map(e=>`<option value="${e.name}" label="${esc(equipTip(e,false)).slice(0,120)}"></option>`).join('');
+  MONDEX=mo;   // full SRD monster index — tracker autofill
   ALLBEASTS=mo.filter(m=>m.type==='beast');
   MONSTERS=mo.filter(m=>m.type==='beast'&&m.challenge_rating<=0.25&&['Tiny','Small','Medium'].includes(m.size));
   el('compPick').innerHTML='<option value="">Acosta (Constrictor Snake)</option>'+MONSTERS.map(m=>`<option value="${m.index}">${m.name} (CR ${m.challenge_rating})</option>`).join('');
