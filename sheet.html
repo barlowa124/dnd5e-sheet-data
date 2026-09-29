@@ -258,7 +258,7 @@
   <button onclick="levelUp()" id="lvBtn">Level Up</button>
   <div id="classRows" style="margin-top:4px"></div>
 </div>
-<img id="portrait" style="width:72px;height:72px;object-fit:cover;border:1px solid var(--gold);border-radius:6px;display:none;float:left;margin:0 10px 6px 0;cursor:pointer" title="click to change portrait" onclick="el('portraitFile').click()">
+<img id="portrait" tabindex="0" style="width:72px;height:72px;object-fit:cover;border:1px solid var(--gold);border-radius:6px;display:none;float:left;margin:0 10px 6px 0;cursor:pointer" title="click to change portrait" onclick="el('portraitFile').click()">
 <input type="file" id="portraitFile" accept="image/*" style="display:none" onchange="portraitUp(this)">
 <div class="sub" id="bio">Disgraced financier, isekai'd into the Nine Hells. Now pursuing his long-suppressed dream of desert snake-charming — and tracking down his accomplice and wife, Mhislane Gaxwell, who was also damned.</div>
 
@@ -299,11 +299,11 @@
       <tr><td>Hit Dice</td><td><span id="hitdice">1d10</span> <span class="sub" id="hdLeft"></span> <button onclick="spendHD()">Spend</button></td></tr>
     </table>
     <div class="sub" style="margin-top:4px">Resist: <input class="txt-in" id="resList" style="width:110px;display:inline" placeholder="fire, cold"> Vuln: <input class="txt-in" id="vulnList" style="width:80px;display:inline"> Immune: <input class="txt-in" id="immList" style="width:90px;display:inline" value="poison"></div>
-    <div class="sub" style="margin-top:2px">This turn: <span class="tag" id="tuA" onclick="tglTurn('a')">Action</span> <span class="tag" id="tuB" onclick="tglTurn('b')">Bonus</span> <span class="tag" id="tuR" onclick="tglTurn('r')">Reaction</span> · round <b id="roundNum">0</b></div>
+    <div class="sub" style="margin-top:2px">This turn: <span class="tag" id="tuA" tabindex="0" onclick="tglTurn('a')">Action</span> <span class="tag" id="tuB" tabindex="0" onclick="tglTurn('b')">Bonus</span> <span class="tag" id="tuR" tabindex="0" onclick="tglTurn('r')">Reaction</span> · round <b id="roundNum">0</b></div>
     <div class="sub" id="actCard" style="margin-top:4px;font-style:normal"></div>
     <h2>Roll Mode</h2>
     <button id="advBtn" onclick="cycleAdv()">Normal</button>
-    <span class="tag" id="inspTag" title="Inspiration — next d20 rolls with advantage, then it's spent" onclick="tglInsp()">Inspiration</span>
+    <span class="tag" id="inspTag" tabindex="0" title="Inspiration — next d20 rolls with advantage, then it's spent" onclick="tglInsp()">Inspiration</span>
     <h2>Conditions</h2>
     <div id="conds"></div>
     <div class="sub" style="margin-top:4px">Exhaustion level <input class="num-in" id="exhaust" type="number" min="0" max="6" value="0" style="width:50px" onchange="renderExhNote()"> <span id="exhNote" style="color:var(--warn)"></span></div>
@@ -1028,7 +1028,7 @@ function renderSpells(){
  const myA=mclasses.map(m=>ABBREV[m.c]).filter(Boolean);
  const list=ALLSPELLS.filter(s=>f==='cls'?(s.cls==='*'||(s.cls||'').split('/').some(a=>myA.includes(a))||(s.ranger&&myA.includes('Ran'))):f==='all'?true:f==='known'?knownSpells[s.n]:s.l===Number(f));
  el('spellTable').innerHTML=`<tr><th></th>${prepMode()?'<th title="prepared">◐</th>':''}<th>Spell</th><th>Lvl</th><th></th><th></th></tr>`+list.map(s=>`
-  <tr class="spellRow" title="${esc((s.desc||'').slice(0,300))}" onclick="el('spellInfo').innerHTML='<b>${s.n}</b> — ${s.s||''}, lvl ${s.l}. ${s.t||''} · ${s.r||''} · ${s.c||''} · ${s.d||''}. ${s.src?'['+s.src+']':''}<br>${s.desc||''}'">
+  <tr class="spellRow" tabindex="0" title="${esc((s.desc||'').slice(0,300))}" onclick="el('spellInfo').innerHTML='<b>${s.n}</b> — ${s.s||''}, lvl ${s.l}. ${s.t||''} · ${s.r||''} · ${s.c||''} · ${s.d||''}. ${s.src?'['+s.src+']':''}<br>${s.desc||''}'">
    <td><button aria-label="toggle ${s.n} known" onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
    ${prepMode()?`<td><button aria-label="toggle ${s.n} prepared" title="prepared for today" onclick="event.stopPropagation();togglePrep('${s.n}')">${prepSpells[s.n]?'◉':'◯'}</button></td>`:''}
    <td>${s.n}${s.xge||s.src?` <span class="tag-rit">(${s.src||'XGE'})</span>`:''}</td><td>${s.l}</td>
@@ -1225,10 +1225,10 @@ function rebuild(){
  el('features').innerHTML=html;
  const sl=slotTable();let sh='';
  for(let i=0;i<sl.length;i++){if(sl[i]>0){sh+=`<div>Lvl ${i+1} slots: `;
-  for(let k=0;k<sl[i];k++)sh+=`<span class="slot-pip" data-slot="${i}" onclick="this.classList.toggle('spent');saveState()"></span>`;sh+='</div>';}}
+  for(let k=0;k<sl[i];k++)sh+=`<span class="slot-pip" tabindex="0" data-slot="${i}" onclick="this.classList.toggle('spent');saveState()"></span>`;sh+='</div>';}}
  const pt=pactTable();
  for(let i=0;i<pt.length;i++){if(pt[i]>0){sh+=`<div>Lvl ${i+1} <b>pact</b>: `;
-  for(let k=0;k<pt[i];k++)sh+=`<span class="slot-pip" data-pslot="${i}" onclick="this.classList.toggle('spent');saveState()"></span>`;sh+='</div>';}}
+  for(let k=0;k<pt[i];k++)sh+=`<span class="slot-pip" tabindex="0" data-pslot="${i}" onclick="this.classList.toggle('spent');saveState()"></span>`;sh+='</div>';}}
  el('slots').innerHTML=sh||'<span class="sub">No slots.</span>';
  renderSpells();recalc();renderInv();pbUpdate();autoResources();renderProfs();renderWS();renderSummon();setMetaTips();renderPlan();renderActions();
 }
@@ -1618,7 +1618,7 @@ function renderSkillPick(){
   pk.list.map(s=>{
    const tr=[...document.querySelectorAll('#skills tr')].find(t=>t.children[1].textContent===s);
    const on=tr&&tr.querySelector('.skillProf').checked;
-   return `<span class="tag ${on?'on':''}" onclick="pickSkill('${s}')">${s}</span>`;}).join('');
+   return `<span class="tag ${on?'on':''}" tabindex="0" onclick="pickSkill('${s}')">${s}</span>`;}).join('');
 }
 function pickSkill(name){
  const tr=[...document.querySelectorAll('#skills tr')].find(t=>t.children[1].textContent===name);
@@ -1896,7 +1896,7 @@ function hordeRoll(){
 function mobACBounds(){const obs=curMob();let lo=2,hi=30;obs.forEach(o=>{if(o.t==='hit')hi=Math.min(hi,o.v);if(o.t==='miss')lo=Math.max(lo,o.v+1);});return (hi<30||lo>2)&&lo<=hi?{lo,hi}:null;}
 function hitPct(h){const b=mobACBounds();if(!b)return'';const p=ac=>Math.min(95,Math.max(5,Math.round((21+h-ac)*5)));return` <span class="sub">${p(b.hi)}–${p(b.lo)}%</span>`;}
 // dice macros
-function renderMacros(){el('macroBody').innerHTML=macros.map((m,i)=>`<span class="tag" onclick="macroGo(${i})">${m.n} <span class="sub">${m.d}</span></span><a href="#" onclick="macros.splice(${i},1);renderMacros();saveState();return false" style="color:#c00">×</a> `).join('');}
+function renderMacros(){el('macroBody').innerHTML=macros.map((m,i)=>`<span class="tag" tabindex="0" onclick="macroGo(${i})">${m.n} <span class="sub">${m.d}</span></span><a href="#" onclick="macros.splice(${i},1);renderMacros();saveState();return false" style="color:#c00">×</a> `).join('');}
 function addMacro(){const n=prompt('Macro name?','Sneak Attack');if(!n)return;const d=prompt('Dice expr (e.g. 2d6+3)?','2d6');if(!d)return;macros.push({n,d});renderMacros();saveState();}
 function macroGo(i){const m=macros[i],{rs,t}=rollDiceExpr(m.d);log(`${m.n}: ${m.d} [${rs.join(',')}] = ${t}`);saveState();}
 // supplies (burn on long rest)
@@ -2137,7 +2137,7 @@ function renderRaceGrid(){
  const cur=el('raceLabel').textContent;
  const src=RACES_RICH.length?RACES_RICH:(OPTIONS?OPTIONS.races.map(r=>({n:r.n||r,src:r.src||'',icon:'🧝',flavor:'',traits:'',asi:'',spd:'30'})):[]);
  el('raceGrid').innerHTML=src.filter(r=>!q||r.n.toLowerCase().includes(q)||(r.traits||'').toLowerCase().includes(q)||(r.gim||'').toLowerCase().includes(q)||(r.flavor||'').toLowerCase().includes(q)).map(r=>`
-  <div class="race-card${cur===r.n?' cur':''}" onclick="chooseRace('${r.n.replace(/'/g,"\\'")}')">
+  <div class="race-card${cur===r.n?' cur':''}" tabindex="0" onclick="chooseRace('${r.n.replace(/'/g,"\\'")}')">
    <div><span class="race-icon" title="${esc(r.icon||'')}">${raceArt(r.n)}</span><span class="race-name">${r.n}</span><span class="race-src">${r.src||''}</span></div>
    ${r.traits||r.asi?`<div class="race-asi">${r.asi||''}${r.spd?' · '+r.spd+' ft':''}</div>`:''}
    ${r.flavor?`<div class="race-flavor">${r.flavor}</div>`:''}
@@ -2624,7 +2624,7 @@ document.querySelectorAll('input,select,textarea').forEach(e=>e.addEventListener
 
 // ================= CONDITIONS =================
 const CONDS=['Blinded','Charmed','Deafened','Frightened','Grappled','Incapacitated','Invisible','Paralyzed','Petrified','Poisoned','Prone','Restrained','Stunned','Unconscious','Exhaustion'];
-el('conds').innerHTML=CONDS.map(c=>`<span class="tag" onclick="this.classList.toggle('on');saveState()">${c}</span>`).join('');
+el('conds').innerHTML=CONDS.map(c=>`<span class="tag" tabindex="0" onclick="this.classList.toggle('on');saveState()">${c}</span>`).join('');
 
 // ================= REMOTE CONTENT =================
 const DATA_BASE='https://raw.githubusercontent.com/barlowa124/dnd5e-sheet-data/main/data/';
@@ -2663,8 +2663,8 @@ async function loadRemote(){
    dc:s.dc?{a:s.dc.dc_type&&s.dc.dc_type.name,h:s.dc.dc_success}:null}));
   const custom=rng.map(e=>{e.ranger=1;e.cls=e.cls||'Ran';return e;}).concat(extra);
   ALLSPELLS=custom.concat(srd.filter(s=>!custom.find(e=>e.n===s.name)));
-  const extra2=`<span class="tag" onclick="this.classList.toggle('on');saveState()">Poisoned</span>`;
-  el('conds').innerHTML=extra2+co.map(c=>`<span class="tag" title="${(c.desc||[]).join(' ').replace(/"/g,'&quot;')}" onclick="this.classList.toggle('on');saveState()">${c.name}</span>`).join('');
+  const extra2=`<span class="tag" tabindex="0" onclick="this.classList.toggle('on');saveState()">Poisoned</span>`;
+  el('conds').innerHTML=extra2+co.map(c=>`<span class="tag" tabindex="0" title="${(c.desc||[]).join(' ').replace(/"/g,'&quot;')}" onclick="this.classList.toggle('on');saveState()">${c.name}</span>`).join('');
   OPTIONS=opts;CLASS_FEATURES=cf||CLASS_FEATURES;
   if(ua){
    if(OPTIONS){
@@ -2725,6 +2725,7 @@ renderSummon();renderRules();renderMacros();renderSup();updateDiceStats();render
 if(store.chars[curChar])applyState(store.chars[curChar]);
 function applyCollapse(h,on){
  h.classList.toggle('collapsed',on);
+ h.setAttribute('aria-expanded',String(!on));
  let n=h.nextElementSibling;
  while(n&&n.tagName!=='H2'){n.style.display=on?'none':'';n=n.nextElementSibling;}
 }
@@ -2733,8 +2734,10 @@ function initCollapse(){
  document.querySelectorAll('.panel h2').forEach(h=>{
   const key=h.textContent.trim();h.classList.add('collapse-h');
   h.title='click to collapse';
+  h.tabIndex=0;h.setAttribute('role','button');h.setAttribute('aria-expanded','true');
   h.onclick=()=>{const on=!h.classList.contains('collapsed');st[key]=on;
    localStorage.setItem('dnd_collapse',JSON.stringify(st));applyCollapse(h,on);};
+  h.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();h.onclick();}};
   if(st[key])applyCollapse(h,true);
  });
 }
@@ -2758,6 +2761,12 @@ document.addEventListener('keydown',e=>{
   '?':()=>{const hb=el('helpBox');hb.style.display=hb.style.display==='none'?'block':'none';},
   escape:()=>{el('helpBox').style.display='none';}};
  if(map[k]){map[k]();e.preventDefault();}
+});
+// ---- Enter/Space activates the clickable non-button elements (tags, slot pips, race cards, tracker targets, portrait) ----
+document.addEventListener('keydown',e=>{
+ if(e.key!=='Enter'&&e.key!==' ')return;
+ const t=e.target;
+ if(t&&t.matches&&t.matches('.tag[onclick],.slot-pip,.race-card,.initRow b,#portrait,tr.spellRow[onclick]')){e.preventDefault();t.click();}
 });
 document.querySelectorAll('input,select,textarea').forEach(e=>e.addEventListener('input',saveState));
 log(`Sheet loaded — ${curChar}.`);
