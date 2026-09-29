@@ -1022,18 +1022,20 @@ function spellTagDice(s){
 }
 function spellHit(name){const sp=ALLSPELLS.find(s=>s.n===name);if(!sp)return;
  roll(name+' hit',prof()+mod(spellStatFor(sp)),'attack');}
+function showSpellInfo(n){const s=ALLSPELLS.find(x=>x.n===n)||SPELLS.find(x=>x.n===n);if(!s)return;
+ el('spellInfo').innerHTML=`<b>${esc(s.n)}</b> — ${esc(s.s||'')}, lvl ${s.l}. ${esc(s.t||'')} · ${esc(s.r||'')} · ${esc(s.c||'')} · ${esc(s.d||'')}. ${s.src?'['+esc(s.src)+']':''}<br>${esc(s.desc||'')}`;}
 function renderSpells(){
  const f=el('spellFilter').value;
  const casting=mclasses.some(castUnlocked);
  const myA=mclasses.map(m=>ABBREV[m.c]).filter(Boolean);
  const list=ALLSPELLS.filter(s=>f==='cls'?(s.cls==='*'||(s.cls||'').split('/').some(a=>myA.includes(a))||(s.ranger&&myA.includes('Ran'))):f==='all'?true:f==='known'?knownSpells[s.n]:s.l===Number(f));
  el('spellTable').innerHTML=`<tr><th></th>${prepMode()?'<th title="prepared">◐</th>':''}<th>Spell</th><th>Lvl</th><th></th><th></th></tr>`+list.map(s=>`
-  <tr class="spellRow" tabindex="0" title="${esc((s.desc||'').slice(0,300))}" onclick="el('spellInfo').innerHTML='<b>${s.n}</b> — ${s.s||''}, lvl ${s.l}. ${s.t||''} · ${s.r||''} · ${s.c||''} · ${s.d||''}. ${s.src?'['+s.src+']':''}<br>${s.desc||''}'">
-   <td><button aria-label="toggle ${s.n} known" onclick="event.stopPropagation();toggleKnown('${s.n}')">${knownSpells[s.n]?'★':'☆'}</button></td>
-   ${prepMode()?`<td><button aria-label="toggle ${s.n} prepared" title="prepared for today" onclick="event.stopPropagation();togglePrep('${s.n}')">${prepSpells[s.n]?'◉':'◯'}</button></td>`:''}
-   <td>${s.n}${s.xge||s.src?` <span class="tag-rit">(${s.src||'XGE'})</span>`:''}</td><td>${s.l}</td>
-   <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}${s.dc?`<span class="tag-rit" title="${s.dc.a} save${s.dc.h==='half'?', half damage on success':''}">DC ${8+prof()+mod(spellStatFor(s))} ${s.dc.a||''}</span>`:''}${spellTagDice(s)}</td>
-   <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button>${s.at?` <button aria-label="${s.n} attack roll" title="${s.at} spell attack" onclick="event.stopPropagation();spellHit('${s.n}')">⚔</button>`:''}${s.dc?` <button aria-label="${s.n} vs tracker" title="resolve vs tracker — every combatant saves vs your DC, damage auto-applies to HP" onclick="event.stopPropagation();castVsTracker('${s.n}')">⇓</button>`:''}</td></tr>`).join('');
+  <tr class="spellRow" tabindex="0" title="${esc((s.desc||'').slice(0,300))}" onclick="showSpellInfo(${qj(s.n)})">
+   <td><button aria-label="toggle ${esc(s.n)} known" onclick="event.stopPropagation();toggleKnown(${qj(s.n)})">${knownSpells[s.n]?'★':'☆'}</button></td>
+   ${prepMode()?`<td><button aria-label="toggle ${esc(s.n)} prepared" title="prepared for today" onclick="event.stopPropagation();togglePrep(${qj(s.n)})">${prepSpells[s.n]?'◉':'◯'}</button></td>`:''}
+   <td>${esc(s.n)}${s.xge||s.src?` <span class="tag-rit">(${esc(s.src||'XGE')})</span>`:''}</td><td>${s.l}</td>
+   <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}${s.dc?`<span class="tag-rit" title="${esc(s.dc.a)} save${s.dc.h==='half'?', half damage on success':''}">DC ${8+prof()+mod(spellStatFor(s))} ${esc(s.dc.a||'')}</span>`:''}${spellTagDice(s)}</td>
+   <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell(${qj(s.n)},event)">Cast</button>${s.at?` <button aria-label="${esc(s.n)} attack roll" title="${esc(s.at)} spell attack" onclick="event.stopPropagation();spellHit(${qj(s.n)})">⚔</button>`:''}${s.dc?` <button aria-label="${esc(s.n)} vs tracker" title="resolve vs tracker — every combatant saves vs your DC, damage auto-applies to HP" onclick="event.stopPropagation();castVsTracker(${qj(s.n)})">⇓</button>`:''}</td></tr>`).join('');
  const np=Object.values(prepSpells).filter(Boolean).length;
  const km=knownMax();
  const nk=Object.keys(knownSpells).filter(k=>knownSpells[k]&&(ALLSPELLS.find(x=>x.n===k)||{l:1}).l>0).length;
@@ -1510,7 +1512,7 @@ function nextInit(){if(!initOrder.length)return;initIdx=(initIdx+1)%initOrder.le
 // ---- feats ----
 function featDesc(n){const f=(OPTIONS&&OPTIONS.feats||[]).find(x=>(x.n||x)===n);return f&&f.desc?f.desc:'';}
 function renderFeats(){
- el('featsList').innerHTML=feats.length?feats.map(f=>`<span class="tag on" title="${featDesc(f).replace(/"/g,'&quot;')}">${f} <a href="#" onclick="removeFeat('${f}');return false" style="color:#c00">×</a></span>`).join(' '):'<span class="sub">None.</span>';
+ el('featsList').innerHTML=feats.length?feats.map(f=>`<span class="tag on" title="${featDesc(f).replace(/"/g,'&quot;')}">${f} <a href="#" onclick="removeFeat(${qj(f)});return false" style="color:#c00">×</a></span>`).join(' '):'<span class="sub">None.</span>';
  renderActions();
 }
 function addFeat(){
@@ -1618,7 +1620,7 @@ function renderSkillPick(){
   pk.list.map(s=>{
    const tr=[...document.querySelectorAll('#skills tr')].find(t=>t.children[1].textContent===s);
    const on=tr&&tr.querySelector('.skillProf').checked;
-   return `<span class="tag ${on?'on':''}" tabindex="0" onclick="pickSkill('${s}')">${s}</span>`;}).join('');
+   return `<span class="tag ${on?'on':''}" tabindex="0" onclick="pickSkill(${qj(s)})">${s}</span>`;}).join('');
 }
 function pickSkill(name){
  const tr=[...document.querySelectorAll('#skills tr')].find(t=>t.children[1].textContent===name);
@@ -1805,6 +1807,7 @@ function useSuggestion(){if(suggestionUsed)return;suggestionUsed=true;el('suggBt
 
 // ================= TOOLTIPS =================
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const qj=s=>esc(JSON.stringify(s));
 const CLASS_TIP={Barbarian:'d12 · Str · rage, unarmored defense, reckless attack',Bard:'d8 · Cha · full caster, bardic inspiration, jack of all trades',Cleric:'d8 · Wis · full caster, channel divinity, domains',Druid:'d8 · Wis · full caster, wild shape, circles',Fighter:'d10 · Str/Dex · most attacks & ASIs, action surge, second wind',Monk:'d8 · Dex/Wis · martial arts, ki, unarmored movement',Paladin:'d10 · Str/Cha · half caster, smite, lay on hands, auras',Ranger:'d10 · Dex/Wis · half caster, favored enemy, natural explorer',Rogue:'d8 · Dex · sneak attack, cunning action, expertise, evasion',Sorcerer:'d6 · Cha · full caster, sorcery points, metamagic',Warlock:'d8 · Cha · pact magic (short-rest slots), invocations, patrons',Wizard:'d6 · Int · full caster, biggest spellbook, ritual casting',Artificer:'d8 · Int · half caster (rounds up), infusions, magic tinkering'};
 const BG_TIP={Criminal:"Criminal Contact — a trusted liaison into the criminal network (that's Mhislane). Skills: Deception, Stealth · Tools: gaming set, thieves' tools",Acolyte:'Shelter of the Faithful — free healing, lodging and aid at temples of your faith. Skills: Insight, Religion',Charlatan:'False Identity — a second identity with forged papers. Skills: Deception, Sleight of Hand',Spy:'Same kit as Criminal — a contact in the espionage world. Skills: Deception, Stealth',Entertainer:'By Popular Demand — free lodging + food for performing. Skills: Acrobatics, Performance',Gladiator:'By Popular Demand — as Entertainer, in pit-fight venues. Skills: Acrobatics, Performance','Folk Hero':'Rustic Hospitality — commoners shelter you. Skills: Animal Handling, Survival','Guild Artisan':"Guild Membership — lodging, legal support, political pull via your guild. Skills: Insight, Persuasion",'Guild Merchant':'Guild Membership — same perks, mercantile flavor. Skills: Insight, Persuasion',Hermit:'Discovery — you know something rare and world-relevant. Skills: Medicine, Religion',Noble:'Position of Privilege — nobles treat you as a peer; you can secure audiences. Skills: History, Persuasion',Knight:'Retainers — three servants, plus noble audiences. Skills: History, Persuasion',Outlander:'Wanderer — recall terrain/maps, find food for the party. Skills: Athletics, Survival',Sage:'Researcher — if you don\u2019t know a thing, you know where to find it. Skills: Arcana, History',Sailor:"Ship's Passage — free transport on ships. Skills: Athletics, Perception",Pirate:'Bad Reputation — feared in port towns; same passage perk. Skills: Athletics, Perception',Soldier:'Military Rank — troops defer; access to military installations. Skills: Athletics, Intimidation',Urchin:'City Secrets — move through a city at double speed. Skills: Sleight of Hand, Stealth','Haunted One':'Heart of Darkness — survivors of horror trust you. Skills: Investigation, Survival','Faction Agent':'Safe Haven — your faction\u2019s network shelters you. Skills: Insight, Investigation'};
 const ALIGN_TIP={'Lawful Good':'the paladin ideal — honor and compassion','Neutral Good':'does good without ideology','Chaotic Good':'kind heart, no respect for rules','Lawful Neutral':'the code comes first','True Neutral':'balance, or just unbothered','Chaotic Neutral':'impulse is king','Lawful Evil':'exploits the rules of order — contracts, hierarchies, infernal law','Neutral Evil':'self-interest without loyalty or sentiment — the selfish choice','Chaotic Evil':'burns it all, on principle'};
