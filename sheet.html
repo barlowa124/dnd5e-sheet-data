@@ -933,6 +933,35 @@ function castSpell(name,ev){
   log(`${name} effect: [${rs.join(',')}] ${fmt(n)} = ${t+n}`);}
  saveState();
 }
+const SAVE_ABL={STR:'strength',DEX:'dexterity',CON:'constitution',INT:'intelligence',WIS:'wisdom',CHA:'charisma'};
+function castVsTracker(name){
+ const sp=ALLSPELLS.find(s=>s.n===name);if(!sp)return;
+ if(!sp.dc){log(name+' has no save to resolve.');return;}
+ if(!initOrder.some(e=>e.n!==curChar)){log('Nothing else in the tracker.');return;}
+ const st=mod(spellStatFor(sp)),dc=8+prof()+st;
+ let pool=null;
+ const ds=spellDice(sp,sp.l);
+ if(ds.length){const rr=rollSpellDice(ds[0].ex,st,false);
+  if(rr){pool=rr.flat+rr.mod;log(`${name} damage pool: [${rr.rs.join(',')}]${rr.mod?' '+fmt(rr.mod):''} = ${pool}${ds[0].t?' '+ds[0].t:''}`);}}
+ else if(sp.dx){const[sides,mo]=sp.dx;const n=typeof mo==='string'?mod(mo):0;
+  const cnt=(typeof mo==='number'&&mo>0?mo:1);let t=0,rs=[];
+  for(let i=0;i<cnt;i++){const r=Math.ceil(Math.random()*sides);rs.push(r);t+=r;}
+  pool=t+n;log(`${name} damage pool: [${rs.join(',')}]${n?' '+fmt(n):''} = ${pool}`);}
+ log(`${name}: DC ${dc} ${sp.dc.a||''} — resolving vs tracker:`);
+ initOrder.forEach(e=>{
+  if(e.n===curChar)return;
+  const mon=MONDEX.find(x=>x.name.toLowerCase()===e.n.replace(/\s+\d+$/,'').toLowerCase());
+  const abil=mon?(mon[SAVE_ABL[sp.dc.a]]??10):10;
+  const sv=Math.floor((abil-10)/2);
+  const{r}=d20(0),tot=r+sv,pass=tot>=dc;
+  if(pool!=null){
+   const applied=pass?(sp.dc.h==='half'?Math.floor(pool/2):0):pool;
+   if(e.hp!==''&&applied>0)e.hp=Math.max(0,Number(e.hp)-applied);
+   log(` ${e.n}: [${r}] ${fmt(sv)} = ${tot} — ${pass?'PASS':'FAIL'} → ${applied} dmg`);
+  }else log(` ${e.n}: [${r}] ${fmt(sv)} = ${tot} — ${pass?'PASS':'FAIL'}`);
+ });
+ renderInit();saveState();
+}
 function toggleKnown(name){knownSpells[name]=!knownSpells[name];renderSpells();renderActions();saveState();}
 function spellDice(sp,useLvl){
  const out=[];
@@ -973,7 +1002,7 @@ function renderSpells(){
    ${prepMode()?`<td><button aria-label="toggle ${s.n} prepared" title="prepared for today" onclick="event.stopPropagation();togglePrep('${s.n}')">${prepSpells[s.n]?'◉':'◯'}</button></td>`:''}
    <td>${s.n}${s.xge||s.src?` <span class="tag-rit">(${s.src||'XGE'})</span>`:''}</td><td>${s.l}</td>
    <td>${s.rit?'<span class="tag-rit">R</span>':''}${s.conc?'<span class="tag-conc">C</span>':''}${s.dc?`<span class="tag-rit" title="${s.dc.a} save${s.dc.h==='half'?', half damage on success':''}">DC ${8+prof()+mod(spellStatFor(s))} ${s.dc.a||''}</span>`:''}${spellTagDice(s)}</td>
-   <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button>${s.at?` <button aria-label="${s.n} attack roll" title="${s.at} spell attack" onclick="event.stopPropagation();spellHit('${s.n}')">⚔</button>`:''}</td></tr>`).join('');
+   <td><button ${casting?'':'disabled'} title="Shift-click to upcast" onclick="event.stopPropagation();castSpell('${s.n}',event)">Cast</button>${s.at?` <button aria-label="${s.n} attack roll" title="${s.at} spell attack" onclick="event.stopPropagation();spellHit('${s.n}')">⚔</button>`:''}${s.dc?` <button aria-label="${s.n} vs tracker" title="resolve vs tracker — every combatant saves vs your DC, damage auto-applies to HP" onclick="event.stopPropagation();castVsTracker('${s.n}')">⇓</button>`:''}</td></tr>`).join('');
  const np=Object.values(prepSpells).filter(Boolean).length;
  const km=knownMax();
  const nk=Object.keys(knownSpells).filter(k=>knownSpells[k]&&(ALLSPELLS.find(x=>x.n===k)||{l:1}).l>0).length;
