@@ -1,7 +1,9 @@
-// Minimal CDP driver: node cdp_test.mjs <port> <url> '<js expr>'|<@file.js>
-import { readFileSync } from 'node:fs';
+// Minimal CDP driver: node cdp_test.mjs <port> <url> '<js expr>'|<@file.js> [shotfile]
+import { readFileSync, writeFileSync } from 'node:fs';
 const [PORT, URL_] = [process.argv[2], process.argv[3]];
-let expr = process.argv[4];
+const pos = process.argv.slice(4).filter(a => a !== '--print');
+let expr = pos[0];
+const shot = pos[1];
 if (expr?.startsWith('@')) expr = readFileSync(expr.slice(1), 'utf8');
 const list = await (await fetch(`http://localhost:${PORT}/json`)).json();
 let page = list.find(t => t.type === 'page' && t.url.includes('sheet.html'));
@@ -27,6 +29,7 @@ if (URL_) {
   await send('Page.navigate', { url: URL_ });
   await new Promise(r => setTimeout(r, 2500));
 }
+if (process.argv.includes('--print')) await send('Emulation.setEmulatedMedia', { media: 'print' });
 if (expr) {
   const r = await send('Runtime.evaluate', {
     expression: expr, awaitPromise: true, returnByValue: true,
@@ -35,6 +38,10 @@ if (expr) {
     console.log('EXC:', r.result.exceptionDetails.exception?.description || r.result.exceptionDetails.text);
   else
     console.log(JSON.stringify(r.result?.result?.value, null, 1));
+}
+if (shot) {
+  const r = await send('Page.captureScreenshot', { format: 'png' });
+  if (r.result?.data) { writeFileSync(shot, Buffer.from(r.result.data, 'base64')); console.log('shot →', shot); }
 }
 if (errors.length) console.log('PAGE-ERRORS:', JSON.stringify(errors));
 process.exit(0);
