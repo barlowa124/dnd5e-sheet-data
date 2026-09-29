@@ -1435,20 +1435,25 @@ function enemyAtk(i){const e=initOrder[i];if(!e)return;
  const cs=e.c||[];
  const block=cs.find(c=>CANT_ACT.includes(c));
  if(block){log(`${e.n} is ${block.toLowerCase()} — can't attack.`);return;}
- let mode=0,why='';
+ let mode=0;const why=[];
  const dc=cs.find(c=>ATK_DIS.includes(c)||EXH_DIS.some(x=>c.startsWith(x)));
- if(dc){mode=-1;why=dc;}
- if(cs.includes('Invisible')){if(mode===-1)mode=0;else{mode=1;why='invisible';}}
+ if(dc){mode--;why.push(dc);}
+ if(cs.includes('Invisible')){mode++;why.push('invisible');}
+ // your conditions change incoming attacks (RAW): prone/restrained/blinded/helpless = adv vs you; invisible on you = disadv
+ if(['Blinded','Prone','Restrained','Paralyzed','Stunned','Unconscious','Petrified'].some(condOn)){mode++;why.push('you are '+['Blinded','Prone','Restrained','Paralyzed','Stunned','Unconscious','Petrified'].find(condOn).toLowerCase());}
+ if(condOn('Invisible')){mode--;why.push('you are invisible');}
  const bon=Number(e.atk)||0,ac=Number(el('ac').value)||10;
- const{r,txt}=d20(mode);
- const crit=r===20,miss1=r===1;
- if(!crit&&(miss1||r+bon<ac)){log(`${e.n} attacks you: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — ${miss1?'nat 1, ':''}MISS.`);return;}
+ const{r,txt}=d20(Math.max(-1,Math.min(1,mode)));
+ const wtag=why.length?' ('+why.join(' + ')+')':'';
+ const helpless=['Paralyzed','Stunned','Unconscious'].some(condOn);
+ const crit=r===20||(helpless&&r+bon>=ac&&r>1),miss1=r===1;
+ if(!crit&&(miss1||r+bon<ac)){log(`${e.n} attacks you${wtag}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — ${miss1?'nat 1, ':''}MISS.`);return;}
  let total=0,dtype='';
  if(e.dmg){const dm=/(\d+)d(\d+)\s*([+-]?\s*\d+)?\s*([a-z]*)/i.exec(e.dmg);
   if(dm){let n=+dm[1]||1;const s=+dm[2]||6,b=dm[3]?+dm[3].replace(/\s/g,''):0;dtype=(dm[4]||'').toLowerCase();
    if(crit)n*=2;let rs=[],t=0;for(let k=0;k<n;k++){const rr=Math.ceil(Math.random()*s);rs.push(rr);t+=rr;}
-   total=t+b;log(`${e.n} hits${crit?' — CRIT, dice doubled':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — dmg [${rs.join(',')}] ${fmt(b)} = ${total} ${dtype}.`);}}
- else log(`${e.n} hits${crit?' — CRIT':''}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac}.`);
+   total=t+b;log(`${e.n} hits${crit?' — CRIT, dice doubled':''}${wtag}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac} — dmg [${rs.join(',')}] ${fmt(b)} = ${total} ${dtype}.`);}}
+ else log(`${e.n} hits${crit?' — CRIT':''}${wtag}: [${txt}] ${fmt(bon)} = ${r+bon} vs AC ${ac}.`);
  if(total>0)applyDamage(total,dtype);
  saveState();}
 function hurtEnemy(i){const e=initOrder[i];if(!e)return;
@@ -2709,7 +2714,11 @@ log(`Sheet loaded — ${curChar}.`);
   <li><b>Shift-click Cast</b> — upcast into a higher slot</li>
   <li><b>wolf x3</b> in the tracker name — bulk-adds numbered combatants, each with its own initiative roll</li>
   <li>Enemy damage field — <b>2d6+3 fire</b> feeds your resist/vuln/immune; a leading <b>2x</b> = multiattack swings</li>
-  <li>Conditions actually constrain: incapacitated-type enemies can't attack; poisoned/prone/etc. roll at disadvantage — and yours do the same to you</li>
+  <li>Conditions actually constrain: incapacitated-type enemies can't attack; poisoned/prone/etc. roll at disadvantage — and yours do the same to you, including when they attack <i>you</i> (restrained/prone = adv vs you; helpless = auto-crit)</li>
+  <li><b>Click a combatant's name</b> to target it — your attack rolls auto-report HIT/miss vs its AC field</li>
+  <li>Tracker name matching the monster book autofills AC/HP/attack/damage — <b>wolf x3</b> also bulk-adds, each with its own initiative roll</li>
+  <li><b>⇓ on save spells</b> — every combatant rolls the save on its real stat mod; damage auto-applies to their HP</li>
+  <li>Enemy damage field — <b>2d6+3 fire</b> feeds your resist/vuln/immune; a leading <b>2x</b> = multiattack swings</li>
   <li><b>Rider</b> in Attacks — extra dice on every hit (hunter's mark 1d6, sneak attack…)</li>
   <li>Attack ammo auto-burns; rename inventory to link (longbow → arrows)</li>
   <li>Damage intake: type a suffix like <b>14 fire</b> in the damage prompt for resist/immune</li>
