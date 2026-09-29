@@ -82,6 +82,18 @@
   .initRow.dead b { color:#c00; text-decoration:line-through; }
   .initRow .ir-top { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
   .initRow .ir-ctl { display:flex; gap:3px; align-items:center; flex-wrap:wrap; margin-top:3px; }
+  .ir-hp { height:3px; background:var(--panel2); border-radius:2px; margin-top:3px; overflow:hidden; }
+  .ir-hp i { display:block; height:100%; background:var(--good); transition:width .25s; }
+  .ir-hp.low i { background:#e05a4e; }
+  .ir-hp.mid i { background:var(--gold); }
+  h2.collapse-h { cursor:pointer; user-select:none; }
+  h2.collapse-h::before { content:'▾ '; color:var(--sub); font-size:.8em; }
+  h2.collapse-h.collapsed::before { content:'▸ '; }
+  h2.collapse-h.collapsed { opacity:.55; margin-bottom:2px; }
+  .logline.crit { color:var(--gold-hi, #ffd25e); }
+  .logline.bad { color:#e0715f; }
+  .logline.good { color:#8ec97f; }
+  .logline.meta { color:var(--sub); font-style:italic; }
   #spellTable td { padding:3px 6px; }
   #log div { padding:2px 0; border-bottom:1px dotted rgba(61,46,33,.6); }
   .hp-cur { font-size:1.6em !important; width:90px !important; }
@@ -852,7 +864,13 @@ function spellStatFor(sp){
  return SPELLSTAT[cls()]||'wis';
 }
 
-function log(m){const d=document.createElement('div');
+function logClass(m){
+ if(/\bcrit\b|crit!|dice doubled/i.test(m))return'crit';
+ if(/\bmiss|missed|fail|dropped|dead|death|fumble|can't|immobilized/i.test(m))return'bad';
+ if(/\bhits?\b|→ HIT|heals|held|PASS\b|passes|absorbs|autofilled|leveled up/i.test(m))return'good';
+ if(/^— round|turn →|loaded|snapshot|exported|imported|concentration moved|expired/i.test(m))return'meta';
+ return'';}
+function log(m){const d=document.createElement('div');d.className='logline '+logClass(m);
  const t=document.createElement('span');t.className='sub';
  t.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' ';
  const c=document.createElement('span');c.textContent=m;d.append(t,c);el('log').prepend(d);}
@@ -1391,7 +1409,10 @@ function renderInit(){
     <button onclick="enemyAtk(${i})" title="they attack you">⚔</button>
     <button onclick="hurtEnemy(${i})" title="deal damage to them">−hp</button>
     <select style="width:70px" onchange="if(this.value){(initOrder[${i}].c=initOrder[${i}].c||[]).push(this.value);renderInit();saveState();}this.value=''"><option value="">+cond</option>${CONDS.filter(c=>!c.includes('(')).map(c=>`<option>${c}</option>`).join('')}</select>
-    <a href="#" onclick="initOrder.splice(${i},1);if(curTarget===${i})curTarget=-1;else if(curTarget>${i})curTarget--;renderInit();saveState();return false" style="color:#c00">×</a></div></div>`;
+    <a href="#" onclick="initOrder.splice(${i},1);if(curTarget===${i})curTarget=-1;else if(curTarget>${i})curTarget--;renderInit();saveState();return false" style="color:#c00">×</a></div>
+   ${(()=>{const h=Number(e.hp),mx=Number(e.mhp);if(e.hp===''||!mx)return'';
+    const p=Math.max(0,Math.min(100,h/mx*100));
+    return `<div class="ir-hp${p<=25?' low':p<=60?' mid':''}" title="${h}/${mx} hp"><i style="width:${p}%"></i></div>`;})()}</div>`;
  }).join('')||'<span class="sub">Empty. Add combatants above.</span>';
 }
 function setTarget(i){curTarget=curTarget===i?-1:i;renderInit();saveState();
@@ -2221,7 +2242,7 @@ function applyState(s){
  });
  if(s._cond)document.querySelectorAll('#conds .tag').forEach(t=>{if(s._cond.includes(t.textContent))t.classList.add('on');});
  (s._ds||[]).forEach((v,i)=>{const p=document.querySelectorAll('.ds-pip')[i];if(p)p.classList.toggle('on',v);});
- if(s._log){el('log').innerHTML='';s._log.forEach(([t,m])=>{const d=document.createElement('div');
+ if(s._log){el('log').innerHTML='';s._log.forEach(([t,m])=>{const d=document.createElement('div');d.className='logline '+logClass(m);
   const ts=document.createElement('span');ts.className='sub';ts.textContent=t;
   const c=document.createElement('span');c.textContent=m;d.append(ts,c);el('log').appendChild(d);});
  if(el('logFilter'))filterLog();}
@@ -2689,7 +2710,22 @@ el('sumSel').innerHTML=Object.keys(SUMMONS).map(n=>`<option>${n}</option>`).join
 el('boonDL').innerHTML=Object.keys(EPIC_BOONS).map(n=>`<option value="${n}">`).join('');
 renderSummon();renderRules();renderMacros();renderSup();updateDiceStats();renderTurn();renderProfs();
 if(store.chars[curChar])applyState(store.chars[curChar]);
-rebuild();renderCoins();loadRemote();
+function applyCollapse(h,on){
+ h.classList.toggle('collapsed',on);
+ let n=h.nextElementSibling;
+ while(n&&n.tagName!=='H2'){n.style.display=on?'none':'';n=n.nextElementSibling;}
+}
+function initCollapse(){
+ const st=JSON.parse(localStorage.getItem('dnd_collapse')||'{}');
+ document.querySelectorAll('.panel h2').forEach(h=>{
+  const key=h.textContent.trim();h.classList.add('collapse-h');
+  h.title='click to collapse';
+  h.onclick=()=>{const on=!h.classList.contains('collapsed');st[key]=on;
+   localStorage.setItem('dnd_collapse',JSON.stringify(st));applyCollapse(h,on);};
+  if(st[key])applyCollapse(h,true);
+ });
+}
+rebuild();renderCoins();loadRemote();initCollapse();
 if(window.speechSynthesis){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();}
 if(GH_PAT)pullAll();
 // ---- hotkeys: 1-9 attack rows · d d20 · v adv mode · a/b/r action·bonus·reaction · n next turn · x damage · h heal · i initiative ----
