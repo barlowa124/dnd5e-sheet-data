@@ -322,7 +322,7 @@
     <div style="margin-top:6px">Temp: <input class="num-in" id="temphp" type="number" value="0" style="width:55px"></div>
     <div class="sub" style="margin-top:4px">Drain: <select id="drainStat"><option value="maxhp">max HP</option><option>str</option><option>dex</option><option>con</option><option>int</option><option>wis</option><option>cha</option></select> <input class="num-in" id="drainAmt" type="number" style="width:42px" value="1"> <button onclick="applyDrain()">Apply</button> <button onclick="restoreDrains()">Restore</button></div>
     <div class="sub" id="drainList">none</div>
-    <div style="margin-top:8px"><button onclick="healPrompt()">Heal</button> <button onclick="dmgPrompt()">Damage</button> <button onclick="shortRest()">Short Rest</button> <button onclick="longRest()">Long Rest</button></div>
+    <div style="margin-top:8px"><button onclick="healPrompt()">Heal</button> <button onclick="undoHp()" title="undo last HP change (z)">↺</button> <button onclick="dmgPrompt()">Damage</button> <button onclick="shortRest()">Short Rest</button> <button onclick="longRest()">Long Rest</button></div>
     <div class="sub" style="margin-top:6px">Concentrating: <input class="txt-in" id="concSpell" style="width:110px;display:inline" placeholder="—"> <input class="num-in" id="concRounds" type="number" min="0" style="width:42px" title="rounds left — ticks down each round, auto-drops at 0"> <button onclick="el('concSpell').value='';el('concRounds').value='';saveState();log('Concentration dropped.')">Drop</button></div>
     <h2>Death Saves</h2>
     <div>
@@ -908,15 +908,24 @@ function roll(name,bonus,kind){
  if(kind==='attack'&&(exh>=3||condOn('Poisoned')||condOn('Restrained')||condOn('Prone')))auto='auto-disadv';
  else if(kind==='check'&&exh>=1)auto='auto-disadv (exhaustion)';
  else if(kind==='save'&&(exh>=3||condOn('Poisoned')))auto='auto-disadv';
- let eff=auto?-1:advMode,usedInsp=false;
- if(inspOn&&eff<1){eff=1;usedInsp=true;}
- const{r,txt}=d20(eff);const tag=usedInsp?' (inspiration)':eff===1?' (adv)':eff===-1?' (dis)':'';
+ let advN=0,disN=0,twhy=[];
+ if(auto)disN++;
+ if(advMode===1)advN++;else if(advMode===-1)disN++;
+ const tc=kind==='attack'&&curTarget>=0&&initOrder[curTarget]?(initOrder[curTarget].c||[]):[];
+ const tAdv=tc.find(c=>['Blinded','Prone','Restrained','Paralyzed','Stunned','Unconscious','Petrified'].includes(c));
+ if(tAdv){advN++;twhy.push('target '+tAdv.toLowerCase());}
+ if(tc.includes('Invisible')){disN++;twhy.push('target invisible');}
+ let usedInsp=false;
+ if(inspOn&&advN===0){advN++;usedInsp=true;}
+ const eff=advN&&disN?0:advN?1:disN?-1:0;
+ const{r,txt}=d20(eff);const tag=(usedInsp?' (inspiration)':'')+(eff===1?' (adv)':eff===-1?' (dis)':'')+(twhy.length?' ('+twhy.join(' + ')+')':'');
  dstat.n++;dstat.sum+=r;if(r===20)dstat.c20++;if(r===1)dstat.c1++;updateDiceStats();
- const crit=r>=critRange()&&/(hit|attack)/i.test(name);
+ let crit=r>=critRange()&&/(hit|attack)/i.test(name);
  let vs='';
  if(kind==='attack'&&curTarget>=0&&initOrder[curTarget]){
   const ac=Number(initOrder[curTarget].ac);
-  if(ac>0){const hit=crit||(r>1&&r+bonus>=ac);
+  if(ac>0){let hit=crit||(r>1&&r+bonus>=ac);
+   if(hit&&tc.some(c=>['Paralyzed','Unconscious'].includes(c)))crit=true; // helpless target: hits auto-crit (melee)
    vs=` → ${hit?'HIT':'miss'} ${initOrder[curTarget].n} (AC ${ac})`;}
  }
  log(`${name}${tag}${auto?' ⚠'+auto:''}: [${txt}] ${fmt(bonus)} = ${r+bonus}${vs}${crit?' — CRIT!':r===20&&eff>=0?' — NAT 20':''}${r===1&&eff<=0?' — NAT 1':''}`);
@@ -1290,14 +1299,22 @@ function recalc(){
 }
 function renderHPBar(){
  const f=el('hpfill');if(!f)return;
- const hp=Number(el('hp').value)||0,mx=Math.max(1,Number(el('hpmax').value)||1);
+ const hp=Number(el('hp').value)||0;
+ const rawMx=Math.max(1,Number(el('hpmax').value)||1);
+ const mx=(Number(el('exhaust').value)||0)>=4?Math.max(1,Math.floor(rawMx/2)):rawMx;
  const pct=Math.max(0,Math.min(100,hp/mx*100));
  f.style.width=pct+'%';
  f.style.background=pct>50?'linear-gradient(180deg,#7dc47d,var(--good))':pct>25?'linear-gradient(180deg,#e0a54a,var(--warn))':'linear-gradient(180deg,#e0574a,var(--accent))';
 }
 const EXH_NOTE=['','disadv on checks','half speed','disadv on attacks & saves','half max HP','speed 0','dead'];
+let spdBase=null;
 function renderExhNote(){const e=el('exhNote');if(!e)return;
- const x=Number(el('exhaust').value)||0;e.textContent=EXH_NOTE[x]?'→ '+EXH_NOTE[x]:'';}
+ const x=Number(el('exhaust').value)||0;
+ const mx=Number(el('hpmax').value)||0;
+ e.textContent=EXH_NOTE[x]?('→ '+EXH_NOTE[x]+(x>=4&&mx?' · eff max '+Math.floor(mx/2)+' HP':'')):'';
+ if(spdBase==null){const m=/(\d+)/.exec(el('speedCell').textContent);spdBase=m?+m[1]:30;}
+ el('speedCell').textContent=x>=6?'0 ft — DEAD':x>=5?'0 ft':x>=2?Math.floor(spdBase/2)+' ft (halved)':spdBase+' ft';
+ renderHPBar();}
 // attacks per Attack action — Extra Attack auto-detects; #atkN overrides
 function derivedAtk(){
  let n=1;
@@ -1583,7 +1600,7 @@ function applyRacial(){
  Object.keys(hit[1]).forEach(s=>statEl(s).value=Number(statEl(s).value)+hit[1][s]);
  el('raceLabel').textContent=el('raceSel').value;
  const sp=RACE_SPEED.find(([k])=>race.includes(k));
- if(sp)el('speedCell').textContent=sp[1]+' ft';
+ if(sp){spdBase=sp[1];el('speedCell').textContent=sp[1]+' ft';}
  rebuild();saveState();log('Racial ASI: '+Object.entries(hit[1]).map(([k,v])=>'+'+v+' '+k.toUpperCase()).join(', '));
 }
 function applyClassSaves(){
@@ -1654,6 +1671,7 @@ function spendHD(i){
  if(u>=m.l){log('No '+en+' hit dice left.');return;}
  hdSpent[en]=u+1;
  const r=Math.ceil(Math.random()*d),heal=Math.max(1,r+mod('con'));
+ snapHp('HD heal');
  el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+heal);
  rebuild();log(`${en} HD spent: [${r}] ${fmt(mod('con'))} = healed ${heal} (${m.l-u-1} left)`);saveState();
 }
@@ -1712,13 +1730,20 @@ function levelUp(){
  if(cn==='Cleric'||cn==='Druid'||cn==='Paladin'||cn==='Artificer')log(`${cn}: prepared spells — re-pick your daily list now or after your next long rest.`);
  saveState();
 }
-function healPrompt(){const n=Number(prompt('Heal how much?','0'))||0;el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+n);saveState();}
+let hpSnap=null;
+function snapHp(lbl){hpSnap={hp:el('hp').value,thp:el('temphp').value,lbl};}
+function undoHp(){if(!hpSnap){log('Nothing to undo — the last HP change was already undone.');return;}
+ el('hp').value=hpSnap.hp;el('temphp').value=hpSnap.thp;
+ log(`Undo (${hpSnap.lbl}) — HP ${hpSnap.hp}${Number(hpSnap.thp)>0?' +'+hpSnap.thp+' temp':''}.`);hpSnap=null;renderHPBar();saveState();}
+function healPrompt(){const n=Number(prompt('Heal how much?','0'))||0;if(!n)return;snapHp('heal '+n);
+ el('hp').value=Math.min(Number(el('hpmax').value),Number(el('hp').value)+n);renderHPBar();saveState();}
 function dmgPrompt(){
  const raw=prompt('Damage taken? (e.g. "14 fire")','0')||'0';
  const mm=/(\d+)\s*([a-z]*)/i.exec(raw);
  applyDamage(+mm[1]||0,(mm[2]||'').toLowerCase());saveState();
 }
 function applyDamage(n,t){
+ snapHp('damage');
  if(t&&n>0){
   if(il('immList').includes(t)){log(`${n} ${t} — IMMUNE, no damage.`);n=0;}
   else if(il('resList').includes(t)){const h=Math.floor(n/2);log(`${n} ${t} resisted → ${h}.`);n=h;}
@@ -1764,6 +1789,7 @@ function shortRest(){
  log(`Short rest — spent ${n} ${en} HD.`);saveState();
 }
 function longRest(){
+ snapHp('long rest');
  el('hp').value=el('hpmax').value;el('temphp').value=0;
  Object.keys(hdSpent).forEach(c=>{
   const m=mclasses.find(x=>effName(x)===c);
@@ -1785,6 +1811,7 @@ function longRest(){
 function deathSave(){
  const{r,txt}=d20(advMode);
  if(r===20){
+  snapHp('nat-20 revival');
   el('hp').value=1;
   document.querySelectorAll('.ds-pip').forEach(p=>p.classList.remove('on'));
   log(`DEATH SAVE [${txt}] = NAT 20 — conscious at 1 HP!`);
@@ -2184,7 +2211,7 @@ function renderCombos(){
 function chooseRace(n){
  el('raceLabel').textContent=n;
  const r=RACES_RICH.find(x=>x.n===n);
- if(r&&r.spd&&r.spd!=='TCE flexible')el('speedCell').textContent=r.spd+' ft';
+ if(r&&r.spd&&r.spd!=='TCE flexible'){spdBase=r.spd;el('speedCell').textContent=r.spd+' ft';}
  const opt=[...el('raceSel').options].find(o=>o.value===n||o.text===n);
  if(opt)el('raceSel').value=opt.value;
  setMetaTips();renderRaceGrid();saveState();
@@ -2263,6 +2290,7 @@ function applyState(s){
   const c=document.createElement('span');c.textContent=m;d.append(ts,c);el('log').appendChild(d);});
  if(el('logFilter'))filterLog();}
  if(s._portrait&&el('portrait')){el('portrait').src=s._portrait;el('portrait').style.display='block';}
+ renderExhNote();
 }
 let saveT=null;
 function saveState(){
@@ -2760,7 +2788,7 @@ document.addEventListener('keydown',e=>{
  if(k>='1'&&k<='9'){const b=document.querySelectorAll('#attacks button')[Number(k)-1];
   if(b){b.click();e.preventDefault();}return;}
  const map={d:()=>roll('d20',0),v:cycleAdv,n:nextInit,x:dmgPrompt,h:healPrompt,i:rollInitFor,
-  a:()=>tglTurn('a'),b:()=>tglTurn('b'),r:()=>tglTurn('r'),
+  a:()=>tglTurn('a'),b:()=>tglTurn('b'),r:()=>tglTurn('r'),z:undoHp,
   '?':()=>{const hb=el('helpBox');hb.style.display=hb.style.display==='none'?'block':'none';},
   escape:()=>{el('helpBox').style.display='none';}};
  if(map[k]){map[k]();e.preventDefault();}
@@ -2784,6 +2812,9 @@ log(`Sheet loaded — ${curChar}.`);
   <li><b>Click a combatant's name</b> to target it — your attack rolls auto-report HIT/miss vs its AC field</li>
   <li>Tracker name matching the monster book autofills AC/HP/attack/damage — <b>wolf x3</b> also bulk-adds, each with its own initiative roll</li>
   <li><b>⇓ on save spells</b> — every combatant rolls the save on its real stat mod; damage auto-applies to their HP</li>
+  <li><b>z</b> or the ↺ button — undo the last HP change (damage, heal, HD spend, rest, nat-20 revival)</li>
+  <li><b>Target conditions matter both ways</b> — attacking a prone/restrained/paralyzed/blinded/etc. target gives advantage; paralyzed/unconscious hits auto-crit; invisible targets impose disadv</li>
+  <li><b>Exhaustion field</b> — drives disadv on checks (1+), attacks & saves (3+), halves speed (2+) and effective max HP (4+), speed 0 (5), dead (6)</li>
   <li>Enemy damage field — <b>2d6+3 fire</b> feeds your resist/vuln/immune; a leading <b>2x</b> = multiattack swings</li>
   <li><b>Rider</b> in Attacks — extra dice on every hit (hunter's mark 1d6, sneak attack…)</li>
   <li>Attack ammo auto-burns; rename inventory to link (longbow → arrows)</li>
